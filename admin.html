@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Yaady's Kitchen Partner | Central Operations Console</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            partnerDark: '#121A15',
+            partnerCard: '#1A241E',
+            partnerGreen: '#1C3D2B',
+            partnerAccent: '#F59E0B'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-partnerDark text-stone-100 font-sans antialiased min-h-screen pb-12">
+
+  <!-- Stacking Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 max-w-sm w-full px-4"></div>
+
+  <!-- ==================== HEADER WITH LIVE RADAR ==================== -->
+  <header class="bg-partnerCard border-b border-stone-800 sticky top-0 z-40 px-4 py-3.5 flex items-center justify-between shadow-md">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-partnerGreen flex items-center justify-center text-partnerAccent font-black text-xl">
+        Y
+      </div>
+      <div>
+        <h1 class="text-base font-extrabold text-white leading-tight">Yaady's Kitchen Partner</h1>
+        <p class="text-xs text-stone-400">Jubilee Hills Central Operations Console</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Active Online Customers Radar Pill -->
+      <button onclick="openOnlineUsersModal()" class="flex items-center gap-2 bg-stone-900 hover:bg-stone-800 px-3.5 py-1.5 rounded-2xl border border-stone-700 transition" title="Click to view online customers">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
+        <span class="text-xs font-bold text-stone-200" id="onlineUsersCountPill">🟢 Online: 0</span>
+      </button>
+
+      <button onclick="logoutAdmin()" id="logoutBtn" class="hidden text-xs text-stone-400 hover:text-white px-3 py-1.5 rounded-xl border border-stone-700">
+        Lock
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== AUTH PIN GATEWAY ==================== -->
+  <div id="adminPinAuth" class="max-w-sm mx-auto mt-20 p-6 bg-partnerCard border border-stone-800 rounded-3xl text-center space-y-4 shadow-2xl">
+    <div class="w-12 h-12 bg-amber-500/20 text-partnerAccent rounded-2xl flex items-center justify-center mx-auto">
+      <i data-lucide="shield-check" class="w-6 h-6"></i>
+    </div>
+    <h3 class="text-lg font-bold text-white">Kitchen Console Gateway</h3>
+    <p class="text-xs text-stone-400">Enter Admin PIN configured in Google Sheets Config tab.</p>
+    <input type="password" id="adminPinInput" placeholder="Default: 1234" class="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-2xl text-center text-lg font-mono font-bold text-white outline-none focus:border-partnerAccent" />
+    <button onclick="unlockConsole()" class="w-full py-3.5 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-extrabold text-sm rounded-2xl transition shadow">
+      Unlock Operations Console
+    </button>
+  </div>
+
+  <!-- ==================== MAIN DASHBOARD ==================== -->
+  <main id="adminDashboard" class="hidden max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- MASTER OPERATIONS SWITCHES -->
+    <section class="bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-4">
+      <h3 class="text-xs font-bold text-stone-300 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="sliders" class="w-4 h-4 text-partnerAccent"></i> Master Kitchen Controls
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex items-center justify-between p-4 bg-stone-900 rounded-2xl border border-stone-800">
+          <div>
+            <h4 class="font-extrabold text-sm text-white">Kitchen Order Acceptance</h4>
+            <p class="text-xs text-stone-400">Controls whether customers can schedule pickup orders.</p>
+          </div>
+          <button onclick="toggleKitchenOpen()" id="btnKitchenOpenToggle" class="px-4 py-2 rounded-xl font-bold text-xs bg-green-600 text-white">
+            OPEN
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-stone-900 rounded-2xl border border-stone-800">
+          <div>
+            <h4 class="font-extrabold text-sm text-white">Wallet & Prepay System</h4>
+            <p class="text-xs text-stone-400">Disables top-ups & wallet checkout when paused.</p>
+          </div>
+          <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-4 py-2 rounded-xl font-bold text-xs bg-green-600 text-white">
+            ENABLED
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS -->
+    <div class="flex gap-2 border-b border-stone-800 pb-2 overflow-x-auto">
+      <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-4 py-2 rounded-2xl bg-partnerAccent text-stone-900 font-extrabold text-xs whitespace-nowrap">
+        Live Orders Cockpit
+      </button>
+      <button onclick="switchAdminTab('slots')" id="tabBtnSlots" class="px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800">
+        Slot & Capacity Manager
+      </button>
+      <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800">
+        Business Reports
+      </button>
+      <button onclick="switchAdminTab('chat')" id="tabBtnChat" class="px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800">
+        Customer Support Chat
+      </button>
+      <button onclick="switchAdminTab('menu')" id="tabBtnMenu" class="px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800">
+        Menu Master & Inventory
+      </button>
+      <button onclick="switchAdminTab('claims')" id="tabBtnClaims" class="px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800">
+        Wallet Claims & Top-Ups
+      </button>
+    </div>
+
+    <!-- COCKPIT 1: LIVE ORDERS -->
+    <section id="cockpitOrders" class="space-y-4">
+      <div class="flex gap-2 overflow-x-auto">
+        <button onclick="filterOrders('ALL')" class="order-filter-btn active px-3 py-1.5 rounded-xl bg-stone-800 text-xs font-bold text-white">All Orders</button>
+        <button onclick="filterOrders('Pending_Verification')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-stone-900 text-xs font-semibold text-stone-400">Pending Verification</button>
+        <button onclick="filterOrders('Kitchen_Accepted')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-stone-900 text-xs font-semibold text-stone-400">Accepted</button>
+        <button onclick="filterOrders('Preparing')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-stone-900 text-xs font-semibold text-stone-400">Millet Stove</button>
+        <button onclick="filterOrders('Ready_For_Pickup')" class="order-filter-btn px-3 py-1.5 rounded-xl bg-stone-900 text-xs font-semibold text-stone-400">Ready for Counter</button>
+      </div>
+
+      <div id="adminOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p class="text-stone-500 py-10 text-xs col-span-2 text-center">Loading orders queue...</p>
+      </div>
+    </section>
+
+    <!-- COCKPIT 2: DAY-WISE SLOT & CAPACITY MANAGER -->
+    <section id="cockpitSlots" class="hidden bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h4 class="text-sm font-bold text-white">Day-Wise Pickup Capacity Manager</h4>
+          <p class="text-xs text-stone-400">Enable/disable individual 15-minute intervals or adjust max capacity overrides.</p>
+        </div>
+        <input type="date" id="adminSlotDateInput" onchange="fetchAdminSlotSettings()" class="bg-stone-900 border border-stone-700 text-white font-bold text-xs p-2.5 rounded-xl outline-none" />
+      </div>
+
+      <div id="adminSlotsListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+        <p class="text-stone-500 text-xs col-span-3">Select a date to view slot capacities.</p>
+      </div>
+    </section>
+
+    <!-- COCKPIT 3: DAY-WISE FINANCIAL & OPERATIONAL REPORT -->
+    <section id="cockpitReports" class="hidden space-y-5">
+      <div class="bg-partnerCard border border-stone-800 p-5 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h4 class="text-base font-extrabold text-white">Kitchen Daily Ledger Report</h4>
+          <p class="text-xs text-stone-400">Real-time revenue, order conversions, and roti production metrics.</p>
+        </div>
+        <input type="date" id="reportDateInput" onchange="fetchDaywiseReport()" class="bg-stone-900 border border-stone-700 text-white font-bold text-xs p-2.5 rounded-xl outline-none" />
+      </div>
+
+      <!-- Report Metrics Summary Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-partnerCard border border-stone-800 p-4 rounded-2xl">
+          <p class="text-[11px] text-stone-400 font-bold">Gross Revenue</p>
+          <h3 class="text-2xl font-black text-partnerAccent mt-1" id="repGrossRev">₹0</h3>
+          <p class="text-[10px] text-stone-500 mt-1" id="repRevSplit">UPI: ₹0 | Wallet: ₹0</p>
+        </div>
+        <div class="bg-partnerCard border border-stone-800 p-4 rounded-2xl">
+          <p class="text-[11px] text-stone-400 font-bold">Total Orders</p>
+          <h3 class="text-2xl font-black text-white mt-1" id="repTotalOrders">0</h3>
+          <p class="text-[10px] text-green-400 mt-1" id="repCompletedOrders">0 Picked Up</p>
+        </div>
+        <div class="bg-partnerCard border border-stone-800 p-4 rounded-2xl">
+          <p class="text-[11px] text-stone-400 font-bold">Rotis Prepped</p>
+          <h3 class="text-2xl font-black text-green-400 mt-1" id="repRotisCount">0</h3>
+          <p class="text-[10px] text-stone-500 mt-1">Sorghum & Finger Millet</p>
+        </div>
+        <div class="bg-partnerCard border border-stone-800 p-4 rounded-2xl">
+          <p class="text-[11px] text-stone-400 font-bold">In-Prep / Queue</p>
+          <h3 class="text-2xl font-black text-amber-400 mt-1" id="repActiveQueue">0</h3>
+          <p class="text-[10px] text-red-400 mt-1" id="repCancelledCount">0 Rejected</p>
+        </div>
+      </div>
+
+      <!-- Report Orders Table with Sort Controls -->
+      <div class="bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-bold text-stone-300 uppercase tracking-wider">Itemized Orders Ledger</h4>
+          <div class="flex gap-2 text-xs">
+            <button onclick="sortReportOrders('slot')" class="px-3 py-1 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-semibold hover:bg-stone-800">Sort by Slot</button>
+            <button onclick="sortReportOrders('value')" class="px-3 py-1 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-semibold hover:bg-stone-800">Sort by Amount</button>
+            <button onclick="sortReportOrders('status')" class="px-3 py-1 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-semibold hover:bg-stone-800">Sort by Status</button>
+          </div>
+        </div>
+
+        <div id="reportOrdersTable" class="overflow-x-auto divide-y divide-stone-800 text-xs text-stone-300">
+          <p class="text-stone-500 py-6 text-center">No orders for selected report date.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COCKPIT 4: 2-WAY CUSTOMER SUPPORT CHAT CENTER -->
+    <section id="cockpitChat" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 h-[70vh]">
+      <div class="md:col-span-4 bg-partnerCard border border-stone-800 rounded-3xl p-4 overflow-y-auto space-y-2">
+        <h4 class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Customer Threads</h4>
+        <div id="chatThreadsList" class="space-y-1.5">
+          <p class="text-stone-500 text-xs">No active chat threads.</p>
+        </div>
+      </div>
+
+      <div class="md:col-span-8 bg-partnerCard border border-stone-800 rounded-3xl flex flex-col overflow-hidden">
+        <div class="p-3.5 bg-stone-900 border-b border-stone-800 flex justify-between items-center">
+          <div>
+            <h5 class="text-xs font-extrabold text-white" id="activeChatCustomerName">Select a thread</h5>
+            <p class="text-[10px] text-stone-400 font-mono" id="activeChatCustomerId">---</p>
+          </div>
+        </div>
+        <div id="adminChatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3 bg-partnerDark/60 text-xs">
+          <p class="text-stone-500 text-center py-12">Select a customer thread on the left to review messages.</p>
+        </div>
+        <div class="p-3 bg-stone-900 border-t border-stone-800 flex gap-2">
+          <input type="text" id="adminReplyInput" onkeydown="if(event.key==='Enter') sendAdminChatReply()" placeholder="Type reply as Kitchen Desk..." class="flex-1 px-4 py-2.5 bg-stone-800 border border-stone-700 rounded-xl text-xs text-white outline-none" />
+          <button onclick="sendAdminChatReply()" class="px-4 py-2.5 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-extrabold text-xs rounded-xl">
+            Reply
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- COCKPIT 5: MENU ITEM MASTER (ADD, EDIT, REMOVE) -->
+    <section id="cockpitMenu" class="hidden bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h4 class="text-sm font-bold text-white">Menu Item Master & Stock Control</h4>
+          <p class="text-xs text-stone-400">Update pricing in real-time, toggle sold-out state, or add seasonal preparations.</p>
+        </div>
+        <button onclick="openAddMealModal()" class="px-4 py-2 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-extrabold text-xs rounded-xl flex items-center gap-1.5 shadow">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Add New Meal Item</span>
+        </button>
+      </div>
+
+      <div id="adminMenuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <p class="text-stone-500 text-xs col-span-2">Loading menu items...</p>
+      </div>
+    </section>
+
+    <!-- COCKPIT 6: WALLET RECHARGES & CLAIMS -->
+    <section id="cockpitClaims" class="hidden space-y-6">
+      <div class="bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-3">
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="arrow-down-left" class="w-4 h-4 text-amber-400"></i> Balance Refund Claims
+        </h4>
+        <div id="adminClaimsContainer" class="space-y-3">
+          <p class="text-stone-500 text-xs">No pending claims.</p>
+        </div>
+      </div>
+
+      <div class="bg-partnerCard border border-stone-800 p-5 rounded-3xl space-y-3">
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-green-400"></i> Pending Wallet Recharges
+        </h4>
+        <div id="adminRechargesContainer" class="space-y-3">
+          <p class="text-stone-500 text-xs">No pending top-ups.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== DIALOGS & OVERLAYS ==================== -->
+
+  <!-- ONLINE CUSTOMERS RADAR MODAL -->
+  <div id="onlineUsersModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-partnerCard border border-stone-700 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-800 pb-3">
+        <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
+          <span>Online Customers (Last 60s)</span>
+        </h3>
+        <button onclick="closeOnlineUsersModal()" class="text-stone-400 hover:text-white">&times;</button>
+      </div>
+      <div id="onlineUsersList" class="divide-y divide-stone-800 max-h-64 overflow-y-auto text-xs text-stone-300">
+        <p class="text-stone-500 text-center py-4">Checking active telemetry sessions...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD NEW MEAL ITEM MODAL -->
+  <div id="addMealModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-partnerCard border border-stone-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-stone-800 pb-3">
+        <h3 class="text-base font-extrabold text-white">Add New Meal Item to Menu</h3>
+        <button onclick="closeAddMealModal()" class="text-stone-400 hover:text-white">&times;</button>
+      </div>
+
+      <form id="addMealForm" onsubmit="submitNewMeal(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-stone-400 font-bold mb-1">Meal Name</label>
+          <input type="text" id="newMealName" required placeholder="e.g. Bajra Masala Roti Plate" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-stone-400 font-bold mb-1">Category</label>
+            <select id="newMealCategory" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none">
+              <option value="Millet Rotis">Millet Rotis</option>
+              <option value="Combo Meals">Combo Meals</option>
+              <option value="Curries & Sides">Curries & Sides</option>
+              <option value="Healthy Beverages">Healthy Beverages</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-stone-400 font-bold mb-1">Millet Type</label>
+            <input type="text" id="newMealMillet" placeholder="e.g. Bajra / Pearl Millet" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-stone-400 font-bold mb-1">Base Price (₹)</label>
+            <input type="number" id="newMealPrice" required min="10" placeholder="140" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white font-bold outline-none" />
+          </div>
+          <div>
+            <label class="block text-stone-400 font-bold mb-1">Prep Time (Mins)</label>
+            <input type="number" id="newMealPrep" value="20" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-stone-400 font-bold mb-1">Description</label>
+          <textarea id="newMealDesc" rows="2" placeholder="Ingredients, sides included, accompaniment details..." class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-stone-400 font-bold mb-1">Nutritional Info String</label>
+          <input type="text" id="newMealNutrition" value="Cal: 340kcal | Protein: 8g | Fiber: 9g" class="w-full p-2.5 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+        </div>
+        <div>
+          <label class="block text-stone-400 font-bold mb-1">Photo Upload (Saved to Drive)</label>
+          <input type="file" id="newMealPhoto" accept="image/*" class="w-full text-stone-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-stone-800 file:text-white" />
+        </div>
+
+        <button type="submit" id="btnSubmitNewMeal" class="w-full py-3 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-extrabold text-sm rounded-xl transition mt-2">
+          Save & Publish to Active Menu
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DISBURSEMENT CLAIM MODAL -->
+  <div id="claimApprovalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-partnerCard border border-stone-700 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+      <h3 class="text-base font-extrabold text-white">Approve & Issue Claim Acknowledgment</h3>
+      <div class="p-3 bg-stone-900 rounded-2xl text-xs space-y-1">
+        <p class="text-stone-400">Claim ID: <span id="modalClaimId" class="font-bold text-white"></span></p>
+        <p class="text-stone-400">Beneficiary UPI: <span id="modalClaimUpi" class="font-bold text-partnerAccent"></span></p>
+        <p class="text-stone-400">Amount to Disburse: <span id="modalClaimAmount" class="font-extrabold text-green-400"></span></p>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-stone-300 mb-1">Bank Transfer 12-Digit UTR <span class="text-red-500">*</span></label>
+        <input type="text" id="modalTransferUtr" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-2xl text-sm font-mono font-bold text-white outline-none" />
+      </div>
+      <div class="flex gap-2">
+        <button onclick="closeClaimModal()" class="flex-1 py-3 bg-stone-800 text-stone-300 font-bold text-xs rounded-2xl">Cancel</button>
+        <button onclick="confirmClaimDisbursement()" id="btnConfirmClaimDisburse" class="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xs rounded-2xl">
+          Disburse & Issue PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT CONSOLE ENGINE ==================== -->
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZZR-OkWc2_IC1nLNyAHWjAfG_P5ulyKX0FFftk224hImDTnFmCoNSmhHvJxRUI5s/exec";
+
+    let currentAdminPin = "";
+    let adminDataCache = null;
+    let selectedClaimRow = null;
+    let currentOrderFilter = "ALL";
+    let activeChatCustomerId = null;
+    let daywiseReportOrdersCache = [];
+
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      const savedPin = localStorage.getItem("yaady_admin_pin");
+      if (savedPin) {
+        currentAdminPin = savedPin;
+        unlockConsole();
+      }
+
+      // Live Polling: Orders, Claims, and Telemetry every 10s
+      setInterval(() => {
+        if (currentAdminPin) {
+          refreshAdminData();
+          pollOnlineUsers();
+        }
+      }, 10000);
+    });
+
+    function showToast(msg, type = "info") {
+      const c = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      const bg = type === "error" ? "bg-red-900 text-white" : type === "success" ? "bg-green-900 text-white" : "bg-stone-800 text-white";
+      toast.className = `${bg} p-3.5 rounded-2xl text-xs font-semibold shadow-2xl flex items-center justify-between gap-2 border border-white/20`;
+      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70">&times;</button>`;
+      c.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    async function unlockConsole() {
+      const pin = currentAdminPin || document.getElementById("adminPinInput").value.trim();
+      currentAdminPin = pin;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getAdminData&pin=${pin}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          localStorage.setItem("yaady_admin_pin", pin);
+          document.getElementById("adminPinAuth").classList.add("hidden");
+          document.getElementById("adminDashboard").classList.remove("hidden");
+          document.getElementById("logoutBtn").classList.remove("hidden");
+          renderAdminDashboard(res);
+
+          // Init date pickers
+          const today = new Date().toISOString().split("T")[0];
+          document.getElementById("adminSlotDateInput").value = today;
+          document.getElementById("reportDateInput").value = today;
+
+          fetchAdminSlotSettings();
+          fetchDaywiseReport();
+          pollOnlineUsers();
+          pollChatThreads();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (e) {
+        showToast("Cannot connect to kitchen backend engine.", "error");
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem("yaady_admin_pin");
+      currentAdminPin = "";
+      location.reload();
+    }
+
+    async function refreshAdminData() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getAdminData&pin=${currentAdminPin}`).then(r => r.json());
+        if (res.status === "SUCCESS") renderAdminDashboard(res);
+      } catch (e) {}
+    }
+
+    function renderAdminDashboard(data) {
+      adminDataCache = data;
+
+      const isKitchenOpen = String(data.config.KITCHEN_OPEN).toUpperCase() === "TRUE";
+      const btnKitchen = document.getElementById("btnKitchenOpenToggle");
+      btnKitchen.innerText = isKitchenOpen ? "OPEN" : "CLOSED";
+      btnKitchen.className = `px-4 py-2 rounded-xl font-bold text-xs ${isKitchenOpen ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`;
+
+      const isWalletOn = String(data.config.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
+      const btnWallet = document.getElementById("btnWalletSystemToggle");
+      btnWallet.innerText = isWalletOn ? "ENABLED" : "PAUSED";
+      btnWallet.className = `px-4 py-2 rounded-xl font-bold text-xs ${isWalletOn ? 'bg-green-600 text-white' : 'bg-amber-600 text-white'}`;
+
+      renderOrdersList();
+      renderClaimsList();
+      renderMenuList();
+    }
+
+    // -------------------------------------------------------------
+    // COCKPIT 1: ORDERS CONTROLLER
+    // -------------------------------------------------------------
+    function filterOrders(status) {
+      currentOrderFilter = status;
+      document.querySelectorAll(".order-filter-btn").forEach(b => {
+        b.classList.remove("active", "bg-stone-800", "text-white");
+        b.classList.add("bg-stone-900", "text-stone-400");
+      });
+      event.target.classList.add("active", "bg-stone-800", "text-white");
+      renderOrdersList();
+    }
+
+    function renderOrdersList() {
+      if (!adminDataCache) return;
+      const container = document.getElementById("adminOrdersContainer");
+      const filtered = adminDataCache.orders.filter(o => currentOrderFilter === "ALL" || o.orderStatus === currentOrderFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="text-stone-500 text-xs py-8 col-span-2 text-center">No orders match filter.</p>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(o => `
+        <div class="p-4 bg-stone-900 border border-stone-800 rounded-3xl space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-mono font-black text-partnerAccent">#${o.orderId.slice(-4)}</span>
+              <h4 class="font-extrabold text-white text-base">${o.customerName}</h4>
+              <p class="text-xs text-stone-400">+91 ${o.customerPhone} • Slot: <strong class="text-stone-200">${o.pickupTimeSlot}</strong></p>
+            </div>
+            <span class="px-2.5 py-1 rounded-xl text-xs font-extrabold ${o.orderStatus === 'Ready_For_Pickup' ? 'bg-green-900/60 text-green-300' : 'bg-amber-900/60 text-amber-300'}">
+              ${o.orderStatus.replace('_', ' ')}
+            </span>
+          </div>
+
+          <div class="text-xs text-stone-300 border-t border-b border-stone-800 py-2 space-y-1">
+            ${o.items.map(i => `<div>${i.quantity}x ${i.name}</div>`).join("")}
+            <div class="font-bold text-white pt-1">Total: ₹${o.finalPayable} via ${o.paymentMode} ${o.utr ? `(UTR: ${o.utr})` : ''}</div>
+            ${o.screenshotUrl && o.screenshotUrl.length > 10 ? `
+              <a href="${o.screenshotUrl}" target="_blank" class="inline-block mt-1 text-xs text-partnerAccent underline font-bold">View Screenshot Proof</a>
+            ` : ''}
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-1">
+            ${o.orderStatus === 'Pending_Verification' ? `
+              <button onclick="approveOrderPayment(${o.rowIndex})" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold">Verify Payment</button>
+            ` : ''}
+            <button onclick="setOrderStatus(${o.rowIndex}, 'Preparing')" class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs font-semibold">Millet Stove</button>
+            <button onclick="setOrderStatus(${o.rowIndex}, 'Ready_For_Pickup')" class="px-3 py-1.5 bg-partnerAccent hover:bg-amber-600 text-stone-900 rounded-xl text-xs font-extrabold">Ready Counter</button>
+            <button onclick="setOrderStatus(${o.rowIndex}, 'Completed')" class="px-3 py-1.5 bg-stone-700 hover:bg-stone-600 text-white rounded-xl text-xs font-semibold">Picked Up</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function approveOrderPayment(rowIndex) {
+      try {
+        const res = await callBackendApi("ADMIN_CONFIRM_PAYMENT", { pin: currentAdminPin, type: "ORDER", rowIndex: rowIndex });
+        showToast(res.message, "success");
+        refreshAdminData();
+      } catch (e) {
+        showToast("Approval failed.", "error");
+      }
+    }
+
+    async function setOrderStatus(rowIndex, newStatus) {
+      try {
+        const res = await callBackendApi("ADMIN_SET_ORDER_STATUS", { pin: currentAdminPin, rowIndex: rowIndex, newStatus: newStatus });
+        showToast(res.message, "success");
+        refreshAdminData();
+      } catch (e) {
+        showToast("Status change failed.", "error");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // COCKPIT 2: DAY-WISE SLOT & CAPACITY MANAGER
+    // -------------------------------------------------------------
+    async function fetchAdminSlotSettings() {
+      const dateVal = document.getElementById("adminSlotDateInput").value;
+      const container = document.getElementById("adminSlotsListContainer");
+      container.innerHTML = `<p class="text-stone-400 text-xs col-span-3">Loading slots for ${dateVal}...</p>`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_SLOT_SETTINGS&pin=${currentAdminPin}&date=${dateVal}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          container.innerHTML = res.slots.map(s => `
+            <div class="p-3 bg-stone-900 border border-stone-800 rounded-2xl space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-extrabold text-xs text-white">${s.slot}</span>
+                <button onclick="toggleSlotAvailability('${dateVal}', '${s.slot}', ${!s.isEnabled}, ${s.capacity})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold ${s.isEnabled ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">
+                  ${s.isEnabled ? 'Active' : 'Disabled'}
+                </button>
+              </div>
+              <div class="flex items-center justify-between text-xs text-stone-400">
+                <span>Booked: <strong class="text-white">${s.booked}</strong></span>
+                <div class="flex items-center gap-1">
+                  <span>Cap:</span>
+                  <input type="number" value="${s.capacity}" min="1" id="cap_${s.slot.replace(/\s+/g, '_')}" onchange="saveSlotCapacity('${dateVal}', '${s.slot}', ${s.isEnabled})" class="w-14 px-1.5 py-0.5 bg-stone-800 border border-stone-700 rounded text-center text-white font-bold" />
+                </div>
+              </div>
+            </div>
+          `).join("");
+        }
+      } catch (e) {
+        container.innerHTML = `<p class="text-red-500 text-xs col-span-3">Failed to load slot settings.</p>`;
+      }
+    }
+
+    async function toggleSlotAvailability(dateStr, slotTime, newEnabled, capacity) {
+      try {
+        await callBackendApi("ADMIN_UPDATE_SLOT", {
+          pin: currentAdminPin,
+          date: dateStr,
+          slotTime: slotTime,
+          maxCapacity: capacity,
+          isEnabled: newEnabled
+        });
+        fetchAdminSlotSettings();
+      } catch (e) {
+        showToast("Slot update failed.", "error");
+      }
+    }
+
+    async function saveSlotCapacity(dateStr, slotTime, isEnabled) {
+      const capInput = document.getElementById(`cap_${slotTime.replace(/\s+/g, '_')}`);
+      const newCap = Number(capInput.value);
+      try {
+        await callBackendApi("ADMIN_UPDATE_SLOT", {
+          pin: currentAdminPin,
+          date: dateStr,
+          slotTime: slotTime,
+          maxCapacity: newCap,
+          isEnabled: isEnabled
+        });
+        showToast("Slot capacity updated.", "success");
+      } catch (e) {
+        showToast("Capacity update failed.", "error");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // COCKPIT 3: DAY-WISE FINANCIAL & OPERATIONAL REPORT
+    // -------------------------------------------------------------
+    async function fetchDaywiseReport() {
+      const dateVal = document.getElementById("reportDateInput").value;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_DAYWISE_REPORT&pin=${currentAdminPin}&date=${dateVal}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          document.getElementById("repGrossRev").innerText = `₹${res.metrics.grossRevenue}`;
+          document.getElementById("repRevSplit").innerText = `UPI: ₹${res.metrics.upiRevenue} | Wallet: ₹${res.metrics.walletRevenue}`;
+          document.getElementById("repTotalOrders").innerText = res.metrics.totalOrders;
+          document.getElementById("repCompletedOrders").innerText = `${res.metrics.completed} Picked Up`;
+          document.getElementById("repRotisCount").innerText = res.metrics.rotisPrepared;
+          document.getElementById("repActiveQueue").innerText = res.metrics.accepted + res.metrics.preparing;
+          document.getElementById("repCancelledCount").innerText = `${res.metrics.cancelled} Rejected`;
+
+          daywiseReportOrdersCache = res.orders;
+          renderReportOrdersTable(daywiseReportOrdersCache);
+        }
+      } catch (e) {}
+    }
+
+    function renderReportOrdersTable(orders) {
+      const container = document.getElementById("reportOrdersTable");
+      if (orders.length === 0) {
+        container.innerHTML = `<p class="text-stone-500 py-6 text-center">No orders for selected report date.</p>`;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => `
+        <div class="py-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+          <div>
+            <span class="font-mono font-bold text-partnerAccent">#${o.orderId.slice(-4)}</span> • <strong class="text-white">${o.customerName}</strong> (${o.customerPhone})
+            <p class="text-[11px] text-stone-400">Slot: ${o.pickupSlot} | ${o.items.map(i => `${i.quantity}x ${i.name}`).join(", ")}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-extrabold text-white">₹${o.finalPayable} (${o.paymentMode})</span>
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold ${o.orderStatus === 'Completed' ? 'bg-green-900 text-green-300' : 'bg-stone-800 text-stone-300'}">${o.orderStatus}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function sortReportOrders(criteria) {
+      if (criteria === "value") {
+        daywiseReportOrdersCache.sort((a, b) => b.finalPayable - a.finalPayable);
+      } else if (criteria === "slot") {
+        daywiseReportOrdersCache.sort((a, b) => a.pickupSlot.localeCompare(b.pickupSlot));
+      } else if (criteria === "status") {
+        daywiseReportOrdersCache.sort((a, b) => a.orderStatus.localeCompare(b.orderStatus));
+      }
+      renderReportOrdersTable(daywiseReportOrdersCache);
+    }
+
+    // -------------------------------------------------------------
+    // COCKPIT 4: 2-WAY SUPPORT CHAT CENTER
+    // -------------------------------------------------------------
+    async function pollChatThreads() {
+      if (!currentAdminPin) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_ALL_CHAT_THREADS&pin=${currentAdminPin}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          const list = document.getElementById("chatThreadsList");
+          if (res.threads.length === 0) {
+            list.innerHTML = `<p class="text-stone-500 text-xs">No active chat threads.</p>`;
+            return;
+          }
+
+          list.innerHTML = res.threads.map(t => `
+            <div onclick="selectChatThread('${t.customerId}', '${t.customerName}')" class="p-2.5 rounded-xl cursor-pointer transition ${activeChatCustomerId === t.customerId ? 'bg-stone-800 border border-stone-700' : 'bg-stone-900 hover:bg-stone-800/60'}">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-xs text-white">${t.customerName}</span>
+                ${t.unreadCount > 0 ? `<span class="px-1.5 py-0.2 bg-amber-500 text-stone-900 text-[10px] font-black rounded-full">${t.unreadCount}</span>` : ''}
+              </div>
+              <p class="text-[11px] text-stone-400 truncate mt-0.5">${t.lastMessage}</p>
+            </div>
+          `).join("");
+        }
+      } catch (e) {}
+    }
+
+    async function selectChatThread(custId, name) {
+      activeChatCustomerId = custId;
+      document.getElementById("activeChatCustomerName").innerText = name;
+      document.getElementById("activeChatCustomerId").innerText = custId;
+      loadActiveChatMessages();
+    }
+
+    async function loadActiveChatMessages() {
+      if (!activeChatCustomerId) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_CHAT_MESSAGES&customerId=${activeChatCustomerId}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          const box = document.getElementById("adminChatMessagesBox");
+          box.innerHTML = res.messages.map(m => {
+            const isAdmin = m.sender === "ADMIN";
+            return `
+              <div class="flex flex-col ${isAdmin ? 'items-end' : 'items-start'}">
+                <div class="max-w-[75%] px-3 py-2 rounded-xl ${isAdmin ? 'bg-partnerAccent text-stone-900 font-medium' : 'bg-stone-800 text-stone-200'}">
+                  ${m.text}
+                </div>
+                <span class="text-[9px] text-stone-500 mt-0.5">${new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+              </div>
+            `;
+          }).join("");
+          box.scrollTop = box.scrollHeight;
+        }
+      } catch (e) {}
+    }
+
+    async function sendAdminChatReply() {
+      const input = document.getElementById("adminReplyInput");
+      const text = input.value.trim();
+      if (!text || !activeChatCustomerId) return;
+
+      input.value = "";
+      try {
+        await callBackendApi("SEND_CHAT_MESSAGE", {
+          customerId: activeChatCustomerId,
+          customerName: "Kitchen Desk",
+          sender: "ADMIN",
+          messageText: text
+        });
+        loadActiveChatMessages();
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
+    // COCKPIT 5: MENU MANAGEMENT (ADD, EDIT, REMOVE)
+    // -------------------------------------------------------------
+    async function renderMenuList() {
+      const container = document.getElementById("adminMenuContainer");
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getMenu`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          container.innerHTML = res.menu.map(item => `
+            <div class="p-4 bg-stone-900 border border-stone-800 rounded-3xl space-y-3">
+              <div class="flex items-center gap-3">
+                <img src="${item.image}" class="w-14 h-14 rounded-2xl object-cover" />
+                <div class="flex-1">
+                  <h5 class="font-extrabold text-white text-sm">${item.name}</h5>
+                  <p class="text-xs text-stone-400">Price: ₹${item.price} • ${item.milletType}</p>
+                </div>
+                <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3 py-1.5 rounded-xl font-bold text-xs ${item.available ? 'bg-green-900/60 text-green-300' : 'bg-red-900/60 text-red-300'}">
+                  ${item.available ? 'In Stock' : 'Sold Out'}
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 border-t border-stone-800 text-xs">
+                <div class="flex items-center gap-2">
+                  <input type="number" id="price_${item.id}" value="${item.price}" class="w-20 px-2 py-1 bg-stone-800 border border-stone-700 rounded-xl text-white font-bold" />
+                  <button onclick="updateItemPrice('${item.id}')" class="px-3 py-1 bg-stone-700 hover:bg-stone-600 rounded-xl font-bold text-white">Save</button>
+                </div>
+                <button onclick="deleteMenuItem('${item.id}', '${item.name}')" class="px-3 py-1 text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-xl font-bold">Remove</button>
+              </div>
+            </div>
+          `).join("");
+        }
+      } catch (e) {}
+    }
+
+    function openAddMealModal() { document.getElementById("addMealModal").classList.remove("hidden"); }
+    function closeAddMealModal() { document.getElementById("addMealModal").classList.add("hidden"); }
+
+    async function submitNewMeal(e) {
+      e.preventDefault();
+      const name = document.getElementById("newMealName").value.trim();
+      const cat = document.getElementById("newMealCategory").value;
+      const millet = document.getElementById("newMealMillet").value.trim() || "Traditional";
+      const price = document.getElementById("newMealPrice").value;
+      const prep = document.getElementById("newMealPrep").value;
+      const desc = document.getElementById("newMealDesc").value.trim();
+      const nutrition = document.getElementById("newMealNutrition").value.trim();
+      const fileInput = document.getElementById("newMealPhoto");
+
+      let base64 = "";
+      if (fileInput.files.length > 0) {
+        base64 = await fileToBase64(fileInput.files[0]);
+      }
+
+      const btn = document.getElementById("btnSubmitNewMeal");
+      btn.disabled = true;
+      btn.innerText = "Saving to Database...";
+
+      try {
+        const res = await callBackendApi("ADMIN_ADD_MENU_ITEM", {
+          pin: currentAdminPin,
+          name: name,
+          category: cat,
+          milletType: millet,
+          price: price,
+          prepTimeMins: prep,
+          description: desc,
+          nutrition: nutrition,
+          base64Image: base64
+        });
+
+        if (res.status === "SUCCESS") {
+          showToast("New meal added successfully!", "success");
+          closeAddMealModal();
+          renderMenuList();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (err) {
+        showToast("Error adding meal item.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Save & Publish to Active Menu";
+      }
+    }
+
+    async function deleteMenuItem(itemId, itemName) {
+      if (!confirm(`Are you sure you want to permanently remove "${itemName}" from the menu?`)) return;
+      try {
+        const res = await callBackendApi("ADMIN_DELETE_MENU_ITEM", { pin: currentAdminPin, itemId: itemId });
+        showToast(res.message, "success");
+        renderMenuList();
+      } catch (e) {
+        showToast("Delete failed.", "error");
+      }
+    }
+
+    async function toggleMenuStock(itemId, newAvailable) {
+      try {
+        await callBackendApi("ADMIN_TOGGLE_MENU_STOCK", { pin: currentAdminPin, itemId: itemId, available: newAvailable });
+        renderMenuList();
+      } catch (e) {}
+    }
+
+    async function updateItemPrice(itemId) {
+      const price = document.getElementById(`price_${itemId}`).value;
+      try {
+        await callBackendApi("ADMIN_UPDATE_MENU_ITEM", { pin: currentAdminPin, itemId: itemId, price: price });
+        showToast("Price updated.", "success");
+        renderMenuList();
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
+    // TELEMETRY RADAR
+    // -------------------------------------------------------------
+    async function pollOnlineUsers() {
+      if (!currentAdminPin) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_ONLINE_USERS&pin=${currentAdminPin}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          document.getElementById("onlineUsersCountPill").innerText = `🟢 Online: ${res.count}`;
+          const list = document.getElementById("onlineUsersList");
+          if (res.activeUsers.length === 0) {
+            list.innerHTML = `<p class="text-stone-500 py-4 text-center">No active users online right now.</p>`;
+            return;
+          }
+          list.innerHTML = res.activeUsers.map(u => `
+            <div class="py-2.5 flex justify-between items-center">
+              <div>
+                <p class="font-bold text-white">${u.customerName}</p>
+                <p class="text-[10px] text-stone-400 font-mono">+91 ${u.phone} (${u.customerId})</p>
+              </div>
+              <span class="text-[10px] font-bold text-green-400">Active Now</span>
+            </div>
+          `).join("");
+        }
+      } catch (e) {}
+    }
+
+    function openOnlineUsersModal() { document.getElementById("onlineUsersModal").classList.remove("hidden"); }
+    function closeOnlineUsersModal() { document.getElementById("onlineUsersModal").classList.add("hidden"); }
+
+    // -------------------------------------------------------------
+    // COCKPIT 6: WALLET RECHARGES & CLAIMS DISBURSEMENT
+    // -------------------------------------------------------------
+    function renderClaimsList() {
+      if (!adminDataCache) return;
+
+      const cContainer = document.getElementById("adminClaimsContainer");
+      if (adminDataCache.pendingClaims.length === 0) {
+        cContainer.innerHTML = `<p class="text-stone-500 text-xs">No pending balance refund claims.</p>`;
+      } else {
+        cContainer.innerHTML = adminDataCache.pendingClaims.map(c => `
+          <div class="p-4 bg-stone-900 border border-stone-800 rounded-2xl flex items-center justify-between">
+            <div>
+              <p class="font-extrabold text-white text-sm">₹${c.amount} • <span class="font-mono text-partnerAccent">${c.payoutUpi}</span></p>
+              <p class="text-xs text-stone-400">Cust: ${c.customerId} • Reason: ${c.reason}</p>
+            </div>
+            <button onclick="openClaimModal('${c.claimId}', '${c.payoutUpi}', ${c.amount}, ${c.rowIndex})" class="px-4 py-2 bg-partnerAccent text-stone-900 rounded-xl font-extrabold text-xs">
+              Disburse & Issue PDF
+            </button>
+          </div>
+        `).join("");
+      }
+
+      const rContainer = document.getElementById("adminRechargesContainer");
+      if (adminDataCache.pendingRecharges.length === 0) {
+        rContainer.innerHTML = `<p class="text-stone-500 text-xs">No pending wallet top-ups.</p>`;
+      } else {
+        rContainer.innerHTML = adminDataCache.pendingRecharges.map(r => `
+          <div class="p-4 bg-stone-900 border border-stone-800 rounded-2xl flex items-center justify-between">
+            <div>
+              <p class="font-extrabold text-white text-sm">₹${r.amount} • <span class="font-mono text-stone-400">UTR: ${r.utr}</span></p>
+              <p class="text-xs text-stone-400">Cust: ${r.customerId}</p>
+            </div>
+            <button onclick="approveWalletRecharge(${r.rowIndex})" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-xs">
+              Confirm Credit
+            </button>
+          </div>
+        `).join("");
+      }
+    }
+
+    function openClaimModal(claimId, upi, amount, rowIndex) {
+      selectedClaimRow = rowIndex;
+      document.getElementById("modalClaimId").innerText = claimId;
+      document.getElementById("modalClaimUpi").innerText = upi;
+      document.getElementById("modalClaimAmount").innerText = `₹${amount}`;
+      document.getElementById("modalTransferUtr").value = "";
+      document.getElementById("claimApprovalModal").classList.remove("hidden");
+    }
+
+    function closeClaimModal() { document.getElementById("claimApprovalModal").classList.add("hidden"); }
+
+    async function confirmClaimDisbursement() {
+      const utr = document.getElementById("modalTransferUtr").value.trim();
+      if (!/^\d{12}$/.test(utr)) {
+        showToast("Enter a valid 12-digit bank transfer UTR.", "error");
+        return;
+      }
+
+      const btn = document.getElementById("btnConfirmClaimDisburse");
+      btn.disabled = true;
+      btn.innerText = "Compiling PDF...";
+
+      try {
+        const res = await callBackendApi("ADMIN_APPROVE_CLAIM", {
+          pin: currentAdminPin,
+          rowIndex: selectedClaimRow,
+          transferUtr: utr
+        });
+
+        if (res.status === "SUCCESS") {
+          showToast("Disbursed! Vector PDF saved to Drive.", "success");
+          closeClaimModal();
+          refreshAdminData();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (e) {
+        showToast("Claim disbursement failed.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Disburse & Issue PDF";
+      }
+    }
+
+    async function approveWalletRecharge(rowIndex) {
+      try {
+        const res = await callBackendApi("ADMIN_CONFIRM_PAYMENT", { pin: currentAdminPin, type: "RECHARGE", rowIndex: rowIndex });
+        showToast(res.message, "success");
+        refreshAdminData();
+      } catch (e) {
+        showToast("Recharge approval failed.", "error");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // MASTER SWITCH TOGGLES
+    // -------------------------------------------------------------
+    async function toggleKitchenOpen() {
+      const current = String(adminDataCache.config.KITCHEN_OPEN).toUpperCase() === "TRUE";
+      const newVal = current ? "FALSE" : "TRUE";
+      await callBackendApi("ADMIN_UPDATE_CONFIG", { pin: currentAdminPin, key: "KITCHEN_OPEN", value: newVal });
+      refreshAdminData();
+    }
+
+    async function toggleWalletSystem() {
+      const current = String(adminDataCache.config.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
+      const newVal = current ? "FALSE" : "TRUE";
+      await callBackendApi("ADMIN_UPDATE_CONFIG", { pin: currentAdminPin, key: "WALLET_SYSTEM_ENABLED", value: newVal });
+      refreshAdminData();
+    }
+
+    function switchAdminTab(t) {
+      const tabs = ['orders', 'slots', 'reports', 'chat', 'menu', 'claims'];
+      tabs.forEach(tab => {
+        document.getElementById(`cockpit${capitalize(tab)}`).classList.toggle("hidden", t !== tab);
+        const btn = document.getElementById(`tabBtn${capitalize(tab)}`);
+        if (btn) {
+          btn.className = (t === tab)
+            ? "px-4 py-2 rounded-2xl bg-partnerAccent text-stone-900 font-extrabold text-xs whitespace-nowrap"
+            : "px-4 py-2 rounded-2xl bg-stone-900 text-stone-300 font-bold text-xs whitespace-nowrap hover:bg-stone-800";
+        }
+      });
+    }
+
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    async function callBackendApi(action, payload) {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, ...payload })
+      });
+      return await res.json();
+    }
+  </script>
+</body>
+</html>

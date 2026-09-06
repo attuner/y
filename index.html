@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Yaady's Millet Roti Meals | Traditional Millet Kitchen</title>
+  
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Yaady&#39;s Millet Roti Meals","short_name":"Yaady&#39;s","start_url":".","display":"standalone","background_color":"#FAF7F2","theme_color":"#1C3D2B","icons":[{"src":"https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=192&h=192&fit=crop","sizes":"192x192","type":"image/png"}]}' />
+  <meta name="theme-color" content="#1C3D2B" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            linen: '#FAF7F2',
+            forest: { 800: '#1C3D2B', 900: '#12291C' },
+            amberBrand: { 500: '#D97706', 600: '#B45309' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #FAF7F2; font-size: 16px; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="text-stone-800 antialiased font-sans pb-24 lg:pb-6 lg:pl-64">
+
+  <!-- ==================== HIGHEST PRIORITY TOAST STACK (Z-INDEX 9999) ==================== -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none max-w-sm w-full px-4"></div>
+
+  <!-- ==================== DESKTOP LEFT NAVIGATION SIDEBAR (>= lg) ==================== -->
+  <aside class="hidden lg:flex fixed top-0 left-0 bottom-0 w-64 bg-forest-900 text-white flex-col justify-between p-5 border-r border-forest-800 z-30 shadow-2xl">
+    <div class="space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500 text-forest-900 flex items-center justify-center font-black text-2xl shadow-md">
+          Y
+        </div>
+        <div>
+          <h2 class="text-lg font-black tracking-tight leading-tight text-white">Yaady's</h2>
+          <p class="text-xs text-amber-300 font-bold">100% Millet Kitchen</p>
+        </div>
+      </div>
+
+      <!-- User Summary Card in Sidebar -->
+      <div id="sidebarUserCard" class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-700/50 space-y-1">
+        <p class="text-xs text-stone-300 font-semibold" id="sidebarUserName">Welcome, Guest</p>
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-xs text-stone-300">Wallet:</span>
+          <span class="text-sm font-extrabold text-amber-400" id="sidebarWalletBal">₹0.00</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5">
+        <button onclick="scrollToTop()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-amber-500 text-forest-900 font-extrabold text-sm transition shadow-sm">
+          <i data-lucide="utensils" class="w-5 h-5"></i>
+          <span>Order Menu</span>
+        </button>
+        <button onclick="openOrdersModal()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-stone-300 hover:bg-forest-800 font-bold text-sm transition">
+          <i data-lucide="clock-rewind" class="w-5 h-5"></i>
+          <span>My Orders</span>
+        </button>
+        <button onclick="openWallet()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-stone-300 hover:bg-forest-800 font-bold text-sm transition">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+          <span>Prepaid Wallet</span>
+        </button>
+        <button onclick="openLiveChat()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-stone-300 hover:bg-forest-800 font-bold text-sm transition relative">
+          <i data-lucide="message-square" class="w-5 h-5"></i>
+          <span>Kitchen Desk Chat</span>
+          <span id="chatUnreadDot" class="hidden w-2 h-2 rounded-full bg-amber-400 absolute right-4"></span>
+        </button>
+        <button onclick="openAuthModal()" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl text-stone-300 hover:bg-forest-800 font-bold text-sm transition">
+          <i data-lucide="user" class="w-5 h-5"></i>
+          <span>Account Profile</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Kitchen Contact & Hours in Sidebar Footer -->
+    <div class="pt-4 border-t border-forest-800/80 text-xs text-stone-400 space-y-1">
+      <p class="font-bold text-stone-300">Pickup Counter Hub</p>
+      <p>Jubilee Hills, Hyderabad</p>
+      <p class="font-bold text-amber-400 pt-1">+91 9000001690</p>
+    </div>
+  </aside>
+
+  <!-- ==================== HEADER (TOP STICKY) ==================== -->
+  <header class="sticky top-0 z-40 bg-linen/95 backdrop-blur-md border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3 lg:hidden">
+        <div class="w-10 h-10 rounded-2xl bg-forest-800 flex items-center justify-center text-amber-400 font-black text-lg shadow-sm">
+          Y
+        </div>
+        <div>
+          <h1 class="text-lg font-black text-forest-900 leading-tight">Yaady's</h1>
+          <p class="text-xs text-stone-500 font-semibold">Millet Meals • <span class="text-green-700 font-bold">Pickup Only</span></p>
+        </div>
+      </div>
+
+      <div class="hidden lg:block">
+        <h2 class="text-xl font-extrabold text-forest-900">Traditional Millet Kitchen Counter</h2>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <span id="kitchenOpenBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+          <span class="w-2 h-2 rounded-full bg-green-600 animate-ping"></span> Kitchen Open
+        </span>
+
+        <button onclick="openWallet()" class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-amber-50 border border-amber-200 text-amberBrand-600 hover:bg-amber-100 transition shadow-sm">
+          <i data-lucide="wallet" class="w-4 h-4"></i>
+          <span class="text-sm font-extrabold" id="headerWalletBal">₹0.00</span>
+        </button>
+
+        <button onclick="openLiveChat()" class="p-2.5 rounded-2xl bg-white border border-stone-200 hover:bg-stone-100 text-forest-800 shadow-sm relative" title="Help / Live Desk Chat">
+          <i data-lucide="help-circle" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="announcementBanner" class="bg-forest-900 text-amber-300 px-4 py-1.5 text-xs text-center font-bold tracking-wide">
+      Fresh Harvest: Hand-patted Jowar & Ragi Rotis made live upon pickup!
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="max-w-7xl mx-auto px-4 py-4 md:py-6">
+    
+    <!-- Dynamic Discount Incentive Bar -->
+    <div id="discountBanner" class="mb-6 p-4 rounded-3xl bg-gradient-to-r from-forest-800 to-forest-900 text-white flex items-center justify-between shadow-md">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 rounded-2xl bg-amber-500/20 text-amber-300">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h4 class="text-sm md:text-base font-bold" id="discountBannerTitle">Prepay & Save up to 20%</h4>
+          <p class="text-xs text-stone-300" id="discountBannerSub">Maintain ₹500+ wallet balance for instant automatic discounts.</p>
+        </div>
+      </div>
+      <button onclick="openWallet()" class="px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-forest-900 text-xs md:text-sm font-extrabold transition shadow">
+        Top-Up
+      </button>
+    </div>
+
+    <!-- Content Layout Grid -->
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+      <!-- LEFT COLUMN: Categories, Search & Menu Cards -->
+      <section class="xl:col-span-8 space-y-5">
+        
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-5 h-5 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input id="searchInput" oninput="renderMenu()" type="text" placeholder="Search Jowar Roti, Thali, Curries..." class="w-full pl-11 pr-4 py-3 text-sm md:text-base bg-white border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-forest-800 shadow-sm" />
+          </div>
+
+          <div id="categoryPills" class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            <button onclick="filterCategory('ALL')" class="category-pill active px-4 py-2.5 text-sm font-bold rounded-2xl whitespace-nowrap bg-forest-800 text-white shadow-sm">All Items</button>
+            <button onclick="filterCategory('Millet Rotis')" class="category-pill px-4 py-2.5 text-sm font-bold rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 hover:bg-stone-50">Millet Rotis</button>
+            <button onclick="filterCategory('Combo Meals')" class="category-pill px-4 py-2.5 text-sm font-bold rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 hover:bg-stone-50">Combo Meals</button>
+            <button onclick="filterCategory('Curries & Sides')" class="category-pill px-4 py-2.5 text-sm font-bold rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 hover:bg-stone-50">Curries</button>
+            <button onclick="filterCategory('Healthy Beverages')" class="category-pill px-4 py-2.5 text-sm font-bold rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 hover:bg-stone-50">Beverages</button>
+          </div>
+        </div>
+
+        <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div class="h-64 bg-stone-200/70 rounded-3xl animate-pulse"></div>
+          <div class="h-64 bg-stone-200/70 rounded-3xl animate-pulse"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN (DESKTOP): Sticky Basket Summary -->
+      <section class="hidden xl:block xl:col-span-4 space-y-4">
+        <div class="bg-white rounded-3xl border border-stone-200 p-5 shadow-sm sticky top-24">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+            <h3 class="font-extrabold text-forest-900 text-lg flex items-center gap-2">
+              <i data-lucide="shopping-bag" class="w-5 h-5 text-amberBrand-500"></i> Pickup Cart
+            </h3>
+            <span id="desktopCartBadge" class="text-xs font-bold bg-stone-100 text-stone-600 px-3 py-1 rounded-full">0 items</span>
+          </div>
+
+          <div id="desktopCartItems" class="py-3 max-h-72 overflow-y-auto divide-y divide-stone-100 text-sm">
+            <div class="text-center py-10 text-stone-400 text-sm">Your basket is empty.</div>
+          </div>
+
+          <div id="desktopCartBilling" class="border-t border-stone-100 pt-3 space-y-2 text-sm text-stone-600"></div>
+
+          <!-- Sanitized Checkout Trigger Button -->
+          <button id="desktopCheckoutBtn" onclick="sanitizeAndProceedToCheckout()" disabled class="w-full mt-4 py-4 bg-forest-800 disabled:bg-stone-300 text-white font-extrabold rounded-2xl text-base transition shadow flex items-center justify-center gap-2">
+            <span>Proceed to Pickup Slot</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ==================== MOBILE BOTTOM FLOATING NAVIGATION (< lg) ==================== -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 py-2 flex items-center justify-around shadow-lg">
+    <button onclick="scrollToTop()" class="flex flex-col items-center gap-1 text-forest-800">
+      <i data-lucide="utensils" class="w-5 h-5"></i>
+      <span class="text-[11px] font-extrabold">Menu</span>
+    </button>
+    <button onclick="openOrdersModal()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+      <i data-lucide="clock-rewind" class="w-5 h-5"></i>
+      <span class="text-[11px] font-semibold">Orders</span>
+    </button>
+    <button onclick="openMobileCartDrawer()" class="relative flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+      <div class="relative">
+        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <span id="mobileCartCounter" class="hidden absolute -top-1.5 -right-2 bg-amberBrand-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">0</span>
+      </div>
+      <span class="text-[11px] font-semibold">Cart</span>
+    </button>
+    <button onclick="openWallet()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+      <i data-lucide="wallet" class="w-5 h-5"></i>
+      <span class="text-[11px] font-semibold">Wallet</span>
+    </button>
+    <button onclick="openLiveChat()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+      <i data-lucide="help-circle" class="w-5 h-5"></i>
+      <span class="text-[11px] font-semibold">Help/Chat</span>
+    </button>
+    <button onclick="openAuthModal()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span class="text-[11px] font-semibold">Profile</span>
+    </button>
+  </nav>
+
+  <!-- ==================== MODALS & DRAWERS ==================== -->
+
+  <!-- 1. CHECKOUT & PICKUP SCHEDULER WITH CLICKABLE DYNAMIC QR -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto relative">
+      <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <h3 class="text-xl font-extrabold text-forest-900 mb-1">Select Pickup Slot & Pay</h3>
+      <p class="text-xs text-stone-500 mb-4">Prep time enforced: 30 minutes in advance. Pickup fresh at counter.</p>
+
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-stone-700 mb-1">Pickup Date</label>
+        <input type="date" id="pickupDate" onchange="fetchSlots()" class="w-full p-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold outline-none" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-xs font-bold text-stone-700 mb-1">Available 15-Min Slots</label>
+        <div id="slotsContainer" class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto no-scrollbar p-1">
+          <div class="text-xs text-stone-400 col-span-2 text-center py-2">Select date to load intervals</div>
+        </div>
+      </div>
+
+      <div class="border-t border-stone-100 pt-4 mb-4">
+        <label class="block text-xs font-bold text-stone-700 mb-2">Select Payment Mode</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label id="walletPayOptionLabel" class="border border-stone-200 rounded-2xl p-3.5 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5">
+            <input type="radio" name="paymentOption" value="Wallet" checked onchange="togglePaymentUi()" class="text-forest-800" />
+            <span class="text-sm font-extrabold text-forest-900">Yaady Wallet</span>
+            <span class="text-xs text-stone-500" id="checkoutWalletBalText">Bal: ₹0.00</span>
+          </label>
+
+          <label class="border border-stone-200 rounded-2xl p-3.5 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5">
+            <input type="radio" name="paymentOption" value="Direct_UPI" onchange="togglePaymentUi()" class="text-forest-800" />
+            <span class="text-sm font-extrabold text-forest-900">Direct UPI</span>
+            <span class="text-xs text-stone-500">Auto Order-ID QR</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- DIRECT UPI SECTION WITH CLICKABLE DYNAMIC QR -->
+      <div id="upiPaymentBox" class="hidden bg-stone-50 border border-stone-200 rounded-3xl p-4 mb-4 space-y-3">
+        <div class="text-center">
+          <p class="text-xs font-bold text-stone-500 mb-1">Tap or Scan QR (Pre-filled Order ID)</p>
+          <div id="orderUpiQr" onclick="launchUpiDirectIntent()" class="mx-auto w-36 h-36 bg-white p-2 border-2 border-forest-800/30 rounded-2xl flex items-center justify-center shadow-md cursor-pointer hover:border-forest-800 transition" title="Click to open default UPI App"></div>
+          <p class="text-xs font-mono text-stone-700 mt-2 font-bold" id="upiVpaDisplay">yaadyskitchen@upi</p>
+          <p class="text-[11px] text-amber-700 font-extrabold mt-0.5">Order Token pre-filled in payment note!</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 pt-1">
+          <a id="gpayBtn" href="#" class="py-2 text-center text-xs font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">GPay</a>
+          <a id="phonepeBtn" href="#" class="py-2 text-center text-xs font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">PhonePe</a>
+          <a id="paytmBtn" href="#" class="py-2 text-center text-xs font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">Paytm</a>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">12-Digit Bank UTR / Reference <span class="text-red-500">*</span></label>
+          <input type="text" id="orderUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-3 py-2.5 bg-white border border-stone-300 rounded-xl text-sm font-mono font-bold outline-none" />
+        </div>
+
+        <!-- Verification Dual Escalation Helpers -->
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="sendOrderWhatsAppPrompt()" class="flex-1 py-2 px-3 bg-green-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>WhatsApp Verification</span>
+          </button>
+          <button type="button" onclick="openLiveChat()" class="flex-1 py-2 px-3 bg-stone-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+            <span>Chat With Kitchen</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-stone-100">
+        <div>
+          <p class="text-xs text-stone-400">Total Payable</p>
+          <p class="text-xl font-black text-forest-900" id="checkoutFinalAmount">₹0.00</p>
+        </div>
+        <button id="placeOrderBtn" onclick="submitFinalOrder()" class="px-6 py-4 bg-forest-800 hover:bg-forest-900 text-white text-sm font-extrabold rounded-2xl transition shadow flex items-center gap-2">
+          <span>Confirm & Place Order</span>
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. REORGANIZED WALLET MODAL WITH REAL-TIME QR -->
+  <div id="walletModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closeWallet()" class="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <h3 class="text-xl font-extrabold text-forest-900">Prepaid Wallet Hub</h3>
+      <p class="text-xs text-stone-500 mb-4">Direct savings with zero payment aggregator failures.</p>
+
+      <div class="bg-gradient-to-br from-forest-800 to-forest-900 text-white rounded-3xl p-6 shadow-lg mb-4">
+        <p class="text-xs text-stone-300 uppercase tracking-widest font-semibold">Available Wallet Balance</p>
+        <h2 class="text-3xl md:text-4xl font-black text-amber-400 mt-1" id="walletModalBal">₹0.00</h2>
+        <div class="mt-3 flex items-center gap-2">
+          <span class="text-xs bg-white/20 px-3 py-1 rounded-full font-bold" id="currentPerkPill">Standard Price (0% Discount)</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="showWalletSection('recharge')" id="btnShowRecharge" class="py-3 px-4 rounded-2xl bg-forest-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>+ Top-Up Balance</span>
+        </button>
+        <button onclick="showWalletSection('claim')" id="btnShowClaim" class="py-3 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-sm flex items-center justify-center gap-2 transition">
+          <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
+          <span>⇄ Claim / Refund</span>
+        </button>
+      </div>
+
+      <!-- TOP-UP INPUT SECTION -->
+      <div id="walletRechargeSection" class="p-4 bg-stone-50 border border-stone-200 rounded-3xl space-y-4 mb-5">
+        <label class="block text-xs font-bold text-stone-700">Choose Preset or Custom Amount</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="setRechargePreset(500)" class="border border-stone-200 bg-white hover:border-amberBrand-500 rounded-2xl p-2.5 text-center transition">
+            <p class="text-sm font-extrabold text-stone-800">₹500</p>
+            <span class="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">+10% Off</span>
+          </button>
+          <button onclick="setRechargePreset(1000)" class="border border-stone-200 bg-white hover:border-amberBrand-500 rounded-2xl p-2.5 text-center transition">
+            <p class="text-sm font-extrabold text-stone-800">₹1,000</p>
+            <span class="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">+15% Off</span>
+          </button>
+          <button onclick="setRechargePreset(2000)" class="border border-stone-200 bg-white hover:border-amberBrand-500 rounded-2xl p-2.5 text-center transition">
+            <p class="text-sm font-extrabold text-stone-800">₹2,000</p>
+            <span class="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">+20% Off</span>
+          </button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-600 mb-1">Recharge Amount (₹)</label>
+          <input type="number" id="rechargeAmountInput" oninput="onRechargeAmountChange()" value="500" min="100" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-base font-extrabold text-forest-900 outline-none" />
+        </div>
+
+        <div class="text-center py-2 bg-white rounded-2xl border border-stone-200 p-4">
+          <p class="text-xs font-bold text-stone-500 mb-2">Tap QR or Scan via Any UPI App</p>
+          <div id="walletDynamicQr" onclick="launchWalletRechargeIntent()" class="mx-auto w-36 h-36 bg-white p-2 border-2 border-forest-800/30 rounded-2xl flex items-center justify-center shadow-md cursor-pointer hover:border-forest-800 transition"></div>
+          <p class="text-xs font-mono font-bold text-forest-900 mt-2" id="walletQrVpa">yaadyskitchen@upi</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">12-Digit Bank UTR / Reference <span class="text-red-500">*</span></label>
+          <input type="text" id="rechargeUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-sm font-mono font-bold outline-none" />
+        </div>
+
+        <button onclick="submitWalletRecharge()" id="rechargeSubmitBtn" class="w-full py-3.5 bg-forest-800 hover:bg-forest-900 text-white text-sm font-extrabold rounded-2xl transition shadow">
+          Submit Top-Up Verification
+        </button>
+
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="sendRechargeWhatsAppPrompt()" class="flex-1 py-2 px-3 bg-green-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>WhatsApp Kitchen</span>
+          </button>
+          <button type="button" onclick="openLiveChat()" class="flex-1 py-2 px-3 bg-stone-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+            <span>Live Chat Support</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CLAIM SECTION -->
+      <div id="walletClaimSection" class="hidden p-4 bg-stone-50 border border-stone-200 rounded-3xl space-y-3.5 mb-5">
+        <h4 class="text-sm font-bold text-forest-900">Request Balance Withdrawal</h4>
+        <p class="text-xs text-stone-500">Refunds are settled directly via UPI with an official PDF acknowledgment.</p>
+        <input type="number" id="claimAmountInput" placeholder="Amount to withdraw (₹)" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-sm font-bold outline-none" />
+        <input type="text" id="claimUpiInput" placeholder="Recipient UPI ID (e.g. name@bank)" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-sm font-medium outline-none" />
+        <input type="text" id="claimReasonInput" placeholder="Reason for refund request" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-sm font-medium outline-none" />
+        <button onclick="submitWalletClaim()" id="claimSubmitBtn" class="w-full py-3.5 bg-amberBrand-500 hover:bg-amberBrand-600 text-white text-sm font-extrabold rounded-2xl transition shadow">
+          Submit Balance Claim
+        </button>
+      </div>
+
+      <!-- WALLET ACTIVITY LEDGER -->
+      <div class="border-t border-stone-200 pt-4">
+        <h4 class="text-sm font-bold text-stone-800 mb-3 flex items-center justify-between">
+          <span>Transaction Activity</span>
+          <button onclick="fetchWalletLedger()" class="text-xs text-forest-800 font-semibold underline">Refresh</button>
+        </h4>
+        <div id="walletLedgerList" class="divide-y divide-stone-100 max-h-56 overflow-y-auto text-sm">
+          <p class="text-center text-stone-400 py-4 text-xs">Loading ledger entries...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. LIVE 2-WAY SUPPORT CHAT MODAL -->
+  <div id="liveChatModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl flex flex-col h-[80vh] overflow-hidden relative">
+      <div class="bg-forest-900 text-white p-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
+          <div>
+            <h4 class="font-extrabold text-sm leading-tight">Yaady's Kitchen Desk Chat</h4>
+            <p class="text-[11px] text-stone-300">Live operational desk assistance</p>
+          </div>
+        </div>
+        <button onclick="closeLiveChat()" class="text-stone-300 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="chatMessagesContainer" class="flex-1 p-4 overflow-y-auto space-y-3 text-sm bg-stone-50">
+        <div class="text-center text-stone-400 text-xs py-4">Start a conversation with our kitchen desk operator.</div>
+      </div>
+
+      <div class="p-3 bg-white border-t border-stone-200 flex items-center gap-2">
+        <input type="text" id="chatMessageInput" onkeydown="if(event.key==='Enter') sendChatMessageCustomer()" placeholder="Type a message to the kitchen..." class="flex-1 px-4 py-2.5 bg-stone-100 border border-stone-200 rounded-2xl text-xs md:text-sm outline-none focus:ring-2 focus:ring-forest-800" />
+        <button onclick="sendChatMessageCustomer()" class="p-2.5 bg-forest-800 hover:bg-forest-900 text-white rounded-2xl transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CUSTOMER ORDER HISTORY MODAL -->
+  <div id="ordersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="closeOrdersModal()" class="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <h3 class="text-xl font-extrabold text-forest-900 mb-1">Your Order History</h3>
+      <p class="text-xs text-stone-500 mb-5">Review real-time counter states and pickup tokens.</p>
+
+      <div id="ordersListContainer" class="space-y-4">
+        <p class="text-center text-stone-400 py-8 text-sm">Loading orders...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. AUTHENTICATION (LOGIN / REGISTRATION) -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="text-center mb-5">
+        <div class="w-14 h-14 bg-amber-100 text-amberBrand-600 rounded-3xl flex items-center justify-center mx-auto mb-2 font-black text-2xl">
+          Y
+        </div>
+        <h3 class="text-xl font-extrabold text-forest-900" id="authTitle">Welcome to Yaady's</h3>
+        <p class="text-sm text-stone-500 mt-1" id="authSubtitle">Please enter your credentials to proceed.</p>
+        
+        <div id="authTabSwitcher" class="mt-4 flex bg-stone-100 p-1 rounded-2xl">
+          <button type="button" onclick="setAuthTab('login')" id="tabBtnLogin" class="flex-1 py-2 text-sm font-bold rounded-xl bg-white shadow-sm text-forest-900">Sign In</button>
+          <button type="button" onclick="setAuthTab('register')" id="tabBtnRegister" class="flex-1 py-2 text-sm font-semibold rounded-xl text-stone-600">Register</button>
+        </div>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+        <div id="regNameField" class="hidden">
+          <label class="block text-xs font-bold text-stone-700 mb-1">Full Name</label>
+          <input id="authName" type="text" placeholder="e.g. Anand Varma" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Mobile Number (10-digits)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-extrabold text-stone-400">+91</span>
+            <input id="authPhone" type="tel" pattern="[6-9][0-9]{9}" required placeholder="9876543210" class="w-full pl-12 pr-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-bold focus:ring-2 focus:ring-forest-800 outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Password</label>
+          <input id="authPassword" type="password" required placeholder="Enter your password" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+        </div>
+
+        <div id="regEmailField" class="hidden">
+          <label class="block text-xs font-bold text-stone-700 mb-1">Email Address (Optional)</label>
+          <input id="authEmail" type="email" placeholder="anand@example.com" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="w-full mt-2 py-4 bg-forest-800 text-white rounded-2xl font-extrabold text-base hover:bg-forest-900 transition flex items-center justify-center gap-2 shadow">
+          <span>Sign In</span>
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </form>
+
+      <div id="profileDetails" class="hidden space-y-4 pt-2">
+        <div class="p-4 rounded-3xl bg-stone-50 border border-stone-200 text-sm space-y-2">
+          <p class="text-stone-500">Account ID: <span id="profCustId" class="font-bold text-forest-800"></span></p>
+          <p class="text-stone-500">Customer Name: <span id="profName" class="font-extrabold text-stone-800"></span></p>
+          <p class="text-stone-500">Mobile: <span id="profPhone" class="font-bold text-stone-800"></span></p>
+          <p class="text-stone-500">Wallet Balance: <span id="profWallet" class="font-extrabold text-amber-600"></span></p>
+        </div>
+        <button onclick="handleLogout()" class="w-full py-3.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition">
+          Sign Out of Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MOBILE CART SUMMARY DRAWER -->
+  <div id="mobileCartModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex flex-col justify-end">
+    <div class="bg-white rounded-t-3xl p-5 max-h-[85vh] overflow-y-auto flex flex-col">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <h3 class="font-extrabold text-forest-900 text-lg flex items-center gap-2">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-amberBrand-500"></i> Cart Review
+        </h3>
+        <button onclick="closeMobileCartDrawer()" class="p-1.5 text-stone-400 hover:text-stone-700">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div id="mobileCartItems" class="divide-y divide-stone-100 py-3 text-sm"></div>
+      <div id="mobileCartBilling" class="border-t border-stone-100 pt-3 space-y-2 text-sm text-stone-600"></div>
+      <button onclick="sanitizeAndProceedToCheckout()" class="w-full mt-4 py-4 bg-forest-800 text-white font-extrabold rounded-2xl text-base transition">
+        Select Pickup Slot & Pay
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT CLIENT ENGINE ==================== -->
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZZR-OkWc2_IC1nLNyAHWjAfG_P5ulyKX0FFftk224hImDTnFmCoNSmhHvJxRUI5s/exec";
+
+    let appConfig = {
+      KITCHEN_UPI_ID: "yaadyskitchen@upi",
+      KITCHEN_NAME: "Yaady's Millet Roti Meals",
+      KITCHEN_PHONE: "+919000001690",
+      WALLET_SYSTEM_ENABLED: "TRUE",
+      WALLET_SLAB_1_MIN: 500,
+      WALLET_SLAB_1_DISC: 0.10,
+      WALLET_SLAB_2_MIN: 1000,
+      WALLET_SLAB_2_DISC: 0.15,
+      WALLET_SLAB_3_MIN: 1999,
+      WALLET_SLAB_3_DISC: 0.20,
+      KITCHEN_OPEN: "TRUE"
+    };
+
+    let currentUser = null;
+    let menuItems = [];
+    let cart = {};
+    let selectedSlot = "";
+    let currentAuthTab = "login";
+    let qrDebounceTimeout = null;
+
+    let preAllocatedOrderId = "";
+    let preAllocatedTxnId = "";
+    let currentOrderUpiUri = "";
+    let currentWalletUpiUri = "";
+    let chatPollInterval = null;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      loadUserSession();
+      fetchConfig();
+      fetchMenu();
+      initDefaultPickupDate();
+      trackPageVisit();
+
+      // 1. Online Presence Heartbeat every 25 seconds
+      setInterval(() => {
+        if (currentUser) {
+          callBackendApi("HEARTBEAT", {
+            customerId: currentUser.customerId,
+            fullName: currentUser.fullName,
+            phone: currentUser.phone
+          });
+        }
+      }, 25000);
+
+      // 2. Poll Config & Profile every 15 seconds
+      setInterval(() => {
+        fetchConfig();
+        if (currentUser) refreshProfileFromBackend();
+      }, 15000);
+    });
+
+    function showToast(msg, type = "info") {
+      const c = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      const bg = type === "error" ? "bg-red-800 text-white" : type === "success" ? "bg-forest-800 text-white" : "bg-stone-800 text-white";
+      toast.className = `${bg} p-4 rounded-2xl text-sm font-semibold shadow-2xl pointer-events-auto flex items-center justify-between gap-3 border border-white/20`;
+      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100 text-lg">&times;</button>`;
+      c.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    }
+
+    async function trackPageVisit() {
+      try { fetch(`${SCRIPT_URL}?action=trackVisit`); } catch (e) {}
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // -------------------------------------------------------------
+    // PRE-CHECKOUT INVENTORY SANITATION & KITCHEN GATEWAY
+    // -------------------------------------------------------------
+    async function sanitizeAndProceedToCheckout() {
+      if (!currentUser) {
+        showToast("Please log in or register before scheduling pickup.", "info");
+        openAuthModal();
+        return;
+      }
+
+      const cartArray = Object.entries(cart).map(([id, qty]) => ({ id, quantity: qty }));
+      if (cartArray.length === 0) {
+        showToast("Your cart is empty.", "error");
+        return;
+      }
+
+      showToast("Verifying live kitchen availability...", "info");
+
+      try {
+        const res = await callBackendApi("CHECK_CART_VALIDITY", { cartItems: cartArray });
+
+        if (res.status === "KITCHEN_CLOSED") {
+          showToast("The kitchen is currently closed for pickups. Orders cannot be scheduled.", "error");
+          return;
+        }
+
+        if (res.hasSoldOutItems) {
+          const removedNames = res.unavailableItems.map(i => i.name).join(", ");
+          res.unavailableItems.forEach(i => delete cart[i.id]);
+          updateCartUi();
+          showToast(`Sold out items removed from basket: ${removedNames}`, "error");
+
+          if (Object.keys(cart).length === 0) {
+            closeMobileCartDrawer();
+            return;
+          }
+        }
+
+        triggerCheckoutModal();
+      } catch (err) {
+        // Fallback: Proceed with client validation if offline
+        triggerCheckoutModal();
+      }
+    }
+
+    function triggerCheckoutModal() {
+      const bill = calculateBill();
+      if (bill.totalCount === 0) return;
+
+      closeMobileCartDrawer();
+      preAllocatedOrderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+      document.getElementById("checkoutFinalAmount").innerText = `₹${bill.finalPayable}`;
+      document.getElementById("checkoutModal").classList.remove("hidden");
+      initDefaultPickupDate();
+      fetchSlots();
+      togglePaymentUi();
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("checkoutModal").classList.add("hidden");
+    }
+
+    // -------------------------------------------------------------
+    // DYNAMIC CLICKABLE QR FOR ORDERS
+    // -------------------------------------------------------------
+    function togglePaymentUi() {
+      const mode = document.querySelector('input[name="paymentOption"]:checked').value;
+      const upiBox = document.getElementById("upiPaymentBox");
+      const bill = calculateBill();
+
+      if (mode === "Direct_UPI") {
+        upiBox.classList.remove("hidden");
+        const token = preAllocatedOrderId.slice(-4);
+        const txnNote = `YMR-Token-${token}`;
+        currentOrderUpiUri = `upi://pay?pa=${encodeURIComponent(appConfig.KITCHEN_UPI_ID)}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${encodeURIComponent(txnNote)}`;
+
+        const qrContainer = document.getElementById("orderUpiQr");
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, { text: currentOrderUpiUri, width: 140, height: 140 });
+
+        document.getElementById("gpayBtn").href = `gpay://upi/pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
+        document.getElementById("phonepeBtn").href = `phonepe://pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
+        document.getElementById("paytmBtn").href = `paytmmp://pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
+      } else {
+        upiBox.classList.add("hidden");
+      }
+    }
+
+    function launchUpiDirectIntent() {
+      if (currentOrderUpiUri) {
+        window.location.href = currentOrderUpiUri;
+      }
+    }
+
+    function sendOrderWhatsAppPrompt() {
+      const bill = calculateBill();
+      const token = preAllocatedOrderId.slice(-4);
+      const utr = document.getElementById("orderUtrInput").value.trim() || "[Pending UTR]";
+      const dateVal = document.getElementById("pickupDate").value;
+
+      const text = `Hello Yaady's Kitchen! I am placing Order Token #${token} (${preAllocatedOrderId}) for ₹${bill.finalPayable}. Pickup Slot: ${dateVal} • ${selectedSlot || 'Pending Slot'}. Payment UTR: ${utr}. Customer: ${currentUser.fullName} (${currentUser.phone}). Please verify my order.`;
+      window.open(`https://wa.me/919000001690?text=${encodeURIComponent(text)}`, "_blank");
+    }
+
+    // -------------------------------------------------------------
+    // DYNAMIC CLICKABLE QR FOR WALLET RECHARGES
+    // -------------------------------------------------------------
+    function onRechargeAmountChange() {
+      clearTimeout(qrDebounceTimeout);
+      qrDebounceTimeout = setTimeout(() => {
+        generateDynamicRechargeQr();
+      }, 300);
+    }
+
+    function setRechargePreset(amt) {
+      document.getElementById("rechargeAmountInput").value = amt;
+      generateDynamicRechargeQr();
+    }
+
+    function generateDynamicRechargeQr() {
+      const amt = Number(document.getElementById("rechargeAmountInput").value) || 100;
+      preAllocatedTxnId = `WLT-${currentUser.phone.slice(-4)}-${Date.now().toString().slice(-5)}`;
+      currentWalletUpiUri = `upi://pay?pa=${encodeURIComponent(appConfig.KITCHEN_UPI_ID)}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${amt}&cu=INR&tn=${encodeURIComponent(preAllocatedTxnId)}`;
+
+      const qrContainer = document.getElementById("walletDynamicQr");
+      qrContainer.innerHTML = "";
+      new QRCode(qrContainer, { text: currentWalletUpiUri, width: 140, height: 140 });
+    }
+
+    function launchWalletRechargeIntent() {
+      if (currentWalletUpiUri) {
+        window.location.href = currentWalletUpiUri;
+      }
+    }
+
+    function sendRechargeWhatsAppPrompt() {
+      const amt = document.getElementById("rechargeAmountInput").value;
+      const utr = document.getElementById("rechargeUtrInput").value.trim() || "[Pending UTR]";
+      const text = `Hello Yaady's Kitchen! I have transferred ₹${amt} for Wallet Recharge (Txn: ${preAllocatedTxnId}). UTR: ${utr}. Customer: ${currentUser.fullName} (${currentUser.phone}). Please credit my balance.`;
+      window.open(`https://wa.me/919000001690?text=${encodeURIComponent(text)}`, "_blank");
+    }
+
+    // -------------------------------------------------------------
+    // 2-WAY LIVE CHAT WIDGET
+    // -------------------------------------------------------------
+    function openLiveChat() {
+      if (!currentUser) {
+        showToast("Please log in to chat with the kitchen operator.", "info");
+        openAuthModal();
+        return;
+      }
+      document.getElementById("liveChatModal").classList.remove("hidden");
+      pollChatMessages();
+      clearInterval(chatPollInterval);
+      chatPollInterval = setInterval(pollChatMessages, 6000);
+    }
+
+    function closeLiveChat() {
+      document.getElementById("liveChatModal").classList.add("hidden");
+      clearInterval(chatPollInterval);
+    }
+
+    async function pollChatMessages() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=GET_CHAT_MESSAGES&customerId=${currentUser.customerId}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          renderChatMessages(res.messages);
+        }
+      } catch (e) {}
+    }
+
+    function renderChatMessages(messages) {
+      const container = document.getElementById("chatMessagesContainer");
+      if (messages.length === 0) {
+        container.innerHTML = `<div class="text-center text-stone-400 text-xs py-8">No messages yet. Send a message to the kitchen desk below.</div>`;
+        return;
+      }
+
+      container.innerHTML = messages.map(m => {
+        const isMe = m.sender === "CUSTOMER";
+        return `
+          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <div class="max-w-[80%] rounded-2xl px-3.5 py-2.5 text-xs md:text-sm ${isMe ? 'bg-forest-800 text-white rounded-br-xs' : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs shadow-xs'}">
+              <p>${m.text}</p>
+            </div>
+            <span class="text-[10px] text-stone-400 mt-1 px-1">${new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+        `;
+      }).join("");
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendChatMessageCustomer() {
+      const input = document.getElementById("chatMessageInput");
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+
+      input.value = "";
+      try {
+        await callBackendApi("SEND_CHAT_MESSAGE", {
+          customerId: currentUser.customerId,
+          customerName: currentUser.fullName,
+          sender: "CUSTOMER",
+          messageText: text
+        });
+        pollChatMessages();
+      } catch (e) {
+        showToast("Message send failed.", "error");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // DAY-WISE SLOT SYNC & PICKUP TIME ENGINE
+    // -------------------------------------------------------------
+    function initDefaultPickupDate() {
+      const today = new Date().toISOString().split("T")[0];
+      const el = document.getElementById("pickupDate");
+      if (el && !el.value) {
+        el.value = today;
+        el.min = today;
+      }
+    }
+
+    async function fetchSlots() {
+      const dateVal = document.getElementById("pickupDate").value;
+      const container = document.getElementById("slotsContainer");
+      container.innerHTML = `<div class="text-xs text-stone-400 col-span-2 text-center py-3">Loading live interval capacities...</div>`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getAvailableSlots&date=${dateVal}`).then(r => r.json());
+        if (res.status === "SUCCESS" && res.slots) {
+          container.innerHTML = res.slots.map(s => {
+            const isFull = s.remaining <= 0;
+            const isDisabled = !s.isEnabled || isFull;
+
+            return `
+              <button type="button" onclick="selectSlot('${s.slot}', ${isDisabled})" class="slot-btn p-2.5 text-left rounded-2xl border text-xs font-bold transition ${isDisabled ? 'opacity-40 border-stone-100 bg-stone-100 cursor-not-allowed text-stone-400' : 'border-stone-200 hover:border-forest-800 bg-white text-stone-800'}" ${isDisabled ? 'disabled' : ''}>
+                <div class="flex justify-between items-center">
+                  <span>${s.slot}</span>
+                  <span class="text-[10px] ${!s.isEnabled ? 'text-stone-400' : isFull ? 'text-red-500' : 'text-green-700'} font-black">
+                    ${!s.isEnabled ? 'Closed' : isFull ? 'Full' : s.remaining + ' left'}
+                  </span>
+                </div>
+              </button>
+            `;
+          }).join("");
+        }
+      } catch (e) {
+        container.innerHTML = `<div class="text-xs text-stone-400 col-span-2 text-center py-2">Failed to load slots.</div>`;
+      }
+    }
+
+    function selectSlot(slot, disabled) {
+      if (disabled) return;
+      selectedSlot = slot;
+      document.querySelectorAll(".slot-btn").forEach(b => {
+        b.classList.remove("border-forest-800", "bg-forest-800/10", "font-black");
+      });
+      event.currentTarget.classList.add("border-forest-800", "bg-forest-800/10", "font-black");
+    }
+
+    // -------------------------------------------------------------
+    // CORE AUTH, MENU, CART & SUBMISSION OPERATIONS
+    // -------------------------------------------------------------
+    function loadUserSession() {
+      const raw = localStorage.getItem("yaady_user_token");
+      if (raw) {
+        try {
+          currentUser = JSON.parse(atob(raw));
+          updateUserUi();
+          refreshProfileFromBackend();
+        } catch (e) {
+          localStorage.removeItem("yaady_user_token");
+        }
+      }
+    }
+
+    function saveUserSession(user) {
+      currentUser = user;
+      localStorage.setItem("yaady_user_token", btoa(JSON.stringify(user)));
+      updateUserUi();
+    }
+
+    function updateUserUi() {
+      if (currentUser) {
+        const bal = `₹${Number(currentUser.walletBalance).toFixed(2)}`;
+        document.getElementById("headerWalletBal").innerText = bal;
+        document.getElementById("sidebarWalletBal").innerText = bal;
+        document.getElementById("sidebarUserName").innerText = currentUser.fullName;
+        document.getElementById("walletModalBal").innerText = bal;
+        document.getElementById("checkoutWalletBalText").innerText = `Bal: ${bal}`;
+
+        document.getElementById("authTitle").innerText = "Customer Profile";
+        document.getElementById("authSubtitle").innerText = "Manage your Yaady's identity";
+        document.getElementById("authTabSwitcher").classList.add("hidden");
+        document.getElementById("authForm").classList.add("hidden");
+        document.getElementById("profileDetails").classList.remove("hidden");
+
+        document.getElementById("profCustId").innerText = currentUser.customerId;
+        document.getElementById("profName").innerText = currentUser.fullName;
+        document.getElementById("profPhone").innerText = currentUser.phone;
+        document.getElementById("profWallet").innerText = bal;
+
+        updateDiscountGauge();
+      } else {
+        document.getElementById("headerWalletBal").innerText = "₹0.00";
+        document.getElementById("sidebarWalletBal").innerText = "₹0.00";
+        document.getElementById("sidebarUserName").innerText = "Welcome, Guest";
+        document.getElementById("authTitle").innerText = "Welcome to Yaady's";
+        document.getElementById("authSubtitle").innerText = "Please enter your credentials to proceed.";
+        document.getElementById("authTabSwitcher").classList.remove("hidden");
+        document.getElementById("authForm").classList.remove("hidden");
+        document.getElementById("profileDetails").classList.add("hidden");
+      }
+    }
+
+    function setAuthTab(tab) {
+      currentAuthTab = tab;
+      const btnLogin = document.getElementById("tabBtnLogin");
+      const btnReg = document.getElementById("tabBtnRegister");
+      const nameField = document.getElementById("regNameField");
+      const emailField = document.getElementById("regEmailField");
+      const submitBtnSpan = document.querySelector("#authSubmitBtn span");
+
+      if (tab === "login") {
+        btnLogin.className = "flex-1 py-2 text-sm font-bold rounded-xl bg-white shadow-sm text-forest-900";
+        btnReg.className = "flex-1 py-2 text-sm font-semibold rounded-xl text-stone-600";
+        nameField.classList.add("hidden");
+        emailField.classList.add("hidden");
+        submitBtnSpan.innerText = "Sign In";
+      } else {
+        btnReg.className = "flex-1 py-2 text-sm font-bold rounded-xl bg-white shadow-sm text-forest-900";
+        btnLogin.className = "flex-1 py-2 text-sm font-semibold rounded-xl text-stone-600";
+        nameField.classList.remove("hidden");
+        emailField.classList.remove("hidden");
+        submitBtnSpan.innerText = "Complete Registration";
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const phone = document.getElementById("authPhone").value.trim();
+      const password = document.getElementById("authPassword").value.trim();
+      const name = document.getElementById("authName").value.trim();
+      const email = document.getElementById("authEmail").value.trim();
+
+      const btn = document.getElementById("authSubmitBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin inline-block mr-2">◌</span> Validating...`;
+
+      try {
+        let res;
+        if (currentAuthTab === "login") {
+          res = await callBackendApi("LOGIN", { phone, password });
+        } else {
+          res = await callBackendApi("REGISTER", { fullName: name, phone, password, email });
+        }
+
+        if (res.status === "SUCCESS") {
+          saveUserSession(res.customer);
+          closeAuthModal();
+          showToast(res.message, "success");
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (err) {
+        showToast("Authentication server busy.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>${currentAuthTab === 'login' ? 'Sign In' : 'Complete Registration'}</span><i data-lucide="arrow-right" class="w-5 h-5"></i>`;
+        lucide.createIcons();
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("yaady_user_token");
+      currentUser = null;
+      updateUserUi();
+      closeAuthModal();
+      showToast("Signed out successfully.", "info");
+    }
+
+    async function refreshProfileFromBackend() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerProfile&phone=${currentUser.phone}`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          saveUserSession(res.customer);
+        }
+      } catch (e) {}
+    }
+
+    async function fetchConfig() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getConfig`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          appConfig = { ...appConfig, ...res.data };
+          applyConfigUi();
+        }
+      } catch (e) {}
+    }
+
+    function applyConfigUi() {
+      document.getElementById("upiVpaDisplay").innerText = appConfig.KITCHEN_UPI_ID;
+      document.getElementById("walletQrVpa").innerText = appConfig.KITCHEN_UPI_ID;
+
+      const walletEnabled = String(appConfig.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
+      const discBanner = document.getElementById("discountBanner");
+      const walletRadioLabel = document.getElementById("walletPayOptionLabel");
+
+      if (!walletEnabled) {
+        discBanner.classList.add("hidden");
+        if (walletRadioLabel) walletRadioLabel.classList.add("opacity-40", "pointer-events-none");
+      } else {
+        discBanner.classList.remove("hidden");
+        if (walletRadioLabel) walletRadioLabel.classList.remove("opacity-40", "pointer-events-none");
+        updateDiscountGauge();
+      }
+
+      const isOpen = String(appConfig.KITCHEN_OPEN).toUpperCase() === "TRUE";
+      const badge = document.getElementById("kitchenOpenBadge");
+      if (isOpen) {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-green-600 animate-ping"></span> Kitchen Open`;
+        badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200";
+      } else {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-600"></span> Kitchen Closed`;
+        badge.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200";
+      }
+    }
+
+    async function fetchMenu() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getMenu`).then(r => r.json());
+        if (res.status === "SUCCESS") {
+          menuItems = res.menu;
+          renderMenu();
+        }
+      } catch (e) {}
+    }
+
+    let currentCategory = "ALL";
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".category-pill").forEach(el => {
+        el.classList.remove("bg-forest-800", "text-white");
+        el.classList.add("bg-white", "text-stone-700");
+      });
+      event.target.classList.add("bg-forest-800", "text-white");
+      event.target.classList.remove("bg-white", "text-stone-700");
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const container = document.getElementById("menuContainer");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+
+      const filtered = menuItems.filter(item => {
+        const matchesCat = currentCategory === "ALL" || item.category === currentCategory;
+        const matchesSearch = item.name.toLowerCase().includes(search) || item.description.toLowerCase().includes(search) || item.milletType.toLowerCase().includes(search);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-2 text-center py-16 text-stone-400 text-sm">No wholesome meals match your search.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const qty = cart[item.id] || 0;
+        const isSoldOut = !item.available;
+
+        return `
+          <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition ${isSoldOut ? 'opacity-60' : ''}">
+            <div class="relative h-44 w-full bg-stone-100 overflow-hidden">
+              <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 px-3 py-1 bg-forest-900/85 backdrop-blur-md text-amber-300 font-extrabold text-xs rounded-xl uppercase tracking-wider">
+                ${item.milletType}
+              </span>
+              ${isSoldOut ? `
+                <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-extrabold text-sm tracking-widest uppercase">
+                  Sold Out for Today
+                </div>
+              ` : ''}
+            </div>
+            
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-start gap-2">
+                  <h4 class="font-extrabold text-forest-900 text-base leading-snug">${item.name}</h4>
+                  <span class="font-black text-lg text-stone-900">₹${item.price}</span>
+                </div>
+                <p class="text-xs text-stone-500 mt-1.5 line-clamp-2">${item.description}</p>
+                <div class="mt-2.5 text-xs text-stone-400 font-semibold">${item.nutrition}</div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                <span class="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-xl">Millet Certified</span>
+                
+                ${isSoldOut ? `
+                  <button disabled class="px-4 py-2 bg-stone-200 text-stone-400 font-bold text-xs rounded-2xl cursor-not-allowed">Unavailable</button>
+                ` : qty === 0 ? `
+                  <button onclick="addToCart('${item.id}')" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 font-extrabold text-sm rounded-2xl transition shadow">
+                    Add +
+                  </button>
+                ` : `
+                  <div class="flex items-center gap-2.5 bg-stone-100 rounded-2xl px-2.5 py-1.5">
+                    <button onclick="changeQty('${item.id}', -1)" class="w-7 h-7 rounded-xl bg-white flex items-center justify-center font-bold text-stone-700 shadow-xs">-</button>
+                    <span class="font-extrabold text-sm text-forest-900 px-1">${qty}</span>
+                    <button onclick="changeQty('${item.id}', 1)" class="w-7 h-7 rounded-xl bg-white flex items-center justify-center font-bold text-stone-700 shadow-xs">+</button>
+                  </div>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function addToCart(itemId) {
+      if (!currentUser) {
+        showToast("Please register or log in before creating an order.", "info");
+        openAuthModal();
+        return;
+      }
+      cart[itemId] = (cart[itemId] || 0) + 1;
+      updateCartUi();
+    }
+
+    function changeQty(itemId, delta) {
+      if (!cart[itemId]) return;
+      cart[itemId] += delta;
+      if (cart[itemId] <= 0) delete cart[itemId];
+      updateCartUi();
+    }
+
+    function getDiscountRate() {
+      if (!currentUser || String(appConfig.WALLET_SYSTEM_ENABLED).toUpperCase() !== "TRUE") return 0;
+      const bal = Number(currentUser.walletBalance) || 0;
+      if (bal >= Number(appConfig.WALLET_SLAB_3_MIN)) return Number(appConfig.WALLET_SLAB_3_DISC);
+      if (bal >= Number(appConfig.WALLET_SLAB_2_MIN)) return Number(appConfig.WALLET_SLAB_2_DISC);
+      if (bal >= Number(appConfig.WALLET_SLAB_1_MIN)) return Number(appConfig.WALLET_SLAB_1_DISC);
+      return 0;
+    }
+
+    function calculateBill() {
+      let subtotal = 0;
+      let totalCount = 0;
+      const itemsDetail = [];
+
+      for (const [id, qty] of Object.entries(cart)) {
+        const item = menuItems.find(m => m.id === id);
+        if (item) {
+          subtotal += item.price * qty;
+          totalCount += qty;
+          itemsDetail.push({ id: item.id, name: item.name, price: item.price, quantity: qty, lineTotal: item.price * qty });
+        }
+      }
+
+      const discRate = getDiscountRate();
+      const discountAmount = Math.round(subtotal * discRate);
+      const finalPayable = Math.max(0, subtotal - discountAmount);
+
+      return { subtotal, discountAmount, discRate, finalPayable, totalCount, itemsDetail };
+    }
+
+    function updateCartUi() {
+      renderMenu();
+      const bill = calculateBill();
+
+      document.getElementById("desktopCartBadge").innerText = `${bill.totalCount} items`;
+      const mobBadge = document.getElementById("mobileCartCounter");
+      if (bill.totalCount > 0) {
+        mobBadge.classList.remove("hidden");
+        mobBadge.innerText = bill.totalCount;
+      } else {
+        mobBadge.classList.add("hidden");
+      }
+
+      document.getElementById("desktopCheckoutBtn").disabled = (bill.totalCount === 0);
+
+      const renderItemList = (containerId) => {
+        const el = document.getElementById(containerId);
+        if (bill.totalCount === 0) {
+          el.innerHTML = `<div class="text-center py-10 text-stone-400 text-sm">Your basket is empty.</div>`;
+          return;
+        }
+        el.innerHTML = bill.itemsDetail.map(i => `
+          <div class="py-2.5 flex items-center justify-between">
+            <div>
+              <p class="font-extrabold text-stone-800 text-sm">${i.name}</p>
+              <p class="text-xs text-stone-400">₹${i.price} × ${i.quantity}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-sm text-forest-900 mr-2">₹${i.lineTotal}</span>
+              <button onclick="changeQty('${i.id}', -1)" class="w-6 h-6 bg-stone-100 rounded-lg text-xs font-bold text-stone-600">-</button>
+              <button onclick="changeQty('${i.id}', 1)" class="w-6 h-6 bg-stone-100 rounded-lg text-xs font-bold text-stone-600">+</button>
+            </div>
+          </div>
+        `).join("");
+      };
+
+      renderItemList("desktopCartItems");
+      renderItemList("mobileCartItems");
+
+      const renderBilling = (containerId) => {
+        const el = document.getElementById(containerId);
+        if (bill.totalCount === 0) {
+          el.innerHTML = "";
+          return;
+        }
+        el.innerHTML = `
+          <div class="flex justify-between">
+            <span>Item Subtotal</span>
+            <span class="font-bold text-stone-800">₹${bill.subtotal}</span>
+          </div>
+          ${bill.discRate > 0 ? `
+            <div class="flex justify-between text-green-700 font-bold">
+              <span>Wallet Discount (${bill.discRate * 100}%)</span>
+              <span>-₹${bill.discountAmount}</span>
+            </div>
+          ` : ''}
+          <div class="flex justify-between border-t border-stone-100 pt-2.5 text-base font-black text-forest-900">
+            <span>Payable Total</span>
+            <span>₹${bill.finalPayable}</span>
+          </div>
+        `;
+      };
+
+      renderBilling("desktopCartBilling");
+      renderBilling("mobileCartBilling");
+    }
+
+    function updateDiscountGauge() {
+      const bal = currentUser ? Number(currentUser.walletBalance) : 0;
+      const banner = document.getElementById("discountBannerTitle");
+      const sub = document.getElementById("discountBannerSub");
+      const perkPill = document.getElementById("currentPerkPill");
+
+      if (bal >= appConfig.WALLET_SLAB_3_MIN) {
+        banner.innerText = "Elite 20% Wallet Perk Active!";
+        sub.innerText = "Highest tier unlocked. You enjoy 20% discount on all rotis & meals.";
+        if (perkPill) perkPill.innerText = "20% Top-Tier Discount Active";
+      } else if (bal >= appConfig.WALLET_SLAB_2_MIN) {
+        const diff = appConfig.WALLET_SLAB_3_MIN - bal;
+        banner.innerText = "15% Mid-Tier Discount Active!";
+        sub.innerText = `Add ₹${diff} more to wallet to unlock 20% savings.`;
+        if (perkPill) perkPill.innerText = "15% Mid-Tier Discount Active";
+      } else if (bal >= appConfig.WALLET_SLAB_1_MIN) {
+        const diff = appConfig.WALLET_SLAB_2_MIN - bal;
+        banner.innerText = "10% Starter Discount Active!";
+        sub.innerText = `Add ₹${diff} more to wallet to unlock 15% savings.`;
+        if (perkPill) perkPill.innerText = "10% Starter Discount Active";
+      } else {
+        const diff = appConfig.WALLET_SLAB_1_MIN - bal;
+        banner.innerText = "Prepay & Save up to 20%";
+        sub.innerText = `Recharge ₹${diff > 0 ? diff : 500} to activate instant discounts.`;
+        if (perkPill) perkPill.innerText = "Standard Price (0% Discount)";
+      }
+    }
+
+    async function submitFinalOrder() {
+      if (!selectedSlot) {
+        showToast("Please choose a pickup time interval.", "error");
+        return;
+      }
+
+      const bill = calculateBill();
+      const mode = document.querySelector('input[name="paymentOption"]:checked').value;
+      let utr = "";
+
+      if (mode === "Wallet") {
+        if (Number(currentUser.walletBalance) < bill.finalPayable) {
+          showToast("Insufficient Wallet Balance. Please top up or pay via Direct UPI.", "error");
+          return;
+        }
+      } else {
+        utr = document.getElementById("orderUtrInput").value.trim();
+        if (!/^\d{12}$/.test(utr)) {
+          showToast("Valid 12-digit UPI UTR is mandatory.", "error");
+          return;
+        }
+      }
+
+      const btn = document.getElementById("placeOrderBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin inline-block mr-1">◌</span> Placing Order...`;
+
+      const payload = {
+        preAllocatedOrderId: preAllocatedOrderId,
+        customerId: currentUser.customerId,
+        customerName: currentUser.fullName,
+        customerPhone: currentUser.phone,
+        items: bill.itemsDetail,
+        totalItemsCount: bill.totalCount,
+        subtotal: bill.subtotal,
+        discountApplied: bill.discountAmount,
+        discountSlab: `${bill.discRate * 100}%`,
+        finalPayable: bill.finalPayable,
+        paymentMode: mode,
+        utrNumber: utr,
+        pickupDate: document.getElementById("pickupDate").value,
+        pickupTimeSlot: selectedSlot
+      };
+
+      try {
+        const res = await callBackendApi("SUBMIT_ORDER", payload);
+        if (res.status === "SUCCESS") {
+          cart = {};
+          updateCartUi();
+          closeCheckoutModal();
+          showToast(`Order Token #${preAllocatedOrderId.slice(-4)} Placed!`, "success");
+          openOrdersModal();
+          refreshProfileFromBackend();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (err) {
+        showToast("Failed to place order. Check connection.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Confirm & Place Order</span><i data-lucide="check-circle" class="w-5 h-5"></i>`;
+        lucide.createIcons();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // WALLET & LEDGER OPERATIONS
+    // -------------------------------------------------------------
+    function openWallet() {
+      if (!currentUser) {
+        showToast("Please sign in to access your wallet.", "info");
+        openAuthModal();
+        return;
+      }
+      document.getElementById("walletModal").classList.remove("hidden");
+      showWalletSection("recharge");
+      generateDynamicRechargeQr();
+      fetchWalletLedger();
+    }
+
+    function closeWallet() {
+      document.getElementById("walletModal").classList.add("hidden");
+    }
+
+    function showWalletSection(type) {
+      const rSec = document.getElementById("walletRechargeSection");
+      const cSec = document.getElementById("walletClaimSection");
+      const rBtn = document.getElementById("btnShowRecharge");
+      const cBtn = document.getElementById("btnShowClaim");
+
+      if (type === "recharge") {
+        rSec.classList.remove("hidden");
+        cSec.classList.add("hidden");
+        rBtn.className = "py-3 px-4 rounded-2xl bg-forest-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition";
+        cBtn.className = "py-3 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-sm flex items-center justify-center gap-2 transition";
+      } else {
+        rSec.classList.add("hidden");
+        cSec.classList.remove("hidden");
+        cBtn.className = "py-3 px-4 rounded-2xl bg-forest-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition";
+        rBtn.className = "py-3 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-sm flex items-center justify-center gap-2 transition";
+      }
+    }
+
+    async function submitWalletRecharge() {
+      const amt = Number(document.getElementById("rechargeAmountInput").value);
+      const utr = document.getElementById("rechargeUtrInput").value.trim();
+
+      if (!/^\d{12}$/.test(utr)) {
+        showToast("Enter a valid 12-digit UTR from your payment app.", "error");
+        return;
+      }
+
+      const btn = document.getElementById("rechargeSubmitBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin inline-block mr-1">◌</span> Verifying...`;
+
+      try {
+        const res = await callBackendApi("SUBMIT_WALLET_RECHARGE", {
+          preAllocatedTxnId: preAllocatedTxnId,
+          phone: currentUser.phone,
+          amount: amt,
+          utrNumber: utr
+        });
+
+        if (res.status === "SUCCESS") {
+          showToast(res.message, "success");
+          document.getElementById("rechargeUtrInput").value = "";
+          fetchWalletLedger();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (e) {
+        showToast("Recharge submission failed.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Top-Up Verification";
+      }
+    }
+
+    async function submitWalletClaim() {
+      const amt = Number(document.getElementById("claimAmountInput").value);
+      const upi = document.getElementById("claimUpiInput").value.trim();
+      const reason = document.getElementById("claimReasonInput").value.trim();
+
+      if (!amt || amt <= 0) {
+        showToast("Enter a valid claim amount.", "error");
+        return;
+      }
+      if (!upi.includes("@")) {
+        showToast("Enter a valid UPI ID (e.g. name@bank).", "error");
+        return;
+      }
+
+      const btn = document.getElementById("claimSubmitBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin inline-block mr-1">◌</span> Logging...`;
+
+      try {
+        const res = await callBackendApi("SUBMIT_WALLET_CLAIM", {
+          phone: currentUser.phone,
+          amount: amt,
+          payoutUpi: upi,
+          reason: reason
+        });
+
+        if (res.status === "SUCCESS") {
+          showToast(res.message, "success");
+          currentUser.walletBalance = res.newBalance;
+          saveUserSession(currentUser);
+          document.getElementById("claimAmountInput").value = "";
+          document.getElementById("claimUpiInput").value = "";
+          fetchWalletLedger();
+          showWalletSection("recharge");
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (e) {
+        showToast("Claim request failed.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Balance Claim";
+      }
+    }
+
+    async function fetchWalletLedger() {
+      if (!currentUser) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getWalletLedger&customerId=${currentUser.customerId}`).then(r => r.json());
+        const list = document.getElementById("walletLedgerList");
+        if (res.status === "SUCCESS" && res.transactions.length > 0) {
+          list.innerHTML = res.transactions.map(t => {
+            const isApproved = t.status === "Approved";
+            const isClaim = t.type === "Debit_Claim";
+            return `
+              <div class="py-3 flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="font-extrabold text-stone-800 text-sm">${t.type.replace('_', ' ')}</p>
+                    <p class="text-xs text-stone-400 font-mono">${new Date(t.timestamp).toLocaleDateString()} • Ref: ${t.utrRef}</p>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-black text-sm ${t.type.includes('Credit') ? 'text-green-700' : 'text-stone-800'}">₹${t.amount}</span>
+                    <p class="text-xs font-bold ${isApproved ? 'text-green-600' : 'text-amber-600'}">${t.status}</p>
+                  </div>
+                </div>
+                ${isClaim && isApproved && t.receiptPdfUrl ? `
+                  <a href="${t.receiptPdfUrl}" target="_blank" class="mt-1 inline-flex items-center gap-1.5 text-xs font-bold text-forest-800 bg-amber-100/60 px-3 py-1.5 rounded-xl self-start hover:bg-amber-100 transition">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>📄 View Refund Acknowledgment (PDF)</span>
+                  </a>
+                ` : ''}
+              </div>
+            `;
+          }).join("");
+          lucide.createIcons();
+        } else {
+          list.innerHTML = `<p class="text-center text-stone-400 py-4 text-xs">No transactions in ledger.</p>`;
+        }
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
+    // ORDER HISTORY
+    // -------------------------------------------------------------
+    function openOrdersModal() {
+      if (!currentUser) {
+        showToast("Please log in to review orders.", "info");
+        openAuthModal();
+        return;
+      }
+      document.getElementById("ordersModal").classList.remove("hidden");
+      fetchCustomerOrders();
+    }
+
+    function closeOrdersModal() {
+      document.getElementById("ordersModal").classList.add("hidden");
+    }
+
+    async function fetchCustomerOrders() {
+      const container = document.getElementById("ordersListContainer");
+      container.innerHTML = `<p class="text-center text-stone-400 py-8 text-sm">Loading orders...</p>`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${currentUser.phone}`).then(r => r.json());
+        if (res.status === "SUCCESS" && res.orders.length > 0) {
+          container.innerHTML = res.orders.map(order => {
+            const token = order.orderId.slice(-4);
+            return `
+              <div class="bg-stone-50 border border-stone-200 rounded-3xl p-5 space-y-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <span class="text-xs font-mono font-black text-forest-800">TOKEN #${token}</span>
+                    <h4 class="font-extrabold text-stone-900 text-base">${order.pickupDate} • ${order.pickupTimeSlot}</h4>
+                    <p class="text-xs text-stone-400 font-medium">Placed: ${new Date(order.timestamp).toLocaleTimeString()}</p>
+                  </div>
+                  <span class="px-3 py-1 rounded-full text-xs font-extrabold ${order.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Pending_Verification' ? 'bg-amber-100 text-amber-800' : 'bg-stone-200 text-stone-700'}">
+                    ${order.orderStatus.replace('_', ' ')}
+                  </span>
+                </div>
+
+                <div class="text-xs text-stone-600 border-t border-b border-stone-200/60 py-2 space-y-1">
+                  ${order.items.map(i => `<div class="flex justify-between"><span>${i.quantity}x ${i.name}</span><span class="font-bold">₹${i.lineTotal}</span></div>`).join("")}
+                  <div class="flex justify-between font-black text-stone-900 text-sm pt-1 border-t border-stone-100">
+                    <span>Total Paid (${order.paymentMode})</span>
+                    <span>₹${order.finalPayable}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("");
+          lucide.createIcons();
+        } else {
+          container.innerHTML = `<p class="text-center text-stone-400 py-10 text-sm">No orders found.</p>`;
+        }
+      } catch (e) {
+        container.innerHTML = `<p class="text-center text-red-500 py-6 text-sm">Failed to load orders.</p>`;
+      }
+    }
+
+    // Modal Control Helpers
+    function openAuthModal() { document.getElementById("authModal").classList.remove("hidden"); }
+    function closeAuthModal() { document.getElementById("authModal").classList.add("hidden"); }
+    function openMobileCartDrawer() { document.getElementById("mobileCartModal").classList.remove("hidden"); }
+    function closeMobileCartDrawer() { document.getElementById("mobileCartModal").classList.add("hidden"); }
+
+    async function callBackendApi(action, payload) {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, ...payload })
+      });
+      return await res.json();
+    }
+  </script>
+</body>
+</html>
