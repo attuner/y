@@ -141,7 +141,7 @@
             <div class="flex items-center gap-3">
                 <span id="kitchenOpenBadge"
                     class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-green-100 text-green-800 border border-green-200">
-                    <span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Kitchen Open
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Open Now
                 </span>
 
                 <button onclick="openWallet()"
@@ -1687,10 +1687,10 @@
             const isOpen = String(appConfig.KITCHEN_OPEN).toUpperCase() === "TRUE";
             const badge = document.getElementById("kitchenOpenBadge");
             if (isOpen) {
-                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Kitchen Open`;
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Open Now`;
                 badge.className = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-green-100 text-green-800 border border-green-200";
             } else {
-                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Kitchen Closed`;
+                badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Closed Now`;
                 badge.className = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-red-100 text-red-800 border border-red-200";
             }
         }
