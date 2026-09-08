@@ -18,54 +18,53 @@
         extend: {
           fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
           colors: {
-            partnerDark: '#121A15',
-            partnerCard: '#1A241E',
-            partnerGreen: '#1C3D2B',
-            partnerAccent: '#F59E0B'
+            linen: '#FAF7F2',
+            forest: { 800: '#1C3D2B', 900: '#12291C' },
+            amberBrand: { 500: '#D97706', 600: '#B45309' }
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-partnerDark text-stone-100 font-sans antialiased min-h-screen pb-12 text-sm md:text-base">
+<body class="bg-linen text-stone-800 font-sans antialiased min-h-screen pb-12 text-sm md:text-base">
 
   <!-- Stacking Toast Container -->
-  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 max-w-sm w-full px-4"></div>
+  <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 max-w-sm w-full px-4 pointer-events-none"></div>
 
-  <!-- HEADER WITH LIVE RADAR -->
-  <header class="bg-partnerCard border-b border-stone-800 sticky top-0 z-40 px-5 py-4 flex items-center justify-between shadow-md">
+  <!-- HEADER MATCHING BRAND THEME -->
+  <header class="bg-forest-800 text-white border-b border-forest-900 sticky top-0 z-40 px-5 py-4 flex items-center justify-between shadow-md">
     <div class="flex items-center gap-3.5">
-      <div class="w-11 h-11 rounded-2xl bg-partnerGreen flex items-center justify-center text-partnerAccent font-black text-2xl">
+      <div class="w-11 h-11 rounded-2xl bg-amber-500 text-forest-900 flex items-center justify-center font-black text-2xl shadow-sm">
         Y
       </div>
       <div>
         <h1 class="text-lg font-black text-white leading-tight">Yaady's Kitchen Partner</h1>
-        <p class="text-xs text-stone-400 font-medium">Jubilee Hills Central Operations Console</p>
+        <p class="text-xs text-amber-300 font-bold">Neknampur Hub • Central Operations (Strict IST)</p>
       </div>
     </div>
 
     <div class="flex items-center gap-3">
-      <button onclick="openOnlineUsersModal()" class="flex items-center gap-2 bg-stone-900 hover:bg-stone-800 px-4 py-2 rounded-2xl border border-stone-700 transition shadow" title="Click to view online customers">
-        <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-ping"></span>
-        <span class="text-xs font-black text-stone-200" id="onlineUsersCountPill">🟢 Online: 0</span>
+      <button onclick="openOnlineUsersModal()" class="flex items-center gap-2 bg-forest-900/80 hover:bg-forest-900 text-white px-4 py-2 rounded-2xl border border-forest-700 transition shadow-sm" title="Click to view online customers">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
+        <span class="text-xs font-black text-white" id="onlineUsersCountPill">🟢 Online: 0</span>
       </button>
 
-      <button onclick="logoutAdmin()" id="logoutBtn" class="hidden text-xs font-bold text-stone-400 hover:text-white px-3.5 py-2 rounded-xl border border-stone-700">
+      <button onclick="logoutAdmin()" id="logoutBtn" class="hidden text-xs font-black text-stone-200 hover:text-white px-3.5 py-2 rounded-xl border border-forest-700 hover:bg-forest-900 transition">
         Lock
       </button>
     </div>
   </header>
 
   <!-- AUTH PIN GATEWAY -->
-  <div id="adminPinAuth" class="max-w-sm mx-auto mt-20 p-7 bg-partnerCard border border-stone-800 rounded-3xl text-center space-y-4 shadow-2xl">
-    <div class="w-14 h-14 bg-amber-500/20 text-partnerAccent rounded-2xl flex items-center justify-center mx-auto">
+  <div id="adminPinAuth" class="max-w-sm mx-auto mt-20 p-7 bg-white border border-stone-200 rounded-3xl text-center space-y-4 shadow-xl">
+    <div class="w-14 h-14 bg-amber-100 text-amberBrand-600 rounded-2xl flex items-center justify-center mx-auto">
       <i data-lucide="shield-check" class="w-7 h-7"></i>
     </div>
-    <h3 class="text-xl font-black text-white">Kitchen Console Gateway</h3>
-    <p class="text-xs text-stone-400 font-medium">Enter Admin PIN configured in Google Sheets Config tab.</p>
-    <input type="password" id="adminPinInput" placeholder="Default: 1234" class="w-full px-4 py-3.5 bg-stone-900 border border-stone-700 rounded-2xl text-center text-xl font-mono font-black text-white outline-none focus:border-partnerAccent" />
-    <button onclick="unlockConsole()" class="w-full py-4 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-black text-base rounded-2xl transition shadow">
+    <h3 class="text-xl font-black text-forest-900">Kitchen Console Gateway</h3>
+    <p class="text-xs text-stone-500 font-medium">Enter Admin PIN configured in Google Sheets Config tab.</p>
+    <input type="password" id="adminPinInput" placeholder="Default: 1234" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-300 rounded-2xl text-center text-xl font-mono font-black text-forest-900 outline-none focus:border-forest-800" />
+    <button onclick="unlockConsole()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow">
       Unlock Operations Console
     </button>
   </div>
@@ -74,27 +73,27 @@
   <main id="adminDashboard" class="hidden max-w-7xl mx-auto px-4 py-6 space-y-6">
 
     <!-- MASTER OPERATIONS SWITCHES -->
-    <section class="bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-4">
-      <h3 class="text-xs font-black text-stone-300 uppercase tracking-wider flex items-center gap-2">
-        <i data-lucide="sliders" class="w-4 h-4 text-partnerAccent"></i> Master Kitchen Controls
+    <section class="bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
+      <h3 class="text-xs font-black text-stone-400 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="sliders" class="w-4 h-4 text-amberBrand-600"></i> Master Kitchen Controls
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex items-center justify-between p-4 bg-stone-900 rounded-2xl border border-stone-800">
+        <div class="flex items-center justify-between p-4 bg-stone-50 rounded-2xl border border-stone-200">
           <div>
-            <h4 class="font-black text-base text-white">Kitchen Order Acceptance</h4>
-            <p class="text-xs text-stone-400">Controls whether customers can schedule pickup orders.</p>
+            <h4 class="font-black text-base text-forest-900">Kitchen Order Acceptance</h4>
+            <p class="text-xs text-stone-500">Controls whether customers can place pickup orders.</p>
           </div>
-          <button onclick="toggleKitchenOpen()" id="btnKitchenOpenToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white">
+          <button onclick="toggleKitchenOpen()" id="btnKitchenOpenToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm">
             OPEN
           </button>
         </div>
 
-        <div class="flex items-center justify-between p-4 bg-stone-900 rounded-2xl border border-stone-800">
+        <div class="flex items-center justify-between p-4 bg-stone-50 rounded-2xl border border-stone-200">
           <div>
-            <h4 class="font-black text-base text-white">Wallet & Prepay System</h4>
-            <p class="text-xs text-stone-400">Disables top-ups & wallet deductions when paused.</p>
+            <h4 class="font-black text-base text-forest-900">Wallet & Prepay System</h4>
+            <p class="text-xs text-stone-500">Disables top-ups & wallet deductions when paused.</p>
           </div>
-          <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white">
+          <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm">
             ENABLED
           </button>
         </div>
@@ -102,254 +101,240 @@
     </section>
 
     <!-- NAVIGATION TABS -->
-    <div class="flex gap-2 border-b border-stone-800 pb-2 overflow-x-auto">
-      <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-5 py-2.5 rounded-2xl bg-partnerAccent text-stone-900 font-black text-xs md:text-sm whitespace-nowrap">
+    <div class="flex gap-2 border-b border-stone-200 pb-2 overflow-x-auto no-scrollbar">
+      <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm">
         Live Orders Cockpit
       </button>
-      <button onclick="switchAdminTab('slots')" id="tabBtnSlots" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
-        Slot & Capacity Manager
-      </button>
-      <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
+      <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
         Business Reports
       </button>
-      <button onclick="switchAdminTab('traffic')" id="tabBtnTraffic" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
-        Traffic & Visitors
+      <button onclick="switchAdminTab('traffic')" id="tabBtnTraffic" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+        Hourly Telemetry Radar
       </button>
-      <button onclick="switchAdminTab('chat')" id="tabBtnChat" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
+      <button onclick="switchAdminTab('chat')" id="tabBtnChat" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
         Customer Support Chat
       </button>
-      <button onclick="switchAdminTab('menu')" id="tabBtnMenu" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
+      <button onclick="switchAdminTab('menu')" id="tabBtnMenu" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
         Menu Master & Inventory
       </button>
-      <button onclick="switchAdminTab('claims')" id="tabBtnClaims" class="px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800">
+      <button onclick="switchAdminTab('claims')" id="tabBtnClaims" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
         Wallet Claims & Top-Ups
       </button>
     </div>
 
-    <!-- COCKPIT 1: LIVE ORDERS -->
+    <!-- COCKPIT 1: LIVE ORDERS (CLEAN PICKUP TIME IN IST) -->
     <section id="cockpitOrders" class="space-y-4">
-      <div class="flex gap-2.5 overflow-x-auto">
-        <button onclick="filterOrders('ALL')" class="order-filter-btn active px-4 py-2 rounded-xl bg-stone-800 text-xs font-black text-white">All Orders</button>
-        <button onclick="filterOrders('Pending_Verification')" class="order-filter-btn px-4 py-2 rounded-xl bg-stone-900 text-xs font-bold text-stone-400">Pending Verification</button>
-        <button onclick="filterOrders('Kitchen_Accepted')" class="order-filter-btn px-4 py-2 rounded-xl bg-stone-900 text-xs font-bold text-stone-400">Accepted</button>
-        <button onclick="filterOrders('Preparing')" class="order-filter-btn px-4 py-2 rounded-xl bg-stone-900 text-xs font-bold text-stone-400">Millet Stove</button>
-        <button onclick="filterOrders('Ready_For_Pickup')" class="order-filter-btn px-4 py-2 rounded-xl bg-stone-900 text-xs font-bold text-stone-400">Ready for Counter</button>
+      <div class="flex gap-2.5 overflow-x-auto no-scrollbar">
+        <button onclick="filterOrders('ALL')" class="order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm">All Orders</button>
+        <button onclick="filterOrders('Pending_Verification')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Pending Verification</button>
+        <button onclick="filterOrders('Kitchen_Accepted')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Accepted</button>
+        <button onclick="filterOrders('Preparing')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Millet Stove</button>
+        <button onclick="filterOrders('Ready_For_Pickup')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Ready for Counter</button>
       </div>
 
       <div id="adminOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <p class="text-stone-500 py-10 text-sm col-span-2 text-center">Loading orders queue...</p>
+        <p class="text-stone-400 py-10 text-sm col-span-2 text-center">Loading orders queue...</p>
       </div>
     </section>
 
-    <!-- COCKPIT 2: DAY-WISE SLOT & CAPACITY MANAGER -->
-    <section id="cockpitSlots" class="hidden bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-4">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5">
-        <div>
-          <h4 class="text-base font-black text-white">Day-Wise Pickup Capacity Manager</h4>
-          <p class="text-xs text-stone-400 font-medium">Updates immediately reflect on customer reservation screen.</p>
-        </div>
-        <input type="date" id="adminSlotDateInput" onchange="fetchAdminSlotSettings()" class="bg-stone-900 border border-stone-700 text-white font-black text-sm p-3 rounded-xl outline-none" />
-      </div>
-
-      <div id="adminSlotsListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2">
-        <p class="text-stone-500 text-sm col-span-3">Select a date to view slot capacities.</p>
-      </div>
-    </section>
-
-    <!-- COCKPIT 3: DAY-WISE FINANCIAL & OPERATIONAL REPORT -->
+    <!-- COCKPIT 2: DAILY BUSINESS REPORTS (PICKUP TIME IN IST) -->
     <section id="cockpitReports" class="hidden space-y-5">
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5">
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 shadow-sm">
         <div>
-          <h4 class="text-lg font-black text-white">Kitchen Daily Ledger Report</h4>
-          <p class="text-xs text-stone-400 font-medium">Real-time revenue, order conversions, and production metrics.</p>
+          <h4 class="text-lg font-black text-forest-900">Kitchen Daily Ledger Report (IST)</h4>
+          <p class="text-xs text-stone-500 font-medium">Real-time revenue, conversions, and roti production metrics.</p>
         </div>
-        <input type="date" id="reportDateInput" onchange="fetchDaywiseReport()" class="bg-stone-900 border border-stone-700 text-white font-black text-sm p-3 rounded-xl outline-none" />
+        <input type="date" id="reportDateInput" onchange="fetchDaywiseReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none" />
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Gross Revenue</p>
-          <h3 class="text-2xl md:text-3xl font-black text-partnerAccent mt-1" id="repGrossRev">₹0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-semibold" id="repRevSplit">UPI: ₹0 | Wallet: ₹0</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Gross Revenue</p>
+          <h3 class="text-2xl md:text-3xl font-black text-amberBrand-600 mt-1" id="repGrossRev">₹0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-semibold" id="repRevSplit">UPI: ₹0 | Wallet: ₹0</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Total Orders</p>
-          <h3 class="text-2xl md:text-3xl font-black text-white mt-1" id="repTotalOrders">0</h3>
-          <p class="text-xs text-green-400 mt-1 font-bold" id="repCompletedOrders">0 Picked Up</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Total Orders</p>
+          <h3 class="text-2xl md:text-3xl font-black text-forest-900 mt-1" id="repTotalOrders">0</h3>
+          <p class="text-xs text-green-700 mt-1 font-bold" id="repCompletedOrders">0 Picked Up</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Rotis Prepped</p>
-          <h3 class="text-2xl md:text-3xl font-black text-green-400 mt-1" id="repRotisCount">0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-medium">Sorghum & Finger Millet</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Rotis Prepped</p>
+          <h3 class="text-2xl md:text-3xl font-black text-green-700 mt-1" id="repRotisCount">0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-medium">Sorghum & Finger Millet</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">In-Prep / Queue</p>
-          <h3 class="text-2xl md:text-3xl font-black text-amber-400 mt-1" id="repActiveQueue">0</h3>
-          <p class="text-xs text-red-400 mt-1 font-bold" id="repCancelledCount">0 Rejected</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">In-Prep / Queue</p>
+          <h3 class="text-2xl md:text-3xl font-black text-amberBrand-500 mt-1" id="repActiveQueue">0</h3>
+          <p class="text-xs text-red-600 mt-1 font-bold" id="repCancelledCount">0 Rejected</p>
         </div>
       </div>
 
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-4">
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
         <div class="flex items-center justify-between">
-          <h4 class="text-xs font-black text-stone-300 uppercase tracking-wider">Itemized Orders Ledger</h4>
+          <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider">Itemized Orders Ledger</h4>
           <div class="flex gap-2 text-xs">
-            <button onclick="sortReportOrders('slot')" class="px-3.5 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-bold hover:bg-stone-800">Sort by Slot</button>
-            <button onclick="sortReportOrders('value')" class="px-3.5 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-bold hover:bg-stone-800">Sort by Amount</button>
-            <button onclick="sortReportOrders('status')" class="px-3.5 py-1.5 bg-stone-900 border border-stone-700 rounded-lg text-stone-300 font-bold hover:bg-stone-800">Sort by Status</button>
+            <button onclick="sortReportOrders('time')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Time</button>
+            <button onclick="sortReportOrders('value')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Amount</button>
+            <button onclick="sortReportOrders('status')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Status</button>
           </div>
         </div>
 
-        <div id="reportOrdersTable" class="overflow-x-auto divide-y divide-stone-800 text-xs md:text-sm text-stone-300">
-          <p class="text-stone-500 py-6 text-center">No orders for selected report date.</p>
+        <div id="reportOrdersTable" class="overflow-x-auto divide-y divide-stone-100 text-xs md:text-sm text-stone-700">
+          <p class="text-stone-400 py-6 text-center">No orders for selected report date.</p>
         </div>
       </div>
     </section>
 
-    <!-- COCKPIT 4: VISITOR & USER ANALYTICS -->
+    <!-- COCKPIT 3: COMPACT HOURLY TELEMETRY RADAR FOR SELECTED DAY -->
     <section id="cockpitTraffic" class="hidden space-y-5">
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl flex justify-between items-center">
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 shadow-sm">
         <div>
-          <h4 class="text-lg font-black text-white">Platform Traffic & Registrations Radar</h4>
-          <p class="text-xs text-stone-400 font-medium">New vs. repeat visits and customer registration conversions.</p>
+          <h4 class="text-lg font-black text-forest-900">Hourly Telemetry Radar (Strict IST)</h4>
+          <p class="text-xs text-stone-500 font-medium">Inspect 24-hour traffic and order conversions for any day.</p>
         </div>
-        <div class="flex bg-stone-900 p-1.5 rounded-2xl border border-stone-700">
-          <button onclick="setTrafficTimeline('DAY')" id="btnTrafficDay" class="px-4 py-1.5 rounded-xl text-xs font-black bg-partnerAccent text-stone-900">Day-Wise</button>
-          <button onclick="setTrafficTimeline('WEEK')" id="btnTrafficWeek" class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-stone-400">Week-Wise</button>
+        <div class="flex items-center gap-2">
+          <label class="text-xs text-stone-600 font-bold">Select Date:</label>
+          <input type="date" id="trafficDateFilter" onchange="fetchHourlyTrafficReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none" />
         </div>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">New Visitors</p>
-          <h3 class="text-3xl font-black text-white mt-1" id="trafNewVisits">0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-medium">First-time sessions</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Total Day Visits</p>
+          <h3 class="text-3xl font-black text-green-700 mt-1" id="hourlyTotalVisits">0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-medium">New + Repeat</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Returning Visitors</p>
-          <h3 class="text-3xl font-black text-partnerAccent mt-1" id="trafRepeatVisits">0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-medium">Repeat sessions</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">New First-Time Visits</p>
+          <h3 class="text-3xl font-black text-forest-900 mt-1" id="hourlyNewVisits">0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-medium">Unique visitors</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Total Platform Visits</p>
-          <h3 class="text-3xl font-black text-green-400 mt-1" id="trafTotalVisits">0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-medium">Aggregated impressions</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Repeat Visits</p>
+          <h3 class="text-3xl font-black text-amberBrand-600 mt-1" id="hourlyRepeatVisits">0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-medium">Returning sessions</p>
         </div>
-        <div class="bg-partnerCard border border-stone-800 p-5 rounded-2xl">
-          <p class="text-xs text-stone-400 font-extrabold">Total Registered Users</p>
-          <h3 class="text-3xl font-black text-amber-300 mt-1" id="trafTotalRegistered">0</h3>
-          <p class="text-xs text-stone-500 mt-1 font-medium">All-time active customers</p>
+        <div class="bg-white border border-stone-200 p-5 rounded-3xl shadow-sm">
+          <p class="text-xs text-stone-500 font-extrabold">Orders Converted</p>
+          <h3 class="text-3xl font-black text-forest-800 mt-1" id="hourlyOrdersPlaced">0</h3>
+          <p class="text-xs text-stone-400 mt-1 font-medium">Completed orders</p>
         </div>
       </div>
 
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-4">
-        <h4 class="text-xs font-black text-stone-300 uppercase tracking-wider" id="trafficTableTitle">Day-Wise Traffic Ledger</h4>
-        <div id="trafficLedgerTable" class="overflow-x-auto text-xs md:text-sm text-stone-300">
-          <p class="text-stone-500 py-6 text-center">Loading traffic telemetry...</p>
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
+        <div class="flex justify-between items-center">
+          <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider" id="hourlyTableHeading">24-Hour Telemetry Grid (Active Hours Highlighted)</h4>
+          <span class="text-xs font-mono text-amberBrand-600 font-bold">Timezone: Asia/Kolkata (IST)</span>
+        </div>
+
+        <div id="hourlyRadarContainer" class="overflow-x-auto text-xs md:text-sm text-stone-700">
+          <p class="text-stone-400 py-6 text-center">Loading hourly telemetry radar...</p>
         </div>
       </div>
     </section>
 
-    <!-- COCKPIT 5: 2-WAY CUSTOMER SUPPORT CHAT CENTER -->
+    <!-- COCKPIT 4: 2-WAY SUPPORT CHAT -->
     <section id="cockpitChat" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 h-[72vh]">
-      <div class="md:col-span-4 bg-partnerCard border border-stone-800 rounded-3xl p-4 overflow-y-auto space-y-2">
+      <div class="md:col-span-4 bg-white border border-stone-200 rounded-3xl p-4 overflow-y-auto space-y-2 shadow-sm">
         <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider mb-2">Customer Threads</h4>
         <div id="chatThreadsList" class="space-y-1.5">
-          <p class="text-stone-500 text-xs">No active chat threads.</p>
+          <p class="text-stone-400 text-xs">No active chat threads.</p>
         </div>
       </div>
 
-      <div class="md:col-span-8 bg-partnerCard border border-stone-800 rounded-3xl flex flex-col overflow-hidden">
-        <div class="p-4 bg-stone-900 border-b border-stone-800 flex justify-between items-center">
+      <div class="md:col-span-8 bg-white border border-stone-200 rounded-3xl flex flex-col overflow-hidden shadow-sm">
+        <div class="p-4 bg-stone-50 border-b border-stone-200 flex justify-between items-center">
           <div>
-            <h5 class="text-sm font-black text-white" id="activeChatCustomerName">Select a thread</h5>
-            <p class="text-xs text-stone-400 font-mono" id="activeChatCustomerId">---</p>
+            <h5 class="text-sm font-black text-forest-900" id="activeChatCustomerName">Select a thread</h5>
+            <p class="text-xs text-stone-500 font-mono" id="activeChatCustomerId">---</p>
           </div>
         </div>
-        <div id="adminChatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3 bg-partnerDark/60 text-sm">
-          <p class="text-stone-500 text-center py-12 text-sm">Select a customer thread on the left to review messages.</p>
+        <div id="adminChatMessagesBox" class="flex-1 p-4 overflow-y-auto space-y-3 bg-stone-50/50 text-sm">
+          <p class="text-stone-400 text-center py-12 text-sm">Select a customer thread on the left to review messages.</p>
         </div>
-        <div class="p-3.5 bg-stone-900 border-t border-stone-800 flex gap-2">
-          <input type="text" id="adminReplyInput" onkeydown="if(event.key==='Enter') sendAdminChatReply()" placeholder="Type reply as Kitchen Desk..." class="flex-1 px-4 py-3 bg-stone-800 border border-stone-700 rounded-xl text-sm text-white outline-none" />
-          <button onclick="sendAdminChatReply()" class="px-5 py-3 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-black text-sm rounded-xl">
+        <div class="p-3.5 bg-white border-t border-stone-200 flex gap-2">
+          <input type="text" id="adminReplyInput" onkeydown="if(event.key==='Enter') sendAdminChatReply()" placeholder="Type reply as Kitchen Desk..." class="flex-1 px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-900 outline-none focus:ring-2 focus:ring-forest-800" />
+          <button onclick="sendAdminChatReply()" class="px-5 py-3 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition shadow">
             Reply
           </button>
         </div>
       </div>
     </section>
 
-    <!-- COCKPIT 6: MENU ITEM MASTER -->
-    <section id="cockpitMenu" class="hidden bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-4">
+    <!-- COCKPIT 5: MENU ITEM MASTER -->
+    <section id="cockpitMenu" class="hidden bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
       <div class="flex justify-between items-center">
         <div>
-          <h4 class="text-base font-black text-white">Menu Item Master & Stock Control</h4>
-          <p class="text-xs text-stone-400 font-medium">Update pricing, toggle stock, or add seasonal preparations.</p>
+          <h4 class="text-base font-black text-forest-900">Menu Item Master & Stock Control</h4>
+          <p class="text-xs text-stone-500 font-medium">Update pricing, toggle stock, or add seasonal preparations.</p>
         </div>
-        <button onclick="openAddMealModal()" class="px-5 py-2.5 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-black text-xs md:text-sm rounded-xl flex items-center gap-1.5 shadow">
+        <button onclick="openAddMealModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-xs md:text-sm rounded-xl flex items-center gap-1.5 shadow transition">
           <i data-lucide="plus" class="w-4 h-4"></i>
           <span>Add New Meal Item</span>
         </button>
       </div>
 
       <div id="adminMenuContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        <p class="text-stone-500 text-sm col-span-2">Loading menu items...</p>
+        <p class="text-stone-400 text-sm col-span-2">Loading menu items...</p>
       </div>
     </section>
 
-    <!-- COCKPIT 7: WALLET CLAIMS & TOP-UPS -->
+    <!-- COCKPIT 6: WALLET CLAIMS & TOP-UPS -->
     <section id="cockpitClaims" class="hidden space-y-6">
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-3.5">
-        <h4 class="text-base font-black text-white flex items-center gap-2">
-          <i data-lucide="arrow-down-left" class="w-5 h-5 text-amber-400"></i> Balance Refund Claims
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl space-y-3.5 shadow-sm">
+        <h4 class="text-base font-black text-forest-900 flex items-center gap-2">
+          <i data-lucide="arrow-down-left" class="w-5 h-5 text-amberBrand-600"></i> Balance Refund Claims
         </h4>
         <div id="adminClaimsContainer" class="space-y-3">
-          <p class="text-stone-500 text-sm">No pending claims.</p>
+          <p class="text-stone-400 text-sm">No pending claims.</p>
         </div>
       </div>
 
-      <div class="bg-partnerCard border border-stone-800 p-6 rounded-3xl space-y-3.5">
-        <h4 class="text-base font-black text-white flex items-center gap-2">
-          <i data-lucide="plus-circle" class="w-5 h-5 text-green-400"></i> Pending Wallet Recharges
+      <div class="bg-white border border-stone-200 p-6 rounded-3xl space-y-3.5 shadow-sm">
+        <h4 class="text-base font-black text-forest-900 flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5 text-green-700"></i> Pending Wallet Recharges
         </h4>
         <div id="adminRechargesContainer" class="space-y-3">
-          <p class="text-stone-500 text-sm">No pending top-ups.</p>
+          <p class="text-stone-400 text-sm">No pending top-ups.</p>
         </div>
       </div>
     </section>
   </main>
 
   <!-- ONLINE CUSTOMERS RADAR MODAL -->
-  <div id="onlineUsersModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-partnerCard border border-stone-700 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-stone-800 pb-3">
-        <h3 class="text-base font-black text-white flex items-center gap-2">
+  <div id="onlineUsersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+        <h3 class="text-base font-black text-forest-900 flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
           <span>Online Customers (Last 60s)</span>
         </h3>
-        <button onclick="closeOnlineUsersModal()" class="text-stone-400 hover:text-white">&times;</button>
+        <button onclick="closeOnlineUsersModal()" class="text-stone-400 hover:text-stone-700">&times;</button>
       </div>
-      <div id="onlineUsersList" class="divide-y divide-stone-800 max-h-64 overflow-y-auto text-xs md:text-sm text-stone-300">
-        <p class="text-stone-500 text-center py-4">Checking telemetry sessions...</p>
+      <div id="onlineUsersList" class="divide-y divide-stone-100 max-h-64 overflow-y-auto text-xs md:text-sm text-stone-700">
+        <p class="text-stone-400 text-center py-4">Checking telemetry sessions...</p>
       </div>
     </div>
   </div>
 
   <!-- ADD NEW MEAL ITEM MODAL -->
-  <div id="addMealModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-partnerCard border border-stone-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-stone-800 pb-3">
-        <h3 class="text-lg font-black text-white">Add New Meal Item to Menu</h3>
-        <button onclick="closeAddMealModal()" class="text-stone-400 hover:text-white">&times;</button>
+  <div id="addMealModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+        <h3 class="text-lg font-black text-forest-900">Add New Meal Item to Menu</h3>
+        <button onclick="closeAddMealModal()" class="text-stone-400 hover:text-stone-700">&times;</button>
       </div>
 
       <form id="addMealForm" onsubmit="submitNewMeal(event)" class="space-y-3.5 text-xs md:text-sm">
         <div>
-          <label class="block text-stone-400 font-extrabold mb-1">Meal Name</label>
-          <input type="text" id="newMealName" required placeholder="e.g. Bajra Masala Roti Plate" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none font-bold" />
+          <label class="block text-stone-600 font-extrabold mb-1">Meal Name</label>
+          <input type="text" id="newMealName" required placeholder="e.g. Bajra Masala Roti Plate" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none font-bold" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-stone-400 font-extrabold mb-1">Category</label>
-            <select id="newMealCategory" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none">
+            <label class="block text-stone-600 font-extrabold mb-1">Category</label>
+            <select id="newMealCategory" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none">
               <option value="Millet Rotis">Millet Rotis</option>
               <option value="Combo Meals">Combo Meals</option>
               <option value="Curries & Sides">Curries & Sides</option>
@@ -357,34 +342,34 @@
             </select>
           </div>
           <div>
-            <label class="block text-stone-400 font-extrabold mb-1">Millet Type</label>
-            <input type="text" id="newMealMillet" placeholder="e.g. Bajra / Pearl Millet" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+            <label class="block text-stone-600 font-extrabold mb-1">Millet Type</label>
+            <input type="text" id="newMealMillet" placeholder="e.g. Bajra / Pearl Millet" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-stone-400 font-extrabold mb-1">Base Price (₹)</label>
-            <input type="number" id="newMealPrice" required min="10" placeholder="140" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white font-black outline-none" />
+            <label class="block text-stone-600 font-extrabold mb-1">Base Price (₹)</label>
+            <input type="number" id="newMealPrice" required min="10" placeholder="140" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none" />
           </div>
           <div>
-            <label class="block text-stone-400 font-extrabold mb-1">Prep Time (Mins)</label>
-            <input type="number" id="newMealPrep" value="20" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+            <label class="block text-stone-600 font-extrabold mb-1">Prep Time (Mins)</label>
+            <input type="number" id="newMealPrep" value="20" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
           </div>
         </div>
         <div>
-          <label class="block text-stone-400 font-extrabold mb-1">Description</label>
-          <textarea id="newMealDesc" rows="2" placeholder="Ingredients, accompaniment details..." class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none"></textarea>
+          <label class="block text-stone-600 font-extrabold mb-1">Description</label>
+          <textarea id="newMealDesc" rows="2" placeholder="Ingredients, accompaniment details..." class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none"></textarea>
         </div>
         <div>
-          <label class="block text-stone-400 font-extrabold mb-1">Nutritional Info String</label>
-          <input type="text" id="newMealNutrition" value="Cal: 340kcal | Protein: 8g | Fiber: 9g" class="w-full p-3 bg-stone-900 border border-stone-700 rounded-xl text-white outline-none" />
+          <label class="block text-stone-600 font-extrabold mb-1">Nutritional Info String</label>
+          <input type="text" id="newMealNutrition" value="Cal: 340kcal | Protein: 8g | Fiber: 9g" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
         </div>
         <div>
-          <label class="block text-stone-400 font-extrabold mb-1">Photo Upload (Saved to Drive)</label>
-          <input type="file" id="newMealPhoto" accept="image/*" class="w-full text-stone-400 file:mr-2 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-stone-800 file:text-white" />
+          <label class="block text-stone-600 font-extrabold mb-1">Photo Upload (Saved to Drive)</label>
+          <input type="file" id="newMealPhoto" accept="image/*" class="w-full text-stone-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-stone-200 file:text-stone-800" />
         </div>
 
-        <button type="submit" id="btnSubmitNewMeal" class="w-full py-3.5 bg-partnerAccent hover:bg-amber-600 text-stone-900 font-black text-sm rounded-xl transition mt-2">
+        <button type="submit" id="btnSubmitNewMeal" class="w-full py-3.5 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition mt-2 shadow">
           Save & Publish to Active Menu
         </button>
       </form>
@@ -392,21 +377,21 @@
   </div>
 
   <!-- DISBURSEMENT CLAIM MODAL -->
-  <div id="claimApprovalModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-partnerCard border border-stone-700 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
-      <h3 class="text-base font-black text-white">Approve & Issue Claim Acknowledgment</h3>
-      <div class="p-3.5 bg-stone-900 rounded-2xl text-xs space-y-1">
-        <p class="text-stone-400">Claim ID: <span id="modalClaimId" class="font-bold text-white"></span></p>
-        <p class="text-stone-400">Beneficiary UPI: <span id="modalClaimUpi" class="font-black text-partnerAccent"></span></p>
-        <p class="text-stone-400">Amount to Disburse: <span id="modalClaimAmount" class="font-black text-green-400"></span></p>
+  <div id="claimApprovalModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-stone-200 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+      <h3 class="text-base font-black text-forest-900">Approve & Issue Claim Acknowledgment</h3>
+      <div class="p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-xs space-y-1">
+        <p class="text-stone-500">Claim ID: <span id="modalClaimId" class="font-bold text-stone-900"></span></p>
+        <p class="text-stone-500">Beneficiary UPI: <span id="modalClaimUpi" class="font-black text-forest-800"></span></p>
+        <p class="text-stone-500">Amount to Disburse: <span id="modalClaimAmount" class="font-black text-green-700 text-sm"></span></p>
       </div>
       <div>
-        <label class="block text-xs font-black text-stone-300 mb-1">Bank Transfer 12-Digit UTR <span class="text-red-500">*</span></label>
-        <input type="text" id="modalTransferUtr" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-stone-900 border border-stone-700 rounded-2xl text-base font-mono font-black text-white outline-none" />
+        <label class="block text-xs font-black text-stone-700 mb-1">Bank Transfer 12-Digit UTR <span class="text-red-500">*</span></label>
+        <input type="text" id="modalTransferUtr" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-base font-mono font-black text-stone-900 outline-none focus:ring-2 focus:ring-forest-800" />
       </div>
       <div class="flex gap-2">
-        <button onclick="closeClaimModal()" class="flex-1 py-3 bg-stone-800 text-stone-300 font-bold text-xs rounded-2xl">Cancel</button>
-        <button onclick="confirmClaimDisbursement()" id="btnConfirmClaimDisburse" class="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white font-black text-xs rounded-2xl">
+        <button onclick="closeClaimModal()" class="flex-1 py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-2xl transition">Cancel</button>
+        <button onclick="confirmClaimDisbursement()" id="btnConfirmClaimDisburse" class="flex-1 py-3 bg-green-700 hover:bg-green-800 text-white font-black text-xs rounded-2xl transition shadow">
           Disburse & Issue PDF
         </button>
       </div>
@@ -423,8 +408,11 @@
     let currentOrderFilter = "ALL";
     let activeChatCustomerId = null;
     let daywiseReportOrdersCache = [];
-    let trafficReportCache = null;
-    let currentTrafficTimeline = "DAY";
+
+    // Strict IST Helper
+    function getIstTodayDateString() {
+      return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+    }
 
     window.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
@@ -445,9 +433,9 @@
     function showToast(msg, type = "info") {
       const c = document.getElementById("toastContainer");
       const toast = document.createElement("div");
-      const bg = type === "error" ? "bg-red-900 text-white" : type === "success" ? "bg-green-900 text-white" : "bg-stone-800 text-white";
+      const bg = type === "error" ? "bg-red-800 text-white" : type === "success" ? "bg-forest-800 text-white" : "bg-stone-800 text-white";
       toast.className = `${bg} p-4 rounded-2xl text-xs md:text-sm font-bold shadow-2xl flex items-center justify-between gap-2 border border-white/20`;
-      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70">&times;</button>`;
+      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100 text-lg">&times;</button>`;
       c.appendChild(toast);
       setTimeout(() => toast.remove(), 4000);
     }
@@ -465,13 +453,12 @@
           document.getElementById("logoutBtn").classList.remove("hidden");
           renderAdminDashboard(res);
 
-          const today = new Date().toISOString().split("T")[0];
-          document.getElementById("adminSlotDateInput").value = today;
-          document.getElementById("reportDateInput").value = today;
+          const istToday = getIstTodayDateString();
+          document.getElementById("reportDateInput").value = istToday;
+          document.getElementById("trafficDateFilter").value = istToday;
 
-          fetchAdminSlotSettings();
           fetchDaywiseReport();
-          fetchAnalyticsReport();
+          fetchHourlyTrafficReport();
           pollOnlineUsers();
           pollChatThreads();
         } else {
@@ -516,10 +503,9 @@
     function filterOrders(status) {
       currentOrderFilter = status;
       document.querySelectorAll(".order-filter-btn").forEach(b => {
-        b.classList.remove("active", "bg-stone-800", "text-white");
-        b.classList.add("bg-stone-900", "text-stone-400");
+        b.className = "order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition";
       });
-      event.target.classList.add("active", "bg-stone-800", "text-white");
+      event.target.className = "order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm transition";
       renderOrdersList();
     }
 
@@ -529,41 +515,56 @@
       const filtered = adminDataCache.orders.filter(o => currentOrderFilter === "ALL" || o.orderStatus === currentOrderFilter);
 
       if (filtered.length === 0) {
-        container.innerHTML = `<p class="text-stone-500 text-sm py-8 col-span-2 text-center">No orders match filter.</p>`;
+        container.innerHTML = `<p class="text-stone-400 text-sm py-8 col-span-2 text-center">No orders match filter.</p>`;
         return;
       }
 
-      container.innerHTML = filtered.map(o => `
-        <div class="p-5 bg-stone-900 border border-stone-800 rounded-3xl space-y-3.5">
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="text-xs font-mono font-black text-partnerAccent">#${o.orderId.slice(-4)}</span>
-              <h4 class="font-black text-white text-lg">${o.customerName}</h4>
-              <p class="text-xs text-stone-400 font-semibold">+91 ${o.customerPhone} • Slot: <strong class="text-stone-200">${o.pickupTimeSlot}</strong></p>
+      container.innerHTML = filtered.map(o => {
+        const istPlaced = new Date(o.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true });
+        
+        let cleanDate = "Today";
+        if (o.pickupDate) {
+          const raw = String(o.pickupDate).split("T")[0].trim();
+          const dObj = new Date(raw + "T00:00:00+05:30");
+          cleanDate = !isNaN(dObj.getTime())
+            ? dObj.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric" })
+            : raw;
+        }
+        const cleanTime = o.pickupTime ? String(o.pickupTime).trim() : "Flexible";
+
+        return `
+          <div class="p-5 bg-white border border-stone-200 rounded-3xl space-y-3.5 shadow-sm hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-mono font-black text-amberBrand-600">#${String(o.orderId).slice(-4)}</span>
+                <h4 class="font-black text-forest-900 text-lg">${o.customerName}</h4>
+                <p class="text-xs text-stone-600 font-semibold">+91 ${o.customerPhone} • Scheduled: <strong class="text-forest-800 font-black">${cleanTime} (IST)</strong></p>
+                <p class="text-[11px] text-stone-400">Placed: ${istPlaced} IST (${cleanDate})</p>
+              </div>
+              <span class="px-3 py-1 rounded-xl text-xs font-black ${o.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
+                ${String(o.orderStatus).replace('_', ' ')}
+              </span>
             </div>
-            <span class="px-3 py-1 rounded-xl text-xs font-black ${o.orderStatus === 'Ready_For_Pickup' ? 'bg-green-900/60 text-green-300' : 'bg-amber-900/60 text-amber-300'}">
-              ${o.orderStatus.replace('_', ' ')}
-            </span>
-          </div>
 
-          <div class="text-xs md:text-sm text-stone-300 border-t border-b border-stone-800 py-2.5 space-y-1">
-            ${o.items.map(i => `<div>${i.quantity}x ${i.name}</div>`).join("")}
-            <div class="font-bold text-white pt-1">Total: ₹${o.finalPayable} via ${o.paymentMode} ${o.utr ? `(UTR: ${o.utr})` : ''}</div>
-            ${o.screenshotUrl && o.screenshotUrl.length > 10 ? `
-              <a href="${o.screenshotUrl}" target="_blank" class="inline-block mt-1 text-xs text-partnerAccent underline font-bold">View Screenshot Proof</a>
-            ` : ''}
-          </div>
+            <div class="text-xs md:text-sm text-stone-600 border-t border-b border-stone-100 py-2.5 space-y-1">
+              ${(o.items || []).map(i => `<div>${i.quantity}x ${i.name}</div>`).join("")}
+              <div class="font-bold text-stone-900 pt-1">Total: ₹${o.finalPayable} via ${o.paymentMode} ${o.utr ? `(UTR: ${o.utr})` : ''}</div>
+              ${o.screenshotUrl && o.screenshotUrl.length > 10 ? `
+                <a href="${o.screenshotUrl}" target="_blank" rel="noopener noreferrer" class="inline-block mt-1 text-xs text-amberBrand-600 underline font-bold">View Screenshot Proof</a>
+              ` : ''}
+            </div>
 
-          <div class="flex flex-wrap gap-2 pt-1">
-            ${o.orderStatus === 'Pending_Verification' ? `
-              <button onclick="approveOrderPayment(${o.rowIndex})" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-black">Verify Payment</button>
-            ` : ''}
-            <button onclick="setOrderStatus(${o.rowIndex}, 'Preparing')" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs font-bold">Millet Stove</button>
-            <button onclick="setOrderStatus(${o.rowIndex}, 'Ready_For_Pickup')" class="px-4 py-2 bg-partnerAccent hover:bg-amber-600 text-stone-900 rounded-xl text-xs font-black">Ready Counter</button>
-            <button onclick="setOrderStatus(${o.rowIndex}, 'Completed')" class="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-xl text-xs font-bold">Picked Up</button>
+            <div class="flex flex-wrap gap-2 pt-1">
+              ${o.orderStatus === 'Pending_Verification' ? `
+                <button onclick="approveOrderPayment(${o.rowIndex})" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-black shadow-sm transition">Verify Payment</button>
+              ` : ''}
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Preparing')" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-bold transition">Millet Stove</button>
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Ready_For_Pickup')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl text-xs font-black shadow-sm transition">Ready Counter</button>
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Completed')" class="px-4 py-2 bg-forest-800 hover:bg-forest-900 text-white rounded-xl text-xs font-bold shadow-sm transition">Picked Up</button>
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     async function approveOrderPayment(rowIndex) {
@@ -586,69 +587,9 @@
       }
     }
 
-    async function fetchAdminSlotSettings() {
-      const dateVal = document.getElementById("adminSlotDateInput").value;
-      const container = document.getElementById("adminSlotsListContainer");
-      container.innerHTML = `<p class="text-stone-400 text-xs col-span-3">Loading slots for ${dateVal}...</p>`;
-
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=GET_SLOT_SETTINGS&pin=${currentAdminPin}&date=${dateVal}`).then(r => r.json());
-        if (res.status === "SUCCESS") {
-          container.innerHTML = res.slots.map(s => `
-            <div class="p-3.5 bg-stone-900 border border-stone-800 rounded-2xl space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="font-black text-xs md:text-sm text-white">${s.slot}</span>
-                <button onclick="toggleSlotAvailability('${dateVal}', '${s.slot}', ${!s.isEnabled}, ${s.capacity})" class="px-3 py-1.5 rounded-lg text-xs font-black ${s.isEnabled ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}">
-                  ${s.isEnabled ? 'Active' : 'Disabled'}
-                </button>
-              </div>
-              <div class="flex items-center justify-between text-xs text-stone-400">
-                <span>Booked: <strong class="text-white">${s.booked}</strong></span>
-                <div class="flex items-center gap-1.5">
-                  <span>Cap:</span>
-                  <input type="number" value="${s.capacity}" min="1" id="cap_${s.slot.replace(/\s+/g, '_')}" onchange="saveSlotCapacity('${dateVal}', '${s.slot}', ${s.isEnabled})" class="w-16 px-2 py-1 bg-stone-800 border border-stone-700 rounded text-center text-white font-black" />
-                </div>
-              </div>
-            </div>
-          `).join("");
-        }
-      } catch (e) {
-        container.innerHTML = `<p class="text-red-500 text-xs col-span-3">Failed to load slot settings.</p>`;
-      }
-    }
-
-    async function toggleSlotAvailability(dateStr, slotTime, newEnabled, capacity) {
-      try {
-        await callBackendApi("ADMIN_UPDATE_SLOT", {
-          pin: currentAdminPin,
-          date: dateStr,
-          slotTime: slotTime,
-          maxCapacity: capacity,
-          isEnabled: newEnabled
-        });
-        fetchAdminSlotSettings();
-      } catch (e) {
-        showToast("Slot update failed.", "error");
-      }
-    }
-
-    async function saveSlotCapacity(dateStr, slotTime, isEnabled) {
-      const capInput = document.getElementById(`cap_${slotTime.replace(/\s+/g, '_')}`);
-      const newCap = Number(capInput.value);
-      try {
-        await callBackendApi("ADMIN_UPDATE_SLOT", {
-          pin: currentAdminPin,
-          date: dateStr,
-          slotTime: slotTime,
-          maxCapacity: newCap,
-          isEnabled: isEnabled
-        });
-        showToast("Slot capacity updated.", "success");
-      } catch (e) {
-        showToast("Capacity update failed.", "error");
-      }
-    }
-
+    // -------------------------------------------------------------
+    // DAILY BUSINESS REPORTS
+    // -------------------------------------------------------------
     async function fetchDaywiseReport() {
       const dateVal = document.getElementById("reportDateInput").value;
       try {
@@ -671,19 +612,19 @@
     function renderReportOrdersTable(orders) {
       const container = document.getElementById("reportOrdersTable");
       if (orders.length === 0) {
-        container.innerHTML = `<p class="text-stone-500 py-6 text-center">No orders for selected report date.</p>`;
+        container.innerHTML = `<p class="text-stone-400 py-6 text-center">No orders for selected report date.</p>`;
         return;
       }
 
       container.innerHTML = orders.map(o => `
         <div class="py-3.5 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
           <div>
-            <span class="font-mono font-bold text-partnerAccent">#${o.orderId.slice(-4)}</span> • <strong class="text-white">${o.customerName}</strong> (${o.customerPhone})
-            <p class="text-xs text-stone-400">Slot: ${o.pickupSlot} | ${o.items.map(i => `${i.quantity}x ${i.name}`).join(", ")}</p>
+            <span class="font-mono font-bold text-amberBrand-600">#${String(o.orderId).slice(-4)}</span> • <strong class="text-forest-900">${o.customerName}</strong> (${o.customerPhone})
+            <p class="text-xs text-stone-500">Pickup Time: <strong class="text-forest-800">${o.pickupTime} IST</strong> | ${(o.items || []).map(i => `${i.quantity}x ${i.name}`).join(", ")}</p>
           </div>
           <div class="flex items-center gap-3">
-            <span class="font-black text-white">₹${o.finalPayable} (${o.paymentMode})</span>
-            <span class="px-2.5 py-1 rounded-lg text-xs font-black ${o.orderStatus === 'Completed' ? 'bg-green-900 text-green-300' : 'bg-stone-800 text-stone-300'}">${o.orderStatus}</span>
+            <span class="font-black text-forest-900">₹${o.finalPayable} (${o.paymentMode})</span>
+            <span class="px-2.5 py-1 rounded-lg text-xs font-black ${o.orderStatus === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-stone-100 text-stone-700'}">${o.orderStatus}</span>
           </div>
         </div>
       `).join("");
@@ -692,93 +633,86 @@
     function sortReportOrders(criteria) {
       if (criteria === "value") {
         daywiseReportOrdersCache.sort((a, b) => b.finalPayable - a.finalPayable);
-      } else if (criteria === "slot") {
-        daywiseReportOrdersCache.sort((a, b) => a.pickupSlot.localeCompare(b.pickupSlot));
+      } else if (criteria === "time") {
+        daywiseReportOrdersCache.sort((a, b) => (a.pickupTime || "").localeCompare(b.pickupTime || ""));
       } else if (criteria === "status") {
         daywiseReportOrdersCache.sort((a, b) => a.orderStatus.localeCompare(b.orderStatus));
       }
       renderReportOrdersTable(daywiseReportOrdersCache);
     }
 
-    async function fetchAnalyticsReport() {
+    // -------------------------------------------------------------
+    // HOURLY TELEMETRY RADAR FOR SELECTED DAY (STRICT IST)
+    // -------------------------------------------------------------
+    async function fetchHourlyTrafficReport() {
+      const dateVal = document.getElementById("trafficDateFilter").value || getIstTodayDateString();
+      const container = document.getElementById("hourlyRadarContainer");
+      container.innerHTML = `<p class="text-stone-400 py-6 text-center">Loading hourly radar for ${dateVal} (IST)...</p>`;
+
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=GET_ANALYTICS_REPORT&pin=${currentAdminPin}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=GET_HOURLY_TRAFFIC_REPORT&pin=${currentAdminPin}&date=${dateVal}`).then(r => r.json());
         if (res.status === "SUCCESS") {
-          trafficReportCache = res;
-          document.getElementById("trafTotalRegistered").innerText = res.totalRegisteredUsers;
-          renderTrafficView();
+          let totV = 0, newV = 0, repV = 0, ords = 0;
+          res.hourlyData.forEach(h => {
+            totV += h.totalVisits;
+            newV += h.newVisits;
+            repV += h.repeatVisits;
+            ords += h.ordersPlaced;
+          });
+
+          document.getElementById("hourlyTotalVisits").innerText = totV;
+          document.getElementById("hourlyNewVisits").innerText = newV;
+          document.getElementById("hourlyRepeatVisits").innerText = repV;
+          document.getElementById("hourlyOrdersPlaced").innerText = ords;
+
+          const activeHours = res.hourlyData.filter(h => h.totalVisits > 0 || h.ordersPlaced > 0);
+
+          if (activeHours.length === 0) {
+            container.innerHTML = `<div class="p-8 text-center text-stone-400 space-y-1">
+              <p class="font-bold text-sm">No visitor or order activity recorded for ${dateVal} in IST.</p>
+              <p class="text-xs">Hourly traffic increments automatically whenever customers browse the menu or place an order.</p>
+            </div>`;
+            return;
+          }
+
+          container.innerHTML = `
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-stone-200 text-stone-500 text-xs font-extrabold">
+                  <th class="py-3 px-3">Hour Window (IST)</th>
+                  <th class="py-3 px-3">New Visits</th>
+                  <th class="py-3 px-3">Repeat Visits</th>
+                  <th class="py-3 px-3">Total Visits</th>
+                  <th class="py-3 px-3">Orders Converted</th>
+                  <th class="py-3 px-3">Conversion Rate</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-100">
+                ${activeHours.map(row => {
+                  const convRate = row.totalVisits > 0 ? ((row.ordersPlaced / row.totalVisits) * 100).toFixed(1) + "%" : "0.0%";
+                  return `
+                    <tr class="hover:bg-stone-50 transition">
+                      <td class="py-3.5 px-3 font-mono font-bold text-forest-900">${row.label}</td>
+                      <td class="py-3.5 px-3 text-stone-700 font-semibold">${row.newVisits}</td>
+                      <td class="py-3.5 px-3 text-amberBrand-600 font-semibold">${row.repeatVisits}</td>
+                      <td class="py-3.5 px-3 text-green-700 font-black">${row.totalVisits}</td>
+                      <td class="py-3.5 px-3 text-forest-800 font-black">${row.ordersPlaced}</td>
+                      <td class="py-3.5 px-3 text-stone-500 font-semibold">${convRate}</td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          `;
         }
-      } catch (e) {}
-    }
-
-    function setTrafficTimeline(t) {
-      currentTrafficTimeline = t;
-      const btnDay = document.getElementById("btnTrafficDay");
-      const btnWeek = document.getElementById("btnTrafficWeek");
-
-      if (t === "DAY") {
-        btnDay.className = "px-4 py-1.5 rounded-xl text-xs font-black bg-partnerAccent text-stone-900";
-        btnWeek.className = "px-4 py-1.5 rounded-xl text-xs font-extrabold text-stone-400";
-      } else {
-        btnWeek.className = "px-4 py-1.5 rounded-xl text-xs font-black bg-partnerAccent text-stone-900";
-        btnDay.className = "px-4 py-1.5 rounded-xl text-xs font-extrabold text-stone-400";
+      } catch (e) {
+        container.innerHTML = `<p class="text-red-600 py-6 text-center">Failed to load hourly traffic radar.</p>`;
       }
-      renderTrafficView();
     }
 
-    function renderTrafficView() {
-      if (!trafficReportCache) return;
-
-      const list = currentTrafficTimeline === "DAY" ? trafficReportCache.dayWise : trafficReportCache.weekWise;
-      const title = document.getElementById("trafficTableTitle");
-      title.innerText = currentTrafficTimeline === "DAY" ? "Day-Wise Traffic Telemetry" : "Week-Wise Traffic Telemetry";
-
-      let sumNew = 0;
-      let sumRep = 0;
-      let sumTot = 0;
-
-      list.forEach(item => {
-        sumNew += item.newVisits || 0;
-        sumRep += item.repeatVisits || 0;
-        sumTot += item.totalVisits || 0;
-      });
-
-      document.getElementById("trafNewVisits").innerText = sumNew;
-      document.getElementById("trafRepeatVisits").innerText = sumRep;
-      document.getElementById("trafTotalVisits").innerText = sumTot;
-
-      const container = document.getElementById("trafficLedgerTable");
-      if (!list || list.length === 0) {
-        container.innerHTML = `<p class="text-stone-500 py-6 text-center">No telemetry logs available.</p>`;
-        return;
-      }
-
-      container.innerHTML = `
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b border-stone-800 text-stone-400 text-xs">
-              <th class="py-2.5">${currentTrafficTimeline === 'DAY' ? 'Date' : 'Week'}</th>
-              <th class="py-2.5">New Visits</th>
-              <th class="py-2.5">Repeat Visits</th>
-              <th class="py-2.5">Total Visits</th>
-              <th class="py-2.5">New Registrations</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-stone-800">
-            ${list.map(row => `
-              <tr class="hover:bg-stone-900/50 transition">
-                <td class="py-3 font-bold text-white">${row.date || row.week}</td>
-                <td class="py-3 text-stone-300 font-semibold">${row.newVisits}</td>
-                <td class="py-3 text-partnerAccent font-semibold">${row.repeatVisits}</td>
-                <td class="py-3 text-green-400 font-black">${row.totalVisits}</td>
-                <td class="py-3 text-amber-300 font-black">${row.newRegistrations || 0}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      `;
-    }
-
+    // -------------------------------------------------------------
+    // CHAT CENTER
+    // -------------------------------------------------------------
     async function pollChatThreads() {
       if (!currentAdminPin) return;
       try {
@@ -786,17 +720,17 @@
         if (res.status === "SUCCESS") {
           const list = document.getElementById("chatThreadsList");
           if (res.threads.length === 0) {
-            list.innerHTML = `<p class="text-stone-500 text-xs">No active chat threads.</p>`;
+            list.innerHTML = `<p class="text-stone-400 text-xs">No active chat threads.</p>`;
             return;
           }
 
           list.innerHTML = res.threads.map(t => `
-            <div onclick="selectChatThread('${t.customerId}', '${t.customerName}')" class="p-3 rounded-xl cursor-pointer transition ${activeChatCustomerId === t.customerId ? 'bg-stone-800 border border-stone-700' : 'bg-stone-900 hover:bg-stone-800/60'}">
+            <div onclick="selectChatThread('${t.customerId}', '${t.customerName}')" class="p-3 rounded-xl cursor-pointer transition ${activeChatCustomerId === t.customerId ? 'bg-amber-50 border border-amber-200' : 'bg-stone-50 hover:bg-stone-100'}">
               <div class="flex justify-between items-center">
-                <span class="font-black text-xs md:text-sm text-white">${t.customerName}</span>
-                ${t.unreadCount > 0 ? `<span class="px-2 py-0.5 bg-amber-500 text-stone-900 text-[10px] font-black rounded-full">${t.unreadCount}</span>` : ''}
+                <span class="font-black text-xs md:text-sm text-forest-900">${t.customerName}</span>
+                ${t.unreadCount > 0 ? `<span class="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-black rounded-full">${t.unreadCount}</span>` : ''}
               </div>
-              <p class="text-xs text-stone-400 truncate mt-1">${t.lastMessage}</p>
+              <p class="text-xs text-stone-500 truncate mt-1">${t.lastMessage}</p>
             </div>
           `).join("");
         }
@@ -818,12 +752,13 @@
           const box = document.getElementById("adminChatMessagesBox");
           box.innerHTML = res.messages.map(m => {
             const isAdmin = m.sender === "ADMIN";
+            const istTime = new Date(m.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true });
             return `
               <div class="flex flex-col ${isAdmin ? 'items-end' : 'items-start'}">
-                <div class="max-w-[75%] px-4 py-2.5 rounded-xl ${isAdmin ? 'bg-partnerAccent text-stone-900 font-bold' : 'bg-stone-800 text-stone-200'}">
+                <div class="max-w-[75%] px-4 py-2.5 rounded-xl ${isAdmin ? 'bg-forest-800 text-white font-bold' : 'bg-white border border-stone-200 text-stone-800 shadow-xs'}">
                   ${m.text}
                 </div>
-                <span class="text-[10px] text-stone-500 mt-1">${new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                <span class="text-[10px] text-stone-400 mt-1">${istTime} IST</span>
               </div>
             `;
           }).join("");
@@ -849,30 +784,33 @@
       } catch (e) {}
     }
 
+    // -------------------------------------------------------------
+    // MENU ITEM MASTER
+    // -------------------------------------------------------------
     async function renderMenuList() {
       const container = document.getElementById("adminMenuContainer");
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getMenu`).then(r => r.json());
         if (res.status === "SUCCESS") {
           container.innerHTML = res.menu.map(item => `
-            <div class="p-5 bg-stone-900 border border-stone-800 rounded-3xl space-y-3.5">
+            <div class="p-5 bg-white border border-stone-200 rounded-3xl space-y-3.5 shadow-sm">
               <div class="flex items-center gap-3.5">
-                <img src="${item.image}" class="w-16 h-16 rounded-2xl object-cover" />
+                <img src="${item.image}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600';" class="w-16 h-16 rounded-2xl object-cover" />
                 <div class="flex-1">
-                  <h5 class="font-black text-white text-base">${item.name}</h5>
-                  <p class="text-xs text-stone-400 font-medium">Price: ₹${item.price} • ${item.milletType}</p>
+                  <h5 class="font-black text-forest-900 text-base">${item.name}</h5>
+                  <p class="text-xs text-stone-500 font-medium">Price: ₹${item.price} • ${item.milletType}</p>
                 </div>
-                <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3.5 py-2 rounded-xl font-black text-xs ${item.available ? 'bg-green-900/60 text-green-300' : 'bg-red-900/60 text-red-300'}">
+                <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3.5 py-2 rounded-xl font-black text-xs ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                   ${item.available ? 'In Stock' : 'Sold Out'}
                 </button>
               </div>
 
-              <div class="flex items-center justify-between pt-2 border-t border-stone-800 text-xs">
+              <div class="flex items-center justify-between pt-2 border-t border-stone-100 text-xs">
                 <div class="flex items-center gap-2">
-                  <input type="number" id="price_${item.id}" value="${item.price}" class="w-20 px-2.5 py-1.5 bg-stone-800 border border-stone-700 rounded-xl text-white font-black" />
-                  <button onclick="updateItemPrice('${item.id}')" class="px-3.5 py-1.5 bg-stone-700 hover:bg-stone-600 rounded-xl font-black text-white">Save</button>
+                  <input type="number" id="price_${item.id}" value="${item.price}" class="w-20 px-2.5 py-1.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none" />
+                  <button onclick="updateItemPrice('${item.id}')" class="px-3.5 py-1.5 bg-forest-800 hover:bg-forest-900 rounded-xl font-black text-white transition">Save</button>
                 </div>
-                <button onclick="deleteMenuItem('${item.id}', '${item.name}')" class="px-3.5 py-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-xl font-bold">Remove</button>
+                <button onclick="deleteMenuItem('${item.id}', '${item.name}')" class="px-3.5 py-1.5 text-red-600 hover:text-red-800 font-bold transition">Remove</button>
               </div>
             </div>
           `).join("");
@@ -966,16 +904,16 @@
           document.getElementById("onlineUsersCountPill").innerText = `🟢 Online: ${res.count}`;
           const list = document.getElementById("onlineUsersList");
           if (res.activeUsers.length === 0) {
-            list.innerHTML = `<p class="text-stone-500 py-4 text-center">No active users online right now.</p>`;
+            list.innerHTML = `<p class="text-stone-400 py-4 text-center">No active users online right now.</p>`;
             return;
           }
           list.innerHTML = res.activeUsers.map(u => `
             <div class="py-3 flex justify-between items-center">
               <div>
-                <p class="font-black text-white">${u.customerName}</p>
-                <p class="text-xs text-stone-400 font-mono">+91 ${u.phone} (${u.customerId})</p>
+                <p class="font-black text-forest-900">${u.customerName}</p>
+                <p class="text-xs text-stone-500 font-mono">+91 ${u.phone} (${u.customerId})</p>
               </div>
-              <span class="text-xs font-black text-green-400">Active Now</span>
+              <span class="text-xs font-black text-green-700">Active Now</span>
             </div>
           `).join("");
         }
@@ -990,15 +928,15 @@
 
       const cContainer = document.getElementById("adminClaimsContainer");
       if (adminDataCache.pendingClaims.length === 0) {
-        cContainer.innerHTML = `<p class="text-stone-500 text-sm">No pending balance refund claims.</p>`;
+        cContainer.innerHTML = `<p class="text-stone-400 text-sm">No pending balance refund claims.</p>`;
       } else {
         cContainer.innerHTML = adminDataCache.pendingClaims.map(c => `
-          <div class="p-5 bg-stone-900 border border-stone-800 rounded-2xl flex items-center justify-between">
+          <div class="p-5 bg-stone-50 border border-stone-200 rounded-2xl flex items-center justify-between">
             <div>
-              <p class="font-black text-white text-base">₹${c.amount} • <span class="font-mono text-partnerAccent">${c.payoutUpi}</span></p>
-              <p class="text-xs text-stone-400">Cust: ${c.customerId} • Reason: ${c.reason}</p>
+              <p class="font-black text-forest-900 text-base">₹${c.amount} • <span class="font-mono text-amberBrand-600">${c.payoutUpi}</span></p>
+              <p class="text-xs text-stone-500">Cust: ${c.customerId} • Reason: ${c.reason}</p>
             </div>
-            <button onclick="openClaimModal('${c.claimId}', '${c.payoutUpi}', ${c.amount}, ${c.rowIndex})" class="px-5 py-2.5 bg-partnerAccent text-stone-900 rounded-xl font-black text-xs md:text-sm">
+            <button onclick="openClaimModal('${c.claimId}', '${c.payoutUpi}', ${c.amount}, ${c.rowIndex})" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl font-black text-xs md:text-sm transition shadow-sm">
               Disburse & Issue PDF
             </button>
           </div>
@@ -1007,16 +945,16 @@
 
       const rContainer = document.getElementById("adminRechargesContainer");
       if (adminDataCache.pendingRecharges.length === 0) {
-        rContainer.innerHTML = `<p class="text-stone-500 text-sm">No pending wallet top-ups.</p>`;
+        rContainer.innerHTML = `<p class="text-stone-400 text-sm">No pending wallet top-ups.</p>`;
       } else {
         rContainer.innerHTML = adminDataCache.pendingRecharges.map(r => `
-          <div class="p-5 bg-stone-900 border border-stone-800 rounded-2xl flex items-center justify-between">
+          <div class="p-5 bg-stone-50 border border-stone-200 rounded-2xl flex items-center justify-between">
             <div>
-              <p class="font-black text-white text-base">₹${r.amount} • <span class="font-mono text-stone-400">UTR: ${r.utr}</span></p>
-              <p class="text-xs text-stone-400 font-mono text-partnerAccent">Token: ${r.txnId}</p>
-              <p class="text-xs text-stone-400">Cust: ${r.customerId}</p>
+              <p class="font-black text-forest-900 text-base">₹${r.amount} • <span class="font-mono text-stone-600">UTR: ${r.utr}</span></p>
+              <p class="text-xs text-amberBrand-600 font-mono font-bold">Token: ${r.txnId}</p>
+              <p class="text-xs text-stone-500">Cust: ${r.customerId}</p>
             </div>
-            <button onclick="approveWalletRecharge(${r.rowIndex})" class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl font-black text-xs md:text-sm">
+            <button onclick="approveWalletRecharge(${r.rowIndex})" class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl font-black text-xs md:text-sm transition shadow-sm">
               Confirm Credit
             </button>
           </div>
@@ -1093,17 +1031,17 @@
     }
 
     function switchAdminTab(t) {
-      const tabs = ['orders', 'slots', 'reports', 'traffic', 'chat', 'menu', 'claims'];
+      const tabs = ['orders', 'reports', 'traffic', 'chat', 'menu', 'claims'];
       tabs.forEach(tab => {
         document.getElementById(`cockpit${capitalize(tab)}`).classList.toggle("hidden", t !== tab);
         const btn = document.getElementById(`tabBtn${capitalize(tab)}`);
         if (btn) {
           btn.className = (t === tab)
-            ? "px-5 py-2.5 rounded-2xl bg-partnerAccent text-stone-900 font-black text-xs md:text-sm whitespace-nowrap"
-            : "px-5 py-2.5 rounded-2xl bg-stone-900 text-stone-300 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-800";
+            ? "px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm transition"
+            : "px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition";
         }
       });
-      if (t === "traffic") fetchAnalyticsReport();
+      if (t === "traffic") fetchHourlyTrafficReport();
     }
 
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
