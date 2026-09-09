@@ -114,7 +114,7 @@
     </div>
   </aside>
 
-  <!-- STICKY TOP BAR -->
+  <!-- STICKY TOP BAR (HELP BUTTON EXCLUDED AS INTENDED) -->
   <header class="sticky top-0 z-40 bg-linen/95 backdrop-blur-md border-b border-stone-200">
     <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
       <div onclick="openAboutModal()" class="flex items-center gap-3 lg:hidden cursor-pointer hover:opacity-90 transition">
@@ -147,11 +147,11 @@
       </div>
     </div>
 
-    <!-- ANNOUNCEMENT BANNER -->
+    <!-- ANNOUNCEMENT BANNER WITH DIRECT GOOGLE MAPS LINK -->
     <div id="announcementBanner" class="bg-forest-900 text-amber-300 px-4 py-2 text-xs md:text-sm text-center font-black tracking-wide">
       <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 hover:underline cursor-pointer">
         <i data-lucide="map-pin" class="w-4 h-4 text-amber-400"></i>
-        <span>Pickup Location: Neknampur, Manikonda (Tap for Google Maps directions)</span>
+        <span id="announcementBannerText">Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup! (Tap for Directions)</span>
       </a>
     </div>
   </header>
@@ -182,6 +182,7 @@
             <input id="searchInput" oninput="renderMenu()" type="text" placeholder="Search Jowar Roti, Thali, Curries..." class="w-full pl-12 pr-4 py-3.5 text-base md:text-lg bg-white border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-forest-800 shadow-sm font-medium min-h-[48px]" />
           </div>
 
+          <!-- FIXED CATEGORY PILLS FILTERING AND CONTRAST -->
           <div id="categoryPills" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
             <button onclick="filterCategory('ALL')" class="category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition min-h-[48px]">All Items</button>
             <button onclick="filterCategory('Millet Rotis')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Millet Rotis</button>
@@ -308,7 +309,7 @@
         </p>
         <p class="text-stone-600 flex items-center gap-1.5">
           <i data-lucide="phone" class="w-4 h-4 text-forest-800"></i>
-          <span>Direct Kitchen Helpline: +91 9000001690</span>
+          <span>Direct Phone: <a href="tel:+919000001690" class="text-forest-900 font-bold hover:underline">+91 9000001690</a></span>
         </p>
         <p class="text-stone-600 flex items-center gap-1.5">
           <i data-lucide="wallet" class="w-4 h-4 text-forest-800"></i>
@@ -335,7 +336,16 @@
       </button>
 
       <h3 class="text-2xl font-black text-forest-900 mb-1">Select Pickup Time & Pay</h3>
-      <p class="text-sm text-stone-500 mb-5 font-medium">All timings strictly in Indian Standard Time (IST). Minimum 30 mins prep time required for today.</p>
+      <p class="text-sm text-stone-500 mb-4 font-medium">All timings in Indian Standard Time (IST). Lead time is dynamically calculated based on your selected cart items.</p>
+
+      <!-- DYNAMIC PREP TIME INDICATOR PILL -->
+      <div id="prepTimeIndicatorPill" class="mb-4 text-xs md:text-sm font-extrabold text-forest-800 bg-amber-50 border border-amber-200 p-3 rounded-2xl flex items-center justify-between shadow-xs">
+        <span class="flex items-center gap-1.5">
+          <i data-lucide="clock" class="w-4 h-4 text-amberBrand-600"></i>
+          <span>Estimated Kitchen Preparation Time:</span>
+        </span>
+        <span class="font-black text-amberBrand-600 text-sm md:text-base" id="requiredPrepMinutesDisplay">15 mins</span>
+      </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
         <div>
@@ -698,13 +708,15 @@
       WALLET_SLAB_2_DISC: 0.15,
       WALLET_SLAB_3_MIN: 1999,
       WALLET_SLAB_3_DISC: 0.20,
-      KITCHEN_OPEN: "TRUE"
+      KITCHEN_OPEN: "TRUE",
+      ANNOUNCEMENT_BANNER: "Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup!"
     };
 
     let currentUser = null;
     let menuItems = [];
     let cart = {};
     let currentAuthTab = "login";
+    let expandedDescriptions = {};
 
     let selectedRechargeAmount = 500;
     let preAllocatedOrderId = "";
@@ -835,6 +847,27 @@
     }
 
     // -------------------------------------------------------------
+    // DYNAMIC CART PREPARATION TIME CALCULATION
+    // -------------------------------------------------------------
+    function getCartRequiredPrepTime() {
+      let maxItemPrep = 15; // Base minimum kitchen prep time
+      for (const [id, qty] of Object.entries(cart)) {
+        const item = menuItems.find(m => m.id === id);
+        if (item && item.prepTimeMins) {
+          const itemPrep = Number(item.prepTimeMins);
+          if (itemPrep > maxItemPrep) {
+            maxItemPrep = itemPrep;
+          }
+        }
+      }
+      const bill = calculateBill();
+      if (bill.totalCount > 4) {
+        maxItemPrep += 10;
+      }
+      return maxItemPrep;
+    }
+
+    // -------------------------------------------------------------
     // TWO-WAY LIVE ORDER PROGRESS DETECTION
     // -------------------------------------------------------------
     async function pollCustomerOrderProgress() {
@@ -882,7 +915,7 @@
     }
 
     // -------------------------------------------------------------
-    // DYNAMIC PICKUP TIME & 30-MIN LEAD ENFORCEMENT
+    // DYNAMIC PICKUP TIME & ITEM PREP BUFFER ENFORCEMENT
     // -------------------------------------------------------------
     function initDefaultPickupDate() {
       const istToday = getIstTodayDateString();
@@ -897,6 +930,7 @@
     function updatePickupTimeConstraints() {
       const dateEl = document.getElementById("pickupDate");
       const timeEl = document.getElementById("pickupTime");
+      const prepDisplay = document.getElementById("requiredPrepMinutesDisplay");
       if (!dateEl || !timeEl) return;
 
       const istToday = getIstTodayDateString();
@@ -907,9 +941,13 @@
       }
 
       const istNow = getNowIst();
+      const requiredLeadMinutes = getCartRequiredPrepTime();
+      if (prepDisplay) {
+        prepDisplay.innerText = `${requiredLeadMinutes} mins`;
+      }
 
       if (dateEl.value === istToday) {
-        const leadTime = new Date(istNow.getTime() + 30 * 60 * 1000);
+        const leadTime = new Date(istNow.getTime() + requiredLeadMinutes * 60 * 1000);
         const minH = String(leadTime.getHours()).padStart(2, '0');
         const minM = String(leadTime.getMinutes()).padStart(2, '0');
         const minTimeStr = `${minH}:${minM}`;
@@ -936,13 +974,14 @@
 
       const istToday = getIstTodayDateString();
       const istNow = getNowIst();
+      const requiredLeadMinutes = getCartRequiredPrepTime();
 
       if (dateEl.value === istToday) {
         const [selH, selM] = timeEl.value.split(":").map(Number);
         const selDate = new Date(istNow);
         selDate.setHours(selH, selM, 0, 0);
 
-        const minValidTime = new Date(istNow.getTime() + 30 * 60 * 1000);
+        const minValidTime = new Date(istNow.getTime() + requiredLeadMinutes * 60 * 1000);
 
         if (selDate.getTime() < minValidTime.getTime()) {
           const earliestH = String(minValidTime.getHours()).padStart(2, '0');
@@ -950,7 +989,7 @@
           const earliestStr = `${earliestH}:${earliestM}`;
           const formattedEarliest = formatTime12Hour(earliestStr);
 
-          showToast(`Kitchen requires at least 30 minutes preparation time. Earliest pickup is at ${formattedEarliest} IST.`, "error");
+          showToast(`Kitchen requires ${requiredLeadMinutes} mins preparation time for your cart. Earliest pickup is at ${formattedEarliest} IST.`, "error");
           timeEl.value = earliestStr;
         }
       }
@@ -1417,7 +1456,7 @@
     }
 
     // -------------------------------------------------------------
-    // SANITIZED ORDER HISTORY (DATE & TIME CORRUPTION FIXED)
+    // SANITIZED ORDER HISTORY WITH DIRECT VOICE CALLING
     // -------------------------------------------------------------
     function openOrdersModal() {
       if (!currentUser) {
@@ -1462,7 +1501,7 @@
               ? new Date(order.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true })
               : "N/A";
 
-            const waText = encodeURIComponent(`Hello Yaady's Kitchen! Regarding Order Token #${token} (${order.orderId}) placed for ${cleanDate} at ${cleanTime} IST (Amount: ₹${order.finalPayable}, Payment: ${order.paymentMode}, UTR: ${order.utrNumber || 'N/A'}). Status: ${order.orderStatus}. Please assist.`);
+            const waVoiceUrl = `https://wa.me/919000001690?text=${encodeURIComponent(`Hello Yaady's Kitchen! Inquiring regarding Order Token #${token} (${order.orderId}) placed for ${cleanDate} at ${cleanTime} IST (Amount: ₹${order.finalPayable}). Please connect.`)}`;
 
             return `
               <div class="bg-stone-50 border border-stone-200 rounded-3xl p-5 space-y-3.5">
@@ -1485,10 +1524,11 @@
                   </div>
                 </div>
 
+                <!-- DIRECT VOICE CALL & CHAT BUTTONS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  <a href="https://wa.me/919000001690?text=${waText}" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i>
-                    <span>WhatsApp Kitchen</span>
+                  <a href="${waVoiceUrl}" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
+                    <i data-lucide="phone-call" class="w-4 h-4"></i>
+                    <span>Voice Call Kitchen (+91 9000001690)</span>
                   </a>
                   <button type="button" onclick="startOrderContextChat('${order.orderId}')" class="py-3 px-3.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
                     <i data-lucide="message-square" class="w-4 h-4"></i>
@@ -1518,20 +1558,47 @@
     }
 
     // -------------------------------------------------------------
-    // CATEGORY PILL SELECTION & CONTRAST
+    // CATEGORY PILL SELECTION (FIXED FOR CURRIES & BEVERAGES)
     // -------------------------------------------------------------
     let currentCategory = "ALL";
     function filterCategory(cat) {
       currentCategory = cat;
       const pills = document.querySelectorAll(".category-pill");
       pills.forEach(el => {
-        if (el.innerText.trim().toLowerCase() === cat.toLowerCase() || (cat === 'ALL' && el.innerText.trim().toLowerCase() === 'all items')) {
+        const text = el.innerText.trim().toLowerCase();
+        const isMatch = (cat === 'ALL' && text.includes('all')) ||
+                        (cat === 'Millet Rotis' && text.includes('rotis')) ||
+                        (cat === 'Combo Meals' && text.includes('combo')) ||
+                        (cat === 'Curries & Sides' && text.includes('curries')) ||
+                        (cat === 'Healthy Beverages' && text.includes('beverages'));
+
+        if (isMatch) {
           el.className = "category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition min-h-[48px]";
         } else {
           el.className = "category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]";
         }
       });
       renderMenu();
+    }
+
+    // -------------------------------------------------------------
+    // DESCRIPTION EXPANSION (READ MORE / READ LESS)
+    // -------------------------------------------------------------
+    function toggleDescription(itemId) {
+      expandedDescriptions[itemId] = !expandedDescriptions[itemId];
+      const descEl = document.getElementById(`desc-${itemId}`);
+      const btnEl = document.getElementById(`desc-btn-${itemId}`);
+      const item = menuItems.find(m => m.id === itemId);
+
+      if (descEl && btnEl && item) {
+        if (expandedDescriptions[itemId]) {
+          descEl.innerText = item.description;
+          btnEl.innerText = "Read less";
+        } else {
+          descEl.innerText = item.description.substring(0, 75) + "...";
+          btnEl.innerText = "Read more";
+        }
+      }
     }
 
     function renderMenu() {
@@ -1552,6 +1619,9 @@
       container.innerHTML = filtered.map(item => {
         const qty = cart[item.id] || 0;
         const isSoldOut = !item.available;
+        const isLongDesc = item.description && item.description.length > 75;
+        const isExpanded = !!expandedDescriptions[item.id];
+        const displayDesc = isLongDesc && !isExpanded ? item.description.substring(0, 75) + "..." : item.description;
 
         return `
           <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition ${isSoldOut ? 'opacity-60' : ''}">
@@ -1573,8 +1643,18 @@
                   <h4 class="font-black text-forest-900 text-lg md:text-xl leading-snug">${item.name}</h4>
                   <span class="font-black text-2xl text-stone-900">₹${item.price}</span>
                 </div>
-                <p class="text-sm text-stone-500 mt-2 line-clamp-2">${item.description}</p>
-                <div class="mt-3 text-xs md:text-sm text-stone-400 font-extrabold">${item.nutrition}</div>
+                <div class="text-sm text-stone-500 mt-2">
+                  <span id="desc-${item.id}">${displayDesc}</span>
+                  ${isLongDesc ? `
+                    <button type="button" id="desc-btn-${item.id}" onclick="toggleDescription('${item.id}')" class="text-amberBrand-600 font-extrabold text-xs ml-1 hover:underline focus:outline-none">
+                      ${isExpanded ? 'Read less' : 'Read more'}
+                    </button>
+                  ` : ''}
+                </div>
+                <div class="mt-3 text-xs md:text-sm text-stone-400 font-extrabold flex items-center justify-between">
+                  <span>${item.nutrition}</span>
+                  <span class="text-forest-800 font-bold">⏱️ ${item.prepTimeMins || 15}m prep</span>
+                </div>
               </div>
 
               <div class="mt-5 pt-3.5 border-t border-stone-100 flex items-center justify-between">
@@ -1608,6 +1688,7 @@
       }
       cart[itemId] = (cart[itemId] || 0) + 1;
       updateCartUi();
+      updatePickupTimeConstraints();
     }
 
     function changeQty(itemId, delta) {
@@ -1615,6 +1696,7 @@
       cart[itemId] += delta;
       if (cart[itemId] <= 0) delete cart[itemId];
       updateCartUi();
+      updatePickupTimeConstraints();
     }
 
     function getDiscountRate() {
@@ -2024,6 +2106,11 @@
 
     function applyConfigUi() {
       document.getElementById("upiVpaDisplay").innerText = appConfig.KITCHEN_UPI_ID;
+
+      const bannerTextEl = document.getElementById("announcementBannerText");
+      if (bannerTextEl && appConfig.ANNOUNCEMENT_BANNER) {
+        bannerTextEl.innerText = `${appConfig.ANNOUNCEMENT_BANNER} (Tap for Directions)`;
+      }
 
       const walletEnabled = String(appConfig.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
       const discBanner = document.getElementById("discountBanner");

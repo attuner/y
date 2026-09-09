@@ -89,11 +89,12 @@
   <!-- MAIN DASHBOARD -->
   <main id="adminDashboard" class="hidden max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- MASTER OPERATIONS SWITCHES -->
-    <section class="bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
+    <!-- MASTER OPERATIONS SWITCHES & ANNOUNCEMENT BANNER CONTROLS -->
+    <section class="bg-white border border-stone-200 p-6 rounded-3xl space-y-5 shadow-sm">
       <h3 class="text-xs font-black text-stone-400 uppercase tracking-wider flex items-center gap-2">
         <i data-lucide="sliders" class="w-4 h-4 text-amberBrand-600"></i> Master Kitchen Controls
       </h3>
+      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex items-center justify-between p-4 bg-stone-50 rounded-2xl border border-stone-200">
           <div>
@@ -112,6 +113,24 @@
           </div>
           <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm min-h-[44px]">
             ENABLED
+          </button>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENT BANNER CONTROLLER -->
+      <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-black text-forest-900 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="megaphone" class="w-4 h-4 text-amberBrand-600"></i>
+            <span>Customer Announcement Banner</span>
+          </label>
+          <span class="text-[11px] text-stone-400 font-semibold">Broadcasts across customer header & maps banner</span>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input type="text" id="adminAnnouncementInput" placeholder="e.g. Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup!" class="flex-1 px-4 py-3 bg-white border border-stone-300 rounded-xl text-sm font-semibold text-stone-800 outline-none focus:ring-2 focus:ring-forest-800 min-h-[48px]" />
+          <button onclick="saveAnnouncementBanner()" id="btnSaveAnnouncement" class="px-5 py-3 bg-forest-800 hover:bg-forest-900 text-white font-black text-xs md:text-sm rounded-xl shadow-sm transition min-h-[48px] flex items-center justify-center gap-1.5 whitespace-nowrap">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Update Banner</span>
           </button>
         </div>
       </div>
@@ -139,7 +158,7 @@
       </button>
     </div>
 
-    <!-- COCKPIT 1: LIVE ORDERS -->
+    <!-- COCKPIT 1: LIVE ORDERS WITH DIRECT CALLING ACTIONS -->
     <section id="cockpitOrders" class="space-y-4">
       <div class="flex gap-2.5 overflow-x-auto no-scrollbar">
         <button onclick="filterOrders('ALL')" class="order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm transition min-h-[40px]">All Orders</button>
@@ -203,12 +222,12 @@
       </div>
     </section>
 
-    <!-- COCKPIT 3: HOURLY TELEMETRY RADAR -->
+    <!-- COCKPIT 3: COMPACT HOURLY TELEMETRY RADAR (ZERO ROWS EXCLUDED) -->
     <section id="cockpitTraffic" class="hidden space-y-5">
       <div class="bg-white border border-stone-200 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 shadow-sm">
         <div>
-          <h4 class="text-lg font-black text-forest-900">Hourly Telemetry Radar (Strict IST)</h4>
-          <p class="text-xs text-stone-500 font-medium">Inspect 24-hour traffic and order conversions for any day.</p>
+          <h4 class="text-lg font-black text-forest-900">Compact Hourly Telemetry Radar (Strict IST)</h4>
+          <p class="text-xs text-stone-500 font-medium">Inspect active hourly traffic distribution and conversion performance.</p>
         </div>
         <div class="flex items-center gap-2">
           <label class="text-xs text-stone-600 font-bold">Select Date:</label>
@@ -241,7 +260,7 @@
 
       <div class="bg-white border border-stone-200 p-6 rounded-3xl space-y-4 shadow-sm">
         <div class="flex justify-between items-center">
-          <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider" id="hourlyTableHeading">24-Hour Telemetry Grid (Active Hours Highlighted)</h4>
+          <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider" id="hourlyTableHeading">Active Hourly Traffic Strip</h4>
           <span class="text-xs font-mono text-amberBrand-600 font-bold">Timezone: Asia/Kolkata (IST)</span>
         </div>
 
@@ -451,7 +470,6 @@
       }
     }
 
-    // Bind initialization to first interaction
     window.addEventListener('click', initAudioEngine, { once: true });
     window.addEventListener('touchstart', initAudioEngine, { once: true });
 
@@ -462,7 +480,6 @@
         const now = audioCtx.currentTime;
 
         if (eventType === "NEW_ORDER") {
-          // Urgent High-Energy Double Chime: E5 (659.25Hz) -> A5 (880.00Hz)
           const osc1 = audioCtx.createOscillator();
           const osc2 = audioCtx.createOscillator();
           const gain1 = audioCtx.createGain();
@@ -490,7 +507,6 @@
           osc2.stop(now + 0.65);
 
         } else if (eventType === "WALLET_TOPUP") {
-          // Metallic Coin Tone: B5 (987.77Hz) + E6 (1318.51Hz)
           const osc1 = audioCtx.createOscillator();
           const osc2 = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -513,7 +529,6 @@
           osc2.stop(now + 0.5);
 
         } else if (eventType === "WALLET_CLAIM") {
-          // Descending Minor Alert: G4 (392Hz) -> C4 (261.63Hz)
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
 
@@ -531,7 +546,6 @@
           osc.stop(now + 0.55);
 
         } else if (eventType === "SUPPORT_CHAT") {
-          // Soft Double Message Pop: C5 (523.25Hz) -> E5 (659.25Hz)
           const osc1 = audioCtx.createOscillator();
           const osc2 = audioCtx.createOscillator();
           const gain1 = audioCtx.createGain();
@@ -702,9 +716,46 @@
       btnWallet.innerText = isWalletOn ? "ENABLED" : "PAUSED";
       btnWallet.className = `px-5 py-2.5 rounded-xl font-black text-xs ${isWalletOn ? 'bg-green-600 text-white' : 'bg-amber-600 text-white'} shadow-sm min-h-[44px]`;
 
+      if (data.config && data.config.ANNOUNCEMENT_BANNER) {
+        const inp = document.getElementById("adminAnnouncementInput");
+        if (inp && !inp.value) inp.value = data.config.ANNOUNCEMENT_BANNER;
+      }
+
       renderOrdersList();
       renderClaimsList();
       renderMenuList();
+    }
+
+    async function saveAnnouncementBanner() {
+      const val = document.getElementById("adminAnnouncementInput").value.trim();
+      if (!val) {
+        showToast("Please enter announcement text.", "error");
+        return;
+      }
+
+      const btn = document.getElementById("btnSaveAnnouncement");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      try {
+        const res = await callBackendApi("ADMIN_UPDATE_CONFIG", {
+          pin: currentAdminPin,
+          key: "ANNOUNCEMENT_BANNER",
+          value: val
+        });
+        if (res.status === "SUCCESS") {
+          showToast("Announcement banner published live!", "success");
+          refreshAdminData();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (e) {
+        showToast("Banner update failed.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>Update Banner</span>`;
+        lucide.createIcons();
+      }
     }
 
     function filterOrders(status) {
@@ -738,6 +789,7 @@
             : raw;
         }
         const cleanTime = o.pickupTime ? String(o.pickupTime).trim() : "Flexible";
+        const phoneClean = String(o.customerPhone || "").replace(/\D/g, '').slice(-10);
 
         return `
           <div class="p-5 bg-white border border-stone-200 rounded-3xl space-y-3.5 shadow-sm hover:shadow-md transition">
@@ -751,6 +803,18 @@
               <span class="px-3 py-1 rounded-xl text-xs font-black ${o.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
                 ${String(o.orderStatus).replace('_', ' ')}
               </span>
+            </div>
+
+            <!-- DIRECT MOBILE & WHATSAPP VOICE CALLING BAR -->
+            <div class="flex items-center gap-2 pt-1 border-t border-stone-100">
+              <a href="tel:+91${phoneClean}" class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition min-h-[38px]">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-forest-800"></i>
+                <span>Call Mobile</span>
+              </a>
+              <a href="https://wa.me/91${phoneClean}?text=${encodeURIComponent(`Hello ${o.customerName}! Contacting from Yaady's Millet Roti Meals regarding Order Token #${String(o.orderId).slice(-4)} scheduled for pickup at ${cleanTime} IST.`)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition min-h-[38px]">
+                <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+                <span>WhatsApp Call</span>
+              </a>
             </div>
 
             <div class="text-xs md:text-sm text-stone-600 border-t border-b border-stone-100 py-2.5 space-y-1">
@@ -772,6 +836,7 @@
           </div>
         `;
       }).join("");
+      lucide.createIcons();
     }
 
     async function approveOrderPayment(rowIndex) {
@@ -849,7 +914,7 @@
     }
 
     // -------------------------------------------------------------
-    // HOURLY TELEMETRY RADAR (STRICT IST)
+    // COMPACT HOURLY TELEMETRY RADAR (INACTIVE WINDOWS COLLAPSED)
     // -------------------------------------------------------------
     async function fetchHourlyTrafficReport() {
       const dateVal = document.getElementById("trafficDateFilter").value || getIstTodayDateString();
@@ -872,12 +937,13 @@
           document.getElementById("hourlyRepeatVisits").innerText = repV;
           document.getElementById("hourlyOrdersPlaced").innerText = ords;
 
+          // Strictly filter to active hours to eliminate clutter and reduce height
           const activeHours = res.hourlyData.filter(h => h.totalVisits > 0 || h.ordersPlaced > 0);
 
           if (activeHours.length === 0) {
             container.innerHTML = `<div class="p-8 text-center text-stone-400 space-y-1">
-              <p class="font-bold text-sm">No visitor or order activity recorded for ${dateVal} in IST.</p>
-              <p class="text-xs">Hourly traffic increments automatically whenever customers browse the menu or place an order.</p>
+              <p class="font-bold text-sm">No customer activity recorded for this date (${dateVal}).</p>
+              <p class="text-xs">Active traffic windows appear here automatically when visits or checkouts occur.</p>
             </div>`;
             return;
           }
@@ -886,12 +952,11 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-stone-200 text-stone-500 text-xs font-extrabold">
-                  <th class="py-3 px-3">Hour Window (IST)</th>
-                  <th class="py-3 px-3">New Visits</th>
-                  <th class="py-3 px-3">Repeat Visits</th>
-                  <th class="py-3 px-3">Total Visits</th>
-                  <th class="py-3 px-3">Orders Converted</th>
-                  <th class="py-3 px-3">Conversion Rate</th>
+                  <th class="py-2.5 px-3">Hour Window (IST)</th>
+                  <th class="py-2.5 px-3">Visits (New / Repeat)</th>
+                  <th class="py-2.5 px-3">Total Visits</th>
+                  <th class="py-2.5 px-3">Orders Converted</th>
+                  <th class="py-2.5 px-3">Conversion %</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-stone-100">
@@ -899,12 +964,11 @@
                   const convRate = row.totalVisits > 0 ? ((row.ordersPlaced / row.totalVisits) * 100).toFixed(1) + "%" : "0.0%";
                   return `
                     <tr class="hover:bg-stone-50 transition">
-                      <td class="py-3.5 px-3 font-mono font-bold text-forest-900">${row.label}</td>
-                      <td class="py-3.5 px-3 text-stone-700 font-semibold">${row.newVisits}</td>
-                      <td class="py-3.5 px-3 text-amberBrand-600 font-semibold">${row.repeatVisits}</td>
-                      <td class="py-3.5 px-3 text-green-700 font-black">${row.totalVisits}</td>
-                      <td class="py-3.5 px-3 text-forest-800 font-black">${row.ordersPlaced}</td>
-                      <td class="py-3.5 px-3 text-stone-500 font-semibold">${convRate}</td>
+                      <td class="py-2 px-3 font-mono font-bold text-forest-900">${row.label}</td>
+                      <td class="py-2 px-3 text-stone-700 font-semibold">${row.newVisits} new / ${row.repeatVisits} rep</td>
+                      <td class="py-2 px-3 text-green-700 font-black">${row.totalVisits}</td>
+                      <td class="py-2 px-3 text-amberBrand-600 font-black">${row.ordersPlaced}</td>
+                      <td class="py-2 px-3 text-stone-500 font-semibold">${convRate}</td>
                     </tr>
                   `;
                 }).join("")}
@@ -1018,7 +1082,7 @@
                 <img src="${item.image}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600';" class="w-16 h-16 rounded-2xl object-cover" />
                 <div class="flex-1">
                   <h5 class="font-black text-forest-900 text-base">${item.name}</h5>
-                  <p class="text-xs text-stone-500 font-medium">Price: ₹${item.price} • ${item.milletType}</p>
+                  <p class="text-xs text-stone-500 font-medium">Price: ₹${item.price} • ${item.milletType} • ${item.prepTimeMins || 15}m prep</p>
                 </div>
                 <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3.5 py-2 rounded-xl font-black text-xs ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} min-h-[40px]">
                   ${item.available ? 'In Stock' : 'Sold Out'}
