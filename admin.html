@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Yaady's Kitchen Partner | Central Operations Console</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,13 +26,30 @@
       }
     }
   </script>
-</head>
-<body class="bg-linen text-stone-800 font-sans antialiased min-h-screen pb-12 text-sm md:text-base">
 
-  <!-- Stacking Toast Container -->
+  <style>
+    body {
+      background-color: #FAF7F2;
+      font-size: 16px;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+    }
+    .min-h-dvh { min-height: 100dvh; }
+    .max-h-sheet { max-height: 88dvh; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-linen text-stone-800 antialiased font-sans pb-16 text-sm md:text-base select-none">
+
+  <!-- HIGHEST PRIORITY TOAST CONTAINER -->
   <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 max-w-sm w-full px-4 pointer-events-none"></div>
 
-  <!-- HEADER MATCHING BRAND THEME -->
+  <!-- HEADER -->
   <header class="bg-forest-800 text-white border-b border-forest-900 sticky top-0 z-40 px-5 py-4 flex items-center justify-between shadow-md">
     <div class="flex items-center gap-3.5">
       <div class="w-11 h-11 rounded-2xl bg-amber-500 text-forest-900 flex items-center justify-center font-black text-2xl shadow-sm">
@@ -45,12 +62,12 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <button onclick="openOnlineUsersModal()" class="flex items-center gap-2 bg-forest-900/80 hover:bg-forest-900 text-white px-4 py-2 rounded-2xl border border-forest-700 transition shadow-sm" title="Click to view online customers">
+      <button onclick="openOnlineUsersModal()" class="flex items-center gap-2 bg-forest-900/80 hover:bg-forest-900 text-white px-4 py-2 rounded-2xl border border-forest-700 transition shadow-sm min-h-[44px]" title="Click to view online customers">
         <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
         <span class="text-xs font-black text-white" id="onlineUsersCountPill">🟢 Online: 0</span>
       </button>
 
-      <button onclick="logoutAdmin()" id="logoutBtn" class="hidden text-xs font-black text-stone-200 hover:text-white px-3.5 py-2 rounded-xl border border-forest-700 hover:bg-forest-900 transition">
+      <button onclick="logoutAdmin()" id="logoutBtn" class="hidden text-xs font-black text-stone-200 hover:text-white px-3.5 py-2 rounded-xl border border-forest-700 hover:bg-forest-900 transition min-h-[44px]">
         Lock
       </button>
     </div>
@@ -63,8 +80,8 @@
     </div>
     <h3 class="text-xl font-black text-forest-900">Kitchen Console Gateway</h3>
     <p class="text-xs text-stone-500 font-medium">Enter Admin PIN configured in Google Sheets Config tab.</p>
-    <input type="password" id="adminPinInput" placeholder="Default: 1234" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-300 rounded-2xl text-center text-xl font-mono font-black text-forest-900 outline-none focus:border-forest-800" />
-    <button onclick="unlockConsole()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow">
+    <input type="password" id="adminPinInput" placeholder="Default: 1234" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-300 rounded-2xl text-center text-xl font-mono font-black text-forest-900 outline-none focus:border-forest-800 min-h-[48px]" />
+    <button onclick="unlockConsole()" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow min-h-[48px]">
       Unlock Operations Console
     </button>
   </div>
@@ -83,7 +100,7 @@
             <h4 class="font-black text-base text-forest-900">Kitchen Order Acceptance</h4>
             <p class="text-xs text-stone-500">Controls whether customers can place pickup orders.</p>
           </div>
-          <button onclick="toggleKitchenOpen()" id="btnKitchenOpenToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm">
+          <button onclick="toggleKitchenOpen()" id="btnKitchenOpenToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm min-h-[44px]">
             OPEN
           </button>
         </div>
@@ -93,7 +110,7 @@
             <h4 class="font-black text-base text-forest-900">Wallet & Prepay System</h4>
             <p class="text-xs text-stone-500">Disables top-ups & wallet deductions when paused.</p>
           </div>
-          <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm">
+          <button onclick="toggleWalletSystem()" id="btnWalletSystemToggle" class="px-5 py-2.5 rounded-xl font-black text-xs bg-green-600 text-white shadow-sm min-h-[44px]">
             ENABLED
           </button>
         </div>
@@ -102,34 +119,34 @@
 
     <!-- NAVIGATION TABS -->
     <div class="flex gap-2 border-b border-stone-200 pb-2 overflow-x-auto no-scrollbar">
-      <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm">
+      <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm transition min-h-[44px]">
         Live Orders Cockpit
       </button>
-      <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+      <button onclick="switchAdminTab('reports')" id="tabBtnReports" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]">
         Business Reports
       </button>
-      <button onclick="switchAdminTab('traffic')" id="tabBtnTraffic" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+      <button onclick="switchAdminTab('traffic')" id="tabBtnTraffic" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]">
         Hourly Telemetry Radar
       </button>
-      <button onclick="switchAdminTab('chat')" id="tabBtnChat" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+      <button onclick="switchAdminTab('chat')" id="tabBtnChat" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]">
         Customer Support Chat
       </button>
-      <button onclick="switchAdminTab('menu')" id="tabBtnMenu" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+      <button onclick="switchAdminTab('menu')" id="tabBtnMenu" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]">
         Menu Master & Inventory
       </button>
-      <button onclick="switchAdminTab('claims')" id="tabBtnClaims" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition">
+      <button onclick="switchAdminTab('claims')" id="tabBtnClaims" class="px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]">
         Wallet Claims & Top-Ups
       </button>
     </div>
 
-    <!-- COCKPIT 1: LIVE ORDERS (CLEAN PICKUP TIME IN IST) -->
+    <!-- COCKPIT 1: LIVE ORDERS -->
     <section id="cockpitOrders" class="space-y-4">
       <div class="flex gap-2.5 overflow-x-auto no-scrollbar">
-        <button onclick="filterOrders('ALL')" class="order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm">All Orders</button>
-        <button onclick="filterOrders('Pending_Verification')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Pending Verification</button>
-        <button onclick="filterOrders('Kitchen_Accepted')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Accepted</button>
-        <button onclick="filterOrders('Preparing')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Millet Stove</button>
-        <button onclick="filterOrders('Ready_For_Pickup')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50">Ready for Counter</button>
+        <button onclick="filterOrders('ALL')" class="order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm transition min-h-[40px]">All Orders</button>
+        <button onclick="filterOrders('Pending_Verification')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition min-h-[40px]">Pending Verification</button>
+        <button onclick="filterOrders('Kitchen_Accepted')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition min-h-[40px]">Accepted</button>
+        <button onclick="filterOrders('Preparing')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition min-h-[40px]">Millet Stove</button>
+        <button onclick="filterOrders('Ready_For_Pickup')" class="order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition min-h-[40px]">Ready for Counter</button>
       </div>
 
       <div id="adminOrdersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -137,14 +154,14 @@
       </div>
     </section>
 
-    <!-- COCKPIT 2: DAILY BUSINESS REPORTS (PICKUP TIME IN IST) -->
+    <!-- COCKPIT 2: DAILY BUSINESS REPORTS -->
     <section id="cockpitReports" class="hidden space-y-5">
       <div class="bg-white border border-stone-200 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 shadow-sm">
         <div>
           <h4 class="text-lg font-black text-forest-900">Kitchen Daily Ledger Report (IST)</h4>
           <p class="text-xs text-stone-500 font-medium">Real-time revenue, conversions, and roti production metrics.</p>
         </div>
-        <input type="date" id="reportDateInput" onchange="fetchDaywiseReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none" />
+        <input type="date" id="reportDateInput" onchange="fetchDaywiseReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none min-h-[44px]" />
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
@@ -174,9 +191,9 @@
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider">Itemized Orders Ledger</h4>
           <div class="flex gap-2 text-xs">
-            <button onclick="sortReportOrders('time')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Time</button>
-            <button onclick="sortReportOrders('value')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Amount</button>
-            <button onclick="sortReportOrders('status')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition">Sort by Status</button>
+            <button onclick="sortReportOrders('time')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition min-h-[38px]">Sort by Time</button>
+            <button onclick="sortReportOrders('value')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition min-h-[38px]">Sort by Amount</button>
+            <button onclick="sortReportOrders('status')" class="px-3.5 py-1.5 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-bold transition min-h-[38px]">Sort by Status</button>
           </div>
         </div>
 
@@ -186,7 +203,7 @@
       </div>
     </section>
 
-    <!-- COCKPIT 3: COMPACT HOURLY TELEMETRY RADAR FOR SELECTED DAY -->
+    <!-- COCKPIT 3: HOURLY TELEMETRY RADAR -->
     <section id="cockpitTraffic" class="hidden space-y-5">
       <div class="bg-white border border-stone-200 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 shadow-sm">
         <div>
@@ -195,7 +212,7 @@
         </div>
         <div class="flex items-center gap-2">
           <label class="text-xs text-stone-600 font-bold">Select Date:</label>
-          <input type="date" id="trafficDateFilter" onchange="fetchHourlyTrafficReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none" />
+          <input type="date" id="trafficDateFilter" onchange="fetchHourlyTrafficReport()" class="bg-stone-50 border border-stone-300 text-forest-900 font-black text-sm p-3 rounded-xl outline-none min-h-[44px]" />
         </div>
       </div>
 
@@ -235,7 +252,7 @@
     </section>
 
     <!-- COCKPIT 4: 2-WAY SUPPORT CHAT -->
-    <section id="cockpitChat" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 h-[72vh]">
+    <section id="cockpitChat" class="hidden grid grid-cols-1 md:grid-cols-12 gap-4 h-[72dvh]">
       <div class="md:col-span-4 bg-white border border-stone-200 rounded-3xl p-4 overflow-y-auto space-y-2 shadow-sm">
         <h4 class="text-xs font-black text-stone-400 uppercase tracking-wider mb-2">Customer Threads</h4>
         <div id="chatThreadsList" class="space-y-1.5">
@@ -254,8 +271,8 @@
           <p class="text-stone-400 text-center py-12 text-sm">Select a customer thread on the left to review messages.</p>
         </div>
         <div class="p-3.5 bg-white border-t border-stone-200 flex gap-2">
-          <input type="text" id="adminReplyInput" onkeydown="if(event.key==='Enter') sendAdminChatReply()" placeholder="Type reply as Kitchen Desk..." class="flex-1 px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-900 outline-none focus:ring-2 focus:ring-forest-800" />
-          <button onclick="sendAdminChatReply()" class="px-5 py-3 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition shadow">
+          <input type="text" id="adminReplyInput" onkeydown="if(event.key==='Enter') sendAdminChatReply()" placeholder="Type reply as Kitchen Desk..." class="flex-1 px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl text-sm text-stone-900 outline-none focus:ring-2 focus:ring-forest-800 min-h-[48px]" />
+          <button onclick="sendAdminChatReply()" class="px-5 py-3 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition shadow min-h-[48px]">
             Reply
           </button>
         </div>
@@ -269,7 +286,7 @@
           <h4 class="text-base font-black text-forest-900">Menu Item Master & Stock Control</h4>
           <p class="text-xs text-stone-500 font-medium">Update pricing, toggle stock, or add seasonal preparations.</p>
         </div>
-        <button onclick="openAddMealModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-xs md:text-sm rounded-xl flex items-center gap-1.5 shadow transition">
+        <button onclick="openAddMealModal()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-xs md:text-sm rounded-xl flex items-center gap-1.5 shadow transition min-h-[44px]">
           <i data-lucide="plus" class="w-4 h-4"></i>
           <span>Add New Meal Item</span>
         </button>
@@ -302,15 +319,17 @@
     </section>
   </main>
 
-  <!-- ONLINE CUSTOMERS RADAR MODAL -->
-  <div id="onlineUsersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white border border-stone-200 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+  <!-- ONLINE CUSTOMERS RADAR MODAL / DRAWER -->
+  <div id="onlineUsersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white border border-stone-200 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4 max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
       <div class="flex justify-between items-center border-b border-stone-100 pb-3">
         <h3 class="text-base font-black text-forest-900 flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
           <span>Online Customers (Last 60s)</span>
         </h3>
-        <button onclick="closeOnlineUsersModal()" class="text-stone-400 hover:text-stone-700">&times;</button>
+        <button onclick="closeOnlineUsersModal()" class="text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">&times;</button>
       </div>
       <div id="onlineUsersList" class="divide-y divide-stone-100 max-h-64 overflow-y-auto text-xs md:text-sm text-stone-700">
         <p class="text-stone-400 text-center py-4">Checking telemetry sessions...</p>
@@ -318,23 +337,25 @@
     </div>
   </div>
 
-  <!-- ADD NEW MEAL ITEM MODAL -->
-  <div id="addMealModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white border border-stone-200 w-full max-w-lg rounded-3xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+  <!-- ADD NEW MEAL ITEM MODAL / DRAWER -->
+  <div id="addMealModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white border border-stone-200 w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4 max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
       <div class="flex justify-between items-center border-b border-stone-100 pb-3">
         <h3 class="text-lg font-black text-forest-900">Add New Meal Item to Menu</h3>
-        <button onclick="closeAddMealModal()" class="text-stone-400 hover:text-stone-700">&times;</button>
+        <button onclick="closeAddMealModal()" class="text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">&times;</button>
       </div>
 
       <form id="addMealForm" onsubmit="submitNewMeal(event)" class="space-y-3.5 text-xs md:text-sm">
         <div>
           <label class="block text-stone-600 font-extrabold mb-1">Meal Name</label>
-          <input type="text" id="newMealName" required placeholder="e.g. Bajra Masala Roti Plate" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none font-bold" />
+          <input type="text" id="newMealName" required placeholder="e.g. Bajra Masala Roti Plate" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none font-bold min-h-[48px]" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-stone-600 font-extrabold mb-1">Category</label>
-            <select id="newMealCategory" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none">
+            <select id="newMealCategory" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none min-h-[48px]">
               <option value="Millet Rotis">Millet Rotis</option>
               <option value="Combo Meals">Combo Meals</option>
               <option value="Curries & Sides">Curries & Sides</option>
@@ -343,17 +364,17 @@
           </div>
           <div>
             <label class="block text-stone-600 font-extrabold mb-1">Millet Type</label>
-            <input type="text" id="newMealMillet" placeholder="e.g. Bajra / Pearl Millet" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
+            <input type="text" id="newMealMillet" placeholder="e.g. Bajra / Pearl Millet" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none min-h-[48px]" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-stone-600 font-extrabold mb-1">Base Price (₹)</label>
-            <input type="number" id="newMealPrice" required min="10" placeholder="140" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none" />
+            <input type="number" id="newMealPrice" required min="10" placeholder="140" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none min-h-[48px]" />
           </div>
           <div>
             <label class="block text-stone-600 font-extrabold mb-1">Prep Time (Mins)</label>
-            <input type="number" id="newMealPrep" value="20" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
+            <input type="number" id="newMealPrep" value="20" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none min-h-[48px]" />
           </div>
         </div>
         <div>
@@ -362,23 +383,25 @@
         </div>
         <div>
           <label class="block text-stone-600 font-extrabold mb-1">Nutritional Info String</label>
-          <input type="text" id="newMealNutrition" value="Cal: 340kcal | Protein: 8g | Fiber: 9g" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none" />
+          <input type="text" id="newMealNutrition" value="Cal: 340kcal | Protein: 8g | Fiber: 9g" class="w-full p-3 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 outline-none min-h-[48px]" />
         </div>
         <div>
           <label class="block text-stone-600 font-extrabold mb-1">Photo Upload (Saved to Drive)</label>
           <input type="file" id="newMealPhoto" accept="image/*" class="w-full text-stone-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-stone-200 file:text-stone-800" />
         </div>
 
-        <button type="submit" id="btnSubmitNewMeal" class="w-full py-3.5 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition mt-2 shadow">
+        <button type="submit" id="btnSubmitNewMeal" class="w-full py-3.5 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm rounded-xl transition mt-2 shadow min-h-[48px]">
           Save & Publish to Active Menu
         </button>
       </form>
     </div>
   </div>
 
-  <!-- DISBURSEMENT CLAIM MODAL -->
-  <div id="claimApprovalModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white border border-stone-200 w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
+  <!-- DISBURSEMENT CLAIM MODAL / DRAWER -->
+  <div id="claimApprovalModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white border border-stone-200 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4 max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
       <h3 class="text-base font-black text-forest-900">Approve & Issue Claim Acknowledgment</h3>
       <div class="p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-xs space-y-1">
         <p class="text-stone-500">Claim ID: <span id="modalClaimId" class="font-bold text-stone-900"></span></p>
@@ -387,11 +410,11 @@
       </div>
       <div>
         <label class="block text-xs font-black text-stone-700 mb-1">Bank Transfer 12-Digit UTR <span class="text-red-500">*</span></label>
-        <input type="text" id="modalTransferUtr" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-base font-mono font-black text-stone-900 outline-none focus:ring-2 focus:ring-forest-800" />
+        <input type="text" id="modalTransferUtr" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-2xl text-base font-mono font-black text-stone-900 outline-none focus:ring-2 focus:ring-forest-800 min-h-[48px]" />
       </div>
       <div class="flex gap-2">
-        <button onclick="closeClaimModal()" class="flex-1 py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-2xl transition">Cancel</button>
-        <button onclick="confirmClaimDisbursement()" id="btnConfirmClaimDisburse" class="flex-1 py-3 bg-green-700 hover:bg-green-800 text-white font-black text-xs rounded-2xl transition shadow">
+        <button onclick="closeClaimModal()" class="flex-1 py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-2xl transition min-h-[44px]">Cancel</button>
+        <button onclick="confirmClaimDisbursement()" id="btnConfirmClaimDisburse" class="flex-1 py-3 bg-green-700 hover:bg-green-800 text-white font-black text-xs rounded-2xl transition shadow min-h-[44px]">
           Disburse & Issue PDF
         </button>
       </div>
@@ -409,7 +432,135 @@
     let activeChatCustomerId = null;
     let daywiseReportOrdersCache = [];
 
-    // Strict IST Helper
+    // Change detection sets
+    const seenOrderIds = new Set();
+    const seenRechargeIds = new Set();
+    const seenClaimIds = new Set();
+    const seenChatIds = new Set();
+    let isInitialSync = true;
+
+    // Web Audio Synthesizer Context
+    let audioCtx = null;
+
+    function initAudioEngine() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Bind initialization to first interaction
+    window.addEventListener('click', initAudioEngine, { once: true });
+    window.addEventListener('touchstart', initAudioEngine, { once: true });
+
+    function playAdminChime(eventType) {
+      try {
+        initAudioEngine();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        if (eventType === "NEW_ORDER") {
+          // Urgent High-Energy Double Chime: E5 (659.25Hz) -> A5 (880.00Hz)
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain1 = audioCtx.createGain();
+          const gain2 = audioCtx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(659.25, now);
+          osc2.frequency.setValueAtTime(880.00, now + 0.15);
+
+          gain1.gain.setValueAtTime(0.3, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          gain2.gain.setValueAtTime(0.3, now + 0.15);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+          osc1.connect(gain1);
+          gain1.connect(audioCtx.destination);
+          osc2.connect(gain2);
+          gain2.connect(audioCtx.destination);
+
+          osc1.start(now);
+          osc1.stop(now + 0.35);
+          osc2.start(now + 0.15);
+          osc2.stop(now + 0.65);
+
+        } else if (eventType === "WALLET_TOPUP") {
+          // Metallic Coin Tone: B5 (987.77Hz) + E6 (1318.51Hz)
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc1.type = 'triangle';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(987.77, now);
+          osc2.frequency.setValueAtTime(1318.51, now);
+
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.5);
+          osc2.stop(now + 0.5);
+
+        } else if (eventType === "WALLET_CLAIM") {
+          // Descending Minor Alert: G4 (392Hz) -> C4 (261.63Hz)
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(392.00, now);
+          osc.frequency.linearRampToValueAtTime(261.63, now + 0.4);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.55);
+
+        } else if (eventType === "SUPPORT_CHAT") {
+          // Soft Double Message Pop: C5 (523.25Hz) -> E5 (659.25Hz)
+          const osc1 = audioCtx.createOscillator();
+          const osc2 = audioCtx.createOscillator();
+          const gain1 = audioCtx.createGain();
+          const gain2 = audioCtx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'sine';
+          osc1.frequency.setValueAtTime(523.25, now);
+          osc2.frequency.setValueAtTime(659.25, now + 0.09);
+
+          gain1.gain.setValueAtTime(0.2, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+          gain2.gain.setValueAtTime(0.2, now + 0.09);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+          osc1.connect(gain1);
+          gain1.connect(audioCtx.destination);
+          osc2.connect(gain2);
+          gain2.connect(audioCtx.destination);
+
+          osc1.start(now);
+          osc1.stop(now + 0.08);
+          osc2.start(now + 0.09);
+          osc2.stop(now + 0.22);
+        }
+      } catch (err) {}
+    }
+
     function getIstTodayDateString() {
       return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
     }
@@ -426,23 +577,37 @@
         if (currentAdminPin) {
           refreshAdminData();
           pollOnlineUsers();
+          pollChatThreads();
         }
       }, 10000);
     });
 
-    function showToast(msg, type = "info") {
+    function showToast(msg, type = "info", actionText = null, actionCb = null) {
       const c = document.getElementById("toastContainer");
       const toast = document.createElement("div");
-      const bg = type === "error" ? "bg-red-800 text-white" : type === "success" ? "bg-forest-800 text-white" : "bg-stone-800 text-white";
-      toast.className = `${bg} p-4 rounded-2xl text-xs md:text-sm font-bold shadow-2xl flex items-center justify-between gap-2 border border-white/20`;
-      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100 text-lg">&times;</button>`;
+      const bg = type === "error" ? "bg-red-900 text-white" : type === "success" ? "bg-forest-800 text-white" : "bg-stone-800 text-white";
+      toast.className = `${bg} p-4 rounded-2xl text-xs md:text-sm font-bold shadow-2xl flex items-center justify-between gap-3 border border-white/20 pointer-events-auto transition-transform`;
+      
+      let actionBtnHtml = "";
+      if (actionText) {
+        actionBtnHtml = `<button class="toast-action-btn bg-amber-500 hover:bg-amber-600 text-forest-900 px-3 py-1 rounded-xl text-xs font-black shadow-sm">${actionText}</button>`;
+      }
+
+      toast.innerHTML = `<span>${msg}</span><div class="flex items-center gap-2">${actionBtnHtml}<button onclick="this.closest('div.pointer-events-auto').remove()" class="opacity-70 hover:opacity-100 text-lg">&times;</button></div>`;
+      
+      if (actionText && actionCb) {
+        const btn = toast.querySelector(".toast-action-btn");
+        if (btn) btn.onclick = () => { actionCb(); toast.remove(); };
+      }
+
       c.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
+      setTimeout(() => toast.remove(), 5500);
     }
 
     async function unlockConsole() {
       const pin = currentAdminPin || document.getElementById("adminPinInput").value.trim();
       currentAdminPin = pin;
+      initAudioEngine();
 
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getAdminData&pin=${pin}`).then(r => r.json());
@@ -478,7 +643,49 @@
     async function refreshAdminData() {
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getAdminData&pin=${currentAdminPin}`).then(r => r.json());
-        if (res.status === "SUCCESS") renderAdminDashboard(res);
+        if (res.status === "SUCCESS") {
+          if (!isInitialSync) {
+            (res.orders || []).forEach(o => {
+              const oId = String(o.orderId);
+              if (!seenOrderIds.has(oId)) {
+                seenOrderIds.add(oId);
+                playAdminChime("NEW_ORDER");
+                showToast(`🔔 New Order #${oId.slice(-4)} (${o.customerName}) received!`, "success", "View", () => {
+                  switchAdminTab('orders');
+                });
+              }
+            });
+
+            (res.pendingRecharges || []).forEach(r => {
+              const rId = String(r.txnId);
+              if (!seenRechargeIds.has(rId)) {
+                seenRechargeIds.add(rId);
+                playAdminChime("WALLET_TOPUP");
+                showToast(`💰 New Wallet Top-Up (₹${r.amount}) awaiting UTR verification!`, "info", "Review", () => {
+                  switchAdminTab('claims');
+                });
+              }
+            });
+
+            (res.pendingClaims || []).forEach(c => {
+              const cId = String(c.claimId);
+              if (!seenClaimIds.has(cId)) {
+                seenClaimIds.add(cId);
+                playAdminChime("WALLET_CLAIM");
+                showToast(`⚠️ Refund Claim (₹${c.amount}) awaiting UPI disbursement!`, "error", "Process", () => {
+                  switchAdminTab('claims');
+                });
+              }
+            });
+          } else {
+            (res.orders || []).forEach(o => seenOrderIds.add(String(o.orderId)));
+            (res.pendingRecharges || []).forEach(r => seenRechargeIds.add(String(r.txnId)));
+            (res.pendingClaims || []).forEach(c => seenClaimIds.add(String(c.claimId)));
+            isInitialSync = false;
+          }
+
+          renderAdminDashboard(res);
+        }
       } catch (e) {}
     }
 
@@ -488,12 +695,12 @@
       const isKitchenOpen = String(data.config.KITCHEN_OPEN).toUpperCase() === "TRUE";
       const btnKitchen = document.getElementById("btnKitchenOpenToggle");
       btnKitchen.innerText = isKitchenOpen ? "OPEN" : "CLOSED";
-      btnKitchen.className = `px-5 py-2.5 rounded-xl font-black text-xs ${isKitchenOpen ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`;
+      btnKitchen.className = `px-5 py-2.5 rounded-xl font-black text-xs ${isKitchenOpen ? 'bg-green-600 text-white' : 'bg-red-600 text-white'} shadow-sm min-h-[44px]`;
 
       const isWalletOn = String(data.config.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
       const btnWallet = document.getElementById("btnWalletSystemToggle");
       btnWallet.innerText = isWalletOn ? "ENABLED" : "PAUSED";
-      btnWallet.className = `px-5 py-2.5 rounded-xl font-black text-xs ${isWalletOn ? 'bg-green-600 text-white' : 'bg-amber-600 text-white'}`;
+      btnWallet.className = `px-5 py-2.5 rounded-xl font-black text-xs ${isWalletOn ? 'bg-green-600 text-white' : 'bg-amber-600 text-white'} shadow-sm min-h-[44px]`;
 
       renderOrdersList();
       renderClaimsList();
@@ -503,9 +710,9 @@
     function filterOrders(status) {
       currentOrderFilter = status;
       document.querySelectorAll(".order-filter-btn").forEach(b => {
-        b.className = "order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition";
+        b.className = "order-filter-btn px-4 py-2 rounded-xl bg-white border border-stone-200 text-xs font-bold text-stone-600 hover:bg-stone-50 transition min-h-[40px]";
       });
-      event.target.className = "order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm transition";
+      event.target.className = "order-filter-btn active px-4 py-2 rounded-xl bg-forest-800 text-xs font-black text-white shadow-sm transition min-h-[40px]";
       renderOrdersList();
     }
 
@@ -556,11 +763,11 @@
 
             <div class="flex flex-wrap gap-2 pt-1">
               ${o.orderStatus === 'Pending_Verification' ? `
-                <button onclick="approveOrderPayment(${o.rowIndex})" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-black shadow-sm transition">Verify Payment</button>
+                <button onclick="approveOrderPayment(${o.rowIndex})" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-xl text-xs font-black shadow-sm transition min-h-[40px]">Verify Payment</button>
               ` : ''}
-              <button onclick="setOrderStatus(${o.rowIndex}, 'Preparing')" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-bold transition">Millet Stove</button>
-              <button onclick="setOrderStatus(${o.rowIndex}, 'Ready_For_Pickup')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl text-xs font-black shadow-sm transition">Ready Counter</button>
-              <button onclick="setOrderStatus(${o.rowIndex}, 'Completed')" class="px-4 py-2 bg-forest-800 hover:bg-forest-900 text-white rounded-xl text-xs font-bold shadow-sm transition">Picked Up</button>
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Preparing')" class="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-bold transition min-h-[40px]">Millet Stove</button>
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Ready_For_Pickup')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl text-xs font-black shadow-sm transition min-h-[40px]">Ready Counter</button>
+              <button onclick="setOrderStatus(${o.rowIndex}, 'Completed')" class="px-4 py-2 bg-forest-800 hover:bg-forest-900 text-white rounded-xl text-xs font-bold shadow-sm transition min-h-[40px]">Picked Up</button>
             </div>
           </div>
         `;
@@ -642,7 +849,7 @@
     }
 
     // -------------------------------------------------------------
-    // HOURLY TELEMETRY RADAR FOR SELECTED DAY (STRICT IST)
+    // HOURLY TELEMETRY RADAR (STRICT IST)
     // -------------------------------------------------------------
     async function fetchHourlyTrafficReport() {
       const dateVal = document.getElementById("trafficDateFilter").value || getIstTodayDateString();
@@ -724,8 +931,21 @@
             return;
           }
 
+          res.threads.forEach(t => {
+            const lastMsgKey = `${t.customerId}_${t.lastTimestamp}`;
+            if (!seenChatIds.has(lastMsgKey) && t.sender === "CUSTOMER" && !isInitialSync) {
+              seenChatIds.add(lastMsgKey);
+              playAdminChime("SUPPORT_CHAT");
+              showToast(`💬 New message from ${t.customerName}: "${t.lastMessage}"`, "info", "Reply", () => {
+                switchAdminTab('chat');
+                selectChatThread(t.customerId, t.customerName);
+              });
+            }
+            seenChatIds.add(lastMsgKey);
+          });
+
           list.innerHTML = res.threads.map(t => `
-            <div onclick="selectChatThread('${t.customerId}', '${t.customerName}')" class="p-3 rounded-xl cursor-pointer transition ${activeChatCustomerId === t.customerId ? 'bg-amber-50 border border-amber-200' : 'bg-stone-50 hover:bg-stone-100'}">
+            <div onclick="selectChatThread('${t.customerId}', '${t.customerName}')" class="p-3 rounded-xl cursor-pointer transition ${activeChatCustomerId === t.customerId ? 'bg-amber-50 border border-amber-200' : 'bg-stone-50 hover:bg-stone-100'} min-h-[48px]">
               <div class="flex justify-between items-center">
                 <span class="font-black text-xs md:text-sm text-forest-900">${t.customerName}</span>
                 ${t.unreadCount > 0 ? `<span class="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-black rounded-full">${t.unreadCount}</span>` : ''}
@@ -800,17 +1020,17 @@
                   <h5 class="font-black text-forest-900 text-base">${item.name}</h5>
                   <p class="text-xs text-stone-500 font-medium">Price: ₹${item.price} • ${item.milletType}</p>
                 </div>
-                <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3.5 py-2 rounded-xl font-black text-xs ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                <button onclick="toggleMenuStock('${item.id}', ${!item.available})" class="px-3.5 py-2 rounded-xl font-black text-xs ${item.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} min-h-[40px]">
                   ${item.available ? 'In Stock' : 'Sold Out'}
                 </button>
               </div>
 
               <div class="flex items-center justify-between pt-2 border-t border-stone-100 text-xs">
                 <div class="flex items-center gap-2">
-                  <input type="number" id="price_${item.id}" value="${item.price}" class="w-20 px-2.5 py-1.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none" />
-                  <button onclick="updateItemPrice('${item.id}')" class="px-3.5 py-1.5 bg-forest-800 hover:bg-forest-900 rounded-xl font-black text-white transition">Save</button>
+                  <input type="number" id="price_${item.id}" value="${item.price}" class="w-20 px-2.5 py-1.5 bg-stone-50 border border-stone-300 rounded-xl text-stone-900 font-black outline-none min-h-[40px]" />
+                  <button onclick="updateItemPrice('${item.id}')" class="px-3.5 py-1.5 bg-forest-800 hover:bg-forest-900 rounded-xl font-black text-white transition min-h-[40px]">Save</button>
                 </div>
-                <button onclick="deleteMenuItem('${item.id}', '${item.name}')" class="px-3.5 py-1.5 text-red-600 hover:text-red-800 font-bold transition">Remove</button>
+                <button onclick="deleteMenuItem('${item.id}', '${item.name}')" class="px-3.5 py-1.5 text-red-600 hover:text-red-800 font-bold transition min-h-[40px]">Remove</button>
               </div>
             </div>
           `).join("");
@@ -936,7 +1156,7 @@
               <p class="font-black text-forest-900 text-base">₹${c.amount} • <span class="font-mono text-amberBrand-600">${c.payoutUpi}</span></p>
               <p class="text-xs text-stone-500">Cust: ${c.customerId} • Reason: ${c.reason}</p>
             </div>
-            <button onclick="openClaimModal('${c.claimId}', '${c.payoutUpi}', ${c.amount}, ${c.rowIndex})" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl font-black text-xs md:text-sm transition shadow-sm">
+            <button onclick="openClaimModal('${c.claimId}', '${c.payoutUpi}', ${c.amount}, ${c.rowIndex})" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-forest-900 rounded-xl font-black text-xs md:text-sm transition shadow-sm min-h-[44px]">
               Disburse & Issue PDF
             </button>
           </div>
@@ -954,7 +1174,7 @@
               <p class="text-xs text-amberBrand-600 font-mono font-bold">Token: ${r.txnId}</p>
               <p class="text-xs text-stone-500">Cust: ${r.customerId}</p>
             </div>
-            <button onclick="approveWalletRecharge(${r.rowIndex})" class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl font-black text-xs md:text-sm transition shadow-sm">
+            <button onclick="approveWalletRecharge(${r.rowIndex})" class="px-5 py-2.5 bg-green-700 hover:bg-green-800 text-white rounded-xl font-black text-xs md:text-sm transition shadow-sm min-h-[44px]">
               Confirm Credit
             </button>
           </div>
@@ -1037,8 +1257,8 @@
         const btn = document.getElementById(`tabBtn${capitalize(tab)}`);
         if (btn) {
           btn.className = (t === tab)
-            ? "px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm transition"
-            : "px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition";
+            ? "px-5 py-2.5 rounded-2xl bg-forest-800 text-white font-black text-xs md:text-sm whitespace-nowrap shadow-sm transition min-h-[44px]"
+            : "px-5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 font-extrabold text-xs md:text-sm whitespace-nowrap hover:bg-stone-50 transition min-h-[44px]";
         }
       });
       if (t === "traffic") fetchHourlyTrafficReport();

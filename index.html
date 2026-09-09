@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Yaady's Millet Roti Meals | Traditional Millet Kitchen</title>
   
   <link rel="manifest" href='data:application/manifest+json,{"name":"Yaady&#39;s Millet Roti Meals","short_name":"Yaady&#39;s","start_url":".","display":"standalone","background_color":"#FAF7F2","theme_color":"#1C3D2B","icons":[{"src":"https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=192&h=192&fit=crop","sizes":"192x192","type":"image/png"}]}' />
@@ -32,27 +32,38 @@
   </script>
 
   <style>
-    body { background-color: #FAF7F2; font-size: 17px; -webkit-tap-highlight-color: transparent; }
+    body {
+      background-color: #FAF7F2;
+      font-size: 17px;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
+    }
+    .min-h-dvh { min-height: 100dvh; }
+    .max-h-sheet { max-height: 88dvh; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="text-stone-800 antialiased font-sans pb-28 lg:pb-8 lg:pl-72 text-base md:text-lg">
+<body class="text-stone-800 antialiased font-sans pb-28 lg:pb-8 lg:pl-72 text-base md:text-lg select-none">
 
-  <!-- HIGHEST PRIORITY TOAST CONTAINER (Z-INDEX 9999) -->
+  <!-- HIGHEST PRIORITY TOAST CONTAINER -->
   <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2.5 pointer-events-none max-w-sm w-full px-4"></div>
 
   <!-- DESKTOP LEFT NAVIGATION SIDEBAR (>= lg) -->
   <aside class="hidden lg:flex fixed top-0 left-0 bottom-0 w-72 bg-forest-900 text-white flex-col justify-between p-6 border-r border-forest-800 z-30 shadow-2xl">
     <div class="space-y-6">
-      <div onclick="openAboutModal()" class="flex items-center gap-3.5 cursor-pointer hover:opacity-90 transition group select-none">
+      <div onclick="openAboutModal()" class="flex items-center gap-3.5 cursor-pointer hover:opacity-90 transition group">
         <div class="w-14 h-14 rounded-2xl bg-amber-500 text-forest-900 flex items-center justify-center font-black text-3xl shadow-md group-hover:scale-105 transition-transform">
           Y
         </div>
         <div>
           <h2 class="text-xl font-black tracking-tight leading-tight text-white group-hover:text-amber-400 transition-colors">Yaady's</h2>
           <p class="text-xs text-amber-300 font-extrabold flex items-center gap-1">
-            <span>Millet Rotis</span>
+            <span>Millet Kitchen</span>
             <i data-lucide="info" class="w-3.5 h-3.5"></i>
           </p>
         </div>
@@ -67,28 +78,29 @@
       </div>
 
       <nav class="space-y-2">
-        <button onclick="scrollToTop()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-amber-500 text-forest-900 font-black text-base transition shadow-sm">
+        <button onclick="scrollToTop()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-amber-500 text-forest-900 font-black text-base transition shadow-sm min-h-[48px]">
           <i data-lucide="utensils" class="w-5 h-5"></i>
           <span>Order Menu</span>
         </button>
-        <button onclick="openOrdersModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition">
+        <button onclick="openOrdersModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition relative min-h-[48px]">
           <i data-lucide="receipt-text" class="w-5 h-5"></i>
           <span>My Orders</span>
+          <span id="sidebarOrderBadge" class="hidden w-2.5 h-2.5 rounded-full bg-amber-400 absolute right-4"></span>
         </button>
-        <button onclick="openWallet()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition">
+        <button onclick="openWallet()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition min-h-[48px]">
           <i data-lucide="wallet" class="w-5 h-5"></i>
           <span>Prepaid Wallet</span>
         </button>
-        <button onclick="openLiveChat()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition relative">
+        <button onclick="openLiveChat()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition relative min-h-[48px]">
           <i data-lucide="message-square" class="w-5 h-5"></i>
           <span>Kitchen Desk Chat</span>
           <span id="chatUnreadDot" class="hidden w-2.5 h-2.5 rounded-full bg-amber-400 absolute right-4"></span>
         </button>
-        <button onclick="openAuthModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition">
+        <button onclick="openAuthModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition min-h-[48px]">
           <i data-lucide="user" class="w-5 h-5"></i>
           <span>Account Profile</span>
         </button>
-        <button onclick="openAboutModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition">
+        <button onclick="openAboutModal()" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-stone-200 hover:bg-forest-800 font-extrabold text-base transition min-h-[48px]">
           <i data-lucide="sparkles" class="w-5 h-5"></i>
           <span>About Kitchen</span>
         </button>
@@ -102,10 +114,10 @@
     </div>
   </aside>
 
-  <!-- STICKY TOP BAR (HELP BUTTON REMOVED) -->
+  <!-- STICKY TOP BAR -->
   <header class="sticky top-0 z-40 bg-linen/95 backdrop-blur-md border-b border-stone-200">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div onclick="openAboutModal()" class="flex items-center gap-3 lg:hidden cursor-pointer hover:opacity-90 transition select-none">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div onclick="openAboutModal()" class="flex items-center gap-3 lg:hidden cursor-pointer hover:opacity-90 transition">
         <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-amber-400 font-black text-2xl shadow-sm">
           Y
         </div>
@@ -118,30 +130,33 @@
         </div>
       </div>
 
-      
+      <div onclick="openAboutModal()" class="hidden lg:flex items-center gap-2 cursor-pointer hover:opacity-90 transition">
+        <h2 class="text-2xl font-black text-forest-900">Traditional Millet Kitchen Counter</h2>
+        <span class="text-xs font-bold text-forest-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">About Us</span>
+      </div>
 
       <div class="flex items-center gap-3">
         <span id="kitchenOpenBadge" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-green-100 text-green-800 border border-green-200">
           <span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Open Now
         </span>
 
-        <button onclick="openWallet()" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amberBrand-600 hover:bg-amber-100 transition shadow-sm">
+        <button onclick="openWallet()" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amberBrand-600 hover:bg-amber-100 transition shadow-sm min-h-[48px]">
           <i data-lucide="wallet" class="w-5 h-5"></i>
           <span class="text-base font-black" id="headerWalletBal">₹0.00</span>
         </button>
       </div>
     </div>
 
-    <!-- ANNOUNCEMENT BANNER WITH DIRECT GOOGLE MAPS LINK -->
+    <!-- ANNOUNCEMENT BANNER -->
     <div id="announcementBanner" class="bg-forest-900 text-amber-300 px-4 py-2 text-xs md:text-sm text-center font-black tracking-wide">
       <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 hover:underline cursor-pointer">
         <i data-lucide="map-pin" class="w-4 h-4 text-amber-400"></i>
-        <span>Pickup Location: Neknampur, Manikonda (Tap to open Google Maps directions)</span>
+        <span>Pickup Location: Neknampur, Manikonda (Tap for Google Maps directions)</span>
       </a>
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT -->
+  <!-- MAIN VIEWPORT (ADAPTIVE SPLIT ON TABLET / FOLDABLES) -->
   <main class="max-w-7xl mx-auto px-4 py-5 md:py-7">
     <div id="discountBanner" class="mb-6 p-5 rounded-3xl bg-gradient-to-r from-forest-800 to-forest-900 text-white flex items-center justify-between shadow-md">
       <div class="flex items-center gap-3.5">
@@ -153,25 +168,26 @@
           <p class="text-xs md:text-sm text-stone-300 font-medium" id="discountBannerSub">Maintain ₹500+ wallet balance for instant automatic discounts.</p>
         </div>
       </div>
-      <button onclick="openWallet()" class="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-forest-900 text-sm md:text-base font-black transition shadow">
+      <button onclick="openWallet()" class="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-forest-900 text-sm md:text-base font-black transition shadow min-h-[48px]">
         Top-Up
       </button>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-      <section class="xl:col-span-8 space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 xl:gap-8">
+      <!-- LEFT / MAIN COLUMN: Menu & Items -->
+      <section class="md:col-span-7 xl:col-span-8 space-y-6">
         <div class="flex flex-col sm:flex-row gap-3.5">
           <div class="relative flex-1">
             <i data-lucide="search" class="w-5 h-5 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-            <input id="searchInput" oninput="renderMenu()" type="text" placeholder="Search Jowar Roti, Thali, Curries..." class="w-full pl-12 pr-4 py-3.5 text-base md:text-lg bg-white border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-forest-800 shadow-sm font-medium" />
+            <input id="searchInput" oninput="renderMenu()" type="text" placeholder="Search Jowar Roti, Thali, Curries..." class="w-full pl-12 pr-4 py-3.5 text-base md:text-lg bg-white border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-forest-800 shadow-sm font-medium min-h-[48px]" />
           </div>
 
           <div id="categoryPills" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
-            <button onclick="filterCategory('ALL')" class="category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition">All Items</button>
-            <button onclick="filterCategory('Millet Rotis')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition">Millet Rotis</button>
-            <button onclick="filterCategory('Combo Meals')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition">Combo Meals</button>
-            <button onclick="filterCategory('Curries & Sides')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition">Curries</button>
-            <button onclick="filterCategory('Healthy Beverages')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition">Beverages</button>
+            <button onclick="filterCategory('ALL')" class="category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition min-h-[48px]">All Items</button>
+            <button onclick="filterCategory('Millet Rotis')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Millet Rotis</button>
+            <button onclick="filterCategory('Combo Meals')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Combo Meals</button>
+            <button onclick="filterCategory('Curries & Sides')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Curries</button>
+            <button onclick="filterCategory('Healthy Beverages')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Beverages</button>
           </div>
         </div>
 
@@ -181,7 +197,8 @@
         </div>
       </section>
 
-      <section class="hidden xl:block xl:col-span-4 space-y-4">
+      <!-- RIGHT COLUMN: Adaptive Interactive Cart Sidebar on Tablets & Desktops -->
+      <section class="hidden md:block md:col-span-5 xl:col-span-4 space-y-4">
         <div class="bg-white rounded-3xl border border-stone-200 p-6 shadow-sm sticky top-24">
           <div class="flex items-center justify-between border-b border-stone-100 pb-3.5">
             <h3 class="font-black text-forest-900 text-xl flex items-center gap-2">
@@ -196,7 +213,7 @@
 
           <div id="desktopCartBilling" class="border-t border-stone-100 pt-3.5 space-y-2 text-sm md:text-base text-stone-600"></div>
 
-          <button id="desktopCheckoutBtn" onclick="sanitizeAndProceedToCheckout()" disabled class="w-full mt-5 py-4 bg-forest-800 disabled:bg-stone-300 text-white font-black rounded-2xl text-base md:text-lg transition shadow flex items-center justify-center gap-2">
+          <button id="desktopCheckoutBtn" onclick="sanitizeAndProceedToCheckout()" disabled class="w-full mt-5 py-4 bg-forest-800 disabled:bg-stone-300 text-white font-black rounded-2xl text-base md:text-lg transition shadow flex items-center justify-center gap-2 min-h-[48px]">
             <span>Proceed to Pickup Time</span>
             <i data-lucide="arrow-right" class="w-5 h-5"></i>
           </button>
@@ -205,43 +222,47 @@
     </div>
   </main>
 
-  <!-- MOBILE BOTTOM FLOATING NAVIGATION (< lg) -->
-  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 py-2.5 flex items-center justify-around shadow-lg">
-    <button onclick="scrollToTop()" class="flex flex-col items-center gap-1 text-forest-800">
+  <!-- MOBILE BOTTOM NAVIGATION (< lg) -->
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 py-2 flex items-center justify-around shadow-lg">
+    <button onclick="scrollToTop()" class="flex flex-col items-center justify-center gap-1 text-forest-800 min-h-[48px] min-w-[48px]">
       <i data-lucide="utensils" class="w-6 h-6"></i>
       <span class="text-xs font-black">Menu</span>
     </button>
-    <button onclick="openOrdersModal()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+    <button onclick="openOrdersModal()" class="flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-forest-800 relative min-h-[48px] min-w-[48px]">
       <i data-lucide="receipt-text" class="w-6 h-6"></i>
       <span class="text-xs font-extrabold">Orders</span>
+      <span id="mobileOrderBadge" class="hidden w-2.5 h-2.5 rounded-full bg-amber-500 absolute top-1 right-2"></span>
     </button>
-    <button onclick="openMobileCartDrawer()" class="relative flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+    <button onclick="openMobileCartDrawer()" class="relative flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-forest-800 min-h-[48px] min-w-[48px]">
       <div class="relative">
         <i data-lucide="shopping-bag" class="w-6 h-6"></i>
         <span id="mobileCartCounter" class="hidden absolute -top-1.5 -right-2 bg-amberBrand-500 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">0</span>
       </div>
       <span class="text-xs font-extrabold">Cart</span>
     </button>
-    <button onclick="openWallet()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+    <button onclick="openWallet()" class="flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-forest-800 min-h-[48px] min-w-[48px]">
       <i data-lucide="wallet" class="w-6 h-6"></i>
       <span class="text-xs font-extrabold">Wallet</span>
     </button>
-    <button onclick="openLiveChat()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+    <button onclick="openLiveChat()" class="flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-forest-800 relative min-h-[48px] min-w-[48px]">
       <i data-lucide="help-circle" class="w-6 h-6"></i>
       <span class="text-xs font-extrabold">Help</span>
+      <span id="mobileChatBadge" class="hidden w-2.5 h-2.5 rounded-full bg-amber-500 absolute top-1 right-2"></span>
     </button>
-    <button onclick="openAuthModal()" class="flex flex-col items-center gap-1 text-stone-500 hover:text-forest-800">
+    <button onclick="openAuthModal()" class="flex flex-col items-center justify-center gap-1 text-stone-500 hover:text-forest-800 min-h-[48px] min-w-[48px]">
       <i data-lucide="user" class="w-6 h-6"></i>
       <span class="text-xs font-extrabold">Profile</span>
     </button>
   </nav>
 
-  <!-- ==================== MODALS ==================== -->
+  <!-- ==================== BOTTOM SHEET MODALS / DRAWERS ==================== -->
 
   <!-- BRAND ABOUT KITCHEN MODAL -->
-  <div id="aboutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto space-y-5">
-      <button onclick="closeAboutModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700">
+  <div id="aboutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-sheet overflow-y-auto space-y-5">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+      
+      <button onclick="closeAboutModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
@@ -258,7 +279,7 @@
       <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-sm text-stone-700 leading-relaxed space-y-2">
         <h4 class="font-black text-forest-900 text-base">Our Grain Philosophy</h4>
         <p>Dedicated to reviving India's ancient super-grains: Sorghum (Jowar), Finger Millet (Ragi), Pearl Millet (Bajra), and Foxtail Millet. We strictly avoid wheat flour, Maida, adulterants, and artificial preservatives.</p>
-        <p>Every roti is rolled or hand-patted live, placed on traditional iron tawas, and served fresh at our pickup counter.</p>
+        <p>Every roti is hand-patted live, roasted on cast iron tawas, and served fresh at our pickup counter.</p>
       </div>
 
       <div class="space-y-2.5 text-sm text-stone-700">
@@ -276,7 +297,7 @@
         </div>
         <div class="flex items-start gap-3">
           <i data-lucide="store" class="w-5 h-5 text-forest-800 shrink-0 mt-0.5"></i>
-          <div><strong class="text-forest-900">Direct Pickup Model:</strong> Zero third-party aggregator markups, passing pure savings back to you through prepaid wallet discounts.</div>
+          <div><strong class="text-forest-900">Direct Pickup Model:</strong> Zero third-party aggregator markups, passing savings to you through prepaid wallet discounts.</div>
         </div>
       </div>
 
@@ -296,7 +317,7 @@
       </div>
 
       <div class="pt-2">
-        <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm md:text-base rounded-2xl flex items-center justify-center gap-2 shadow transition">
+        <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm md:text-base rounded-2xl flex items-center justify-center gap-2 shadow transition min-h-[48px]">
           <i data-lucide="navigation" class="w-5 h-5"></i>
           <span>Get Directions to Counter on Google Maps</span>
         </a>
@@ -304,10 +325,12 @@
     </div>
   </div>
 
-  <!-- 1. CHECKOUT MODAL WITH DYNAMIC PICKUP TIME -->
-  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl max-h-[92vh] overflow-y-auto relative">
-      <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700">
+  <!-- CHECKOUT MODAL / DRAWER -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-3">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 md:p-8 shadow-2xl max-h-sheet overflow-y-auto relative">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
+      <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
@@ -317,24 +340,24 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5">
         <div>
           <label class="block text-sm font-extrabold text-stone-700 mb-1.5">Pickup Date (IST)</label>
-          <input type="date" id="pickupDate" onchange="updatePickupTimeConstraints()" class="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-bold outline-none" />
+          <input type="date" id="pickupDate" onchange="updatePickupTimeConstraints()" class="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-bold outline-none min-h-[48px]" />
         </div>
         <div>
           <label class="block text-sm font-extrabold text-stone-700 mb-1.5">Pickup Time (IST)</label>
-          <input type="time" id="pickupTime" onchange="validatePickupTime()" class="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-bold outline-none" />
+          <input type="time" id="pickupTime" onchange="validatePickupTime()" class="w-full p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-bold outline-none min-h-[48px]" />
         </div>
       </div>
 
       <div class="border-t border-stone-100 pt-4 mb-4">
         <label class="block text-sm font-extrabold text-stone-700 mb-2">Select Payment Mode</label>
         <div class="grid grid-cols-2 gap-3">
-          <label id="walletPayOptionLabel" class="border border-stone-200 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5">
+          <label id="walletPayOptionLabel" class="border border-stone-200 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5 min-h-[48px]">
             <input type="radio" name="paymentOption" value="Wallet" checked onchange="togglePaymentUi()" class="text-forest-800" />
             <span class="text-base font-black text-forest-900">Yaady Wallet</span>
             <span class="text-xs text-stone-500 font-semibold" id="checkoutWalletBalText">Bal: ₹0.00</span>
           </label>
 
-          <label class="border border-stone-200 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5">
+          <label class="border border-stone-200 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer has-[:checked]:border-forest-800 has-[:checked]:bg-forest-800/5 min-h-[48px]">
             <input type="radio" name="paymentOption" value="Direct_UPI" onchange="togglePaymentUi()" class="text-forest-800" />
             <span class="text-base font-black text-forest-900">Direct UPI</span>
             <span class="text-xs text-stone-500 font-semibold">Auto Order-ID QR</span>
@@ -351,14 +374,14 @@
         </div>
 
         <div class="grid grid-cols-3 gap-2.5 pt-1">
-          <a id="gpayBtn" href="#" class="py-2.5 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">GPay</a>
-          <a id="phonepeBtn" href="#" class="py-2.5 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">PhonePe</a>
-          <a id="paytmBtn" href="#" class="py-2.5 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100">Paytm</a>
+          <a id="gpayBtn" href="#" class="py-3 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100 min-h-[48px] flex items-center justify-center">GPay</a>
+          <a id="phonepeBtn" href="#" class="py-3 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100 min-h-[48px] flex items-center justify-center">PhonePe</a>
+          <a id="paytmBtn" href="#" class="py-3 text-center text-xs md:text-sm font-bold bg-white border border-stone-200 rounded-xl hover:bg-stone-100 min-h-[48px] flex items-center justify-center">Paytm</a>
         </div>
 
         <div>
           <label class="block text-sm font-extrabold text-stone-700 mb-1">12-Digit Bank UTR / Reference <span class="text-red-500">*</span></label>
-          <input type="text" id="orderUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-base font-mono font-bold outline-none" />
+          <input type="text" id="orderUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-base font-mono font-bold outline-none min-h-[48px]" />
         </div>
       </div>
 
@@ -367,7 +390,7 @@
           <p class="text-xs text-stone-400 font-bold uppercase tracking-wider">Total Payable</p>
           <p class="text-2xl md:text-3xl font-black text-forest-900" id="checkoutFinalAmount">₹0.00</p>
         </div>
-        <button id="placeOrderBtn" onclick="submitFinalOrder()" class="px-7 py-4 bg-forest-800 hover:bg-forest-900 text-white text-base font-black rounded-2xl transition shadow-md flex items-center gap-2">
+        <button id="placeOrderBtn" onclick="submitFinalOrder()" class="px-7 py-4 bg-forest-800 hover:bg-forest-900 text-white text-base font-black rounded-2xl transition shadow-md flex items-center gap-2 min-h-[48px]">
           <span>Confirm & Place Order</span>
           <i data-lucide="check-circle" class="w-5 h-5"></i>
         </button>
@@ -375,10 +398,12 @@
     </div>
   </div>
 
-  <!-- 2. WALLET MODAL WITH INSTANT PRESET QR -->
-  <div id="walletModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-      <button onclick="closeWallet()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700">
+  <!-- WALLET MODAL / DRAWER -->
+  <div id="walletModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
+      <button onclick="closeWallet()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
@@ -394,11 +419,11 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3 mb-5">
-        <button onclick="showWalletSection('recharge')" id="btnShowRecharge" class="py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition">
+        <button onclick="showWalletSection('recharge')" id="btnShowRecharge" class="py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]">
           <i data-lucide="plus-circle" class="w-5 h-5"></i>
           <span>+ Top-Up Balance</span>
         </button>
-        <button onclick="showWalletSection('claim')" id="btnShowClaim" class="py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition">
+        <button onclick="showWalletSection('claim')" id="btnShowClaim" class="py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]">
           <i data-lucide="arrow-down-left" class="w-5 h-5"></i>
           <span>⇄ Claim / Refund</span>
         </button>
@@ -408,17 +433,17 @@
         <label class="block text-xs font-black uppercase tracking-wider text-stone-700">Select Top-Up Recharge Pack</label>
         
         <div class="grid grid-cols-3 gap-3">
-          <button type="button" onclick="selectRechargePack(500)" id="packBtn500" class="recharge-pack-card border-2 border-forest-800 bg-forest-800/10 ring-2 ring-forest-800 rounded-2xl p-3 text-center transition">
+          <button type="button" onclick="selectRechargePack(500)" id="packBtn500" class="recharge-pack-card border-2 border-forest-800 bg-forest-800/10 ring-2 ring-forest-800 rounded-2xl p-3 text-center transition min-h-[48px]">
             <p class="text-lg font-black text-stone-900">₹500</p>
             <span class="text-[11px] font-black text-green-800 bg-green-100 px-2 py-0.5 rounded-full">+10% Off</span>
           </button>
 
-          <button type="button" onclick="selectRechargePack(1000)" id="packBtn1000" class="recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50">
+          <button type="button" onclick="selectRechargePack(1000)" id="packBtn1000" class="recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50 min-h-[48px]">
             <p class="text-lg font-black text-stone-900">₹1,000</p>
             <span class="text-[11px] font-black text-green-800 bg-green-100 px-2 py-0.5 rounded-full">+15% Off</span>
           </button>
 
-          <button type="button" onclick="selectRechargePack(2000)" id="packBtn2000" class="recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50">
+          <button type="button" onclick="selectRechargePack(2000)" id="packBtn2000" class="recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50 min-h-[48px]">
             <p class="text-lg font-black text-stone-900">₹2,000</p>
             <span class="text-[11px] font-black text-green-800 bg-green-100 px-2 py-0.5 rounded-full">+20% Off</span>
           </button>
@@ -438,10 +463,10 @@
 
         <div>
           <label class="block text-sm font-extrabold text-stone-700 mb-1">12-Digit Bank UTR / Reference <span class="text-red-500">*</span></label>
-          <input type="text" id="rechargeUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-mono font-bold outline-none" />
+          <input type="text" id="rechargeUtrInput" maxlength="12" placeholder="e.g. 423512349876" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-mono font-bold outline-none min-h-[48px]" />
         </div>
 
-        <button onclick="submitWalletRecharge()" id="rechargeSubmitBtn" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white text-base font-black rounded-2xl transition shadow">
+        <button onclick="submitWalletRecharge()" id="rechargeSubmitBtn" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white text-base font-black rounded-2xl transition shadow min-h-[48px]">
           Submit Top-Up Verification
         </button>
       </div>
@@ -449,10 +474,10 @@
       <div id="walletClaimSection" class="hidden p-5 bg-stone-50 border border-stone-200 rounded-3xl space-y-4 mb-5">
         <h4 class="text-base font-black text-forest-900">Request Balance Withdrawal</h4>
         <p class="text-xs text-stone-500">Refunds are settled directly via UPI with an official PDF acknowledgment.</p>
-        <input type="number" id="claimAmountInput" placeholder="Amount to withdraw (₹)" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-bold outline-none" />
-        <input type="text" id="claimUpiInput" placeholder="Recipient UPI ID (e.g. name@bank)" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-medium outline-none" />
-        <input type="text" id="claimReasonInput" placeholder="Reason for refund request" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-medium outline-none" />
-        <button onclick="submitWalletClaim()" id="claimSubmitBtn" class="w-full py-4 bg-amberBrand-500 hover:bg-amberBrand-600 text-white text-base font-black rounded-2xl transition shadow">
+        <input type="number" id="claimAmountInput" placeholder="Amount to withdraw (₹)" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-bold outline-none min-h-[48px]" />
+        <input type="text" id="claimUpiInput" placeholder="Recipient UPI ID (e.g. name@bank)" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-medium outline-none min-h-[48px]" />
+        <input type="text" id="claimReasonInput" placeholder="Reason for refund request" class="w-full px-4 py-3.5 bg-white border border-stone-300 rounded-2xl text-base font-medium outline-none min-h-[48px]" />
+        <button onclick="submitWalletClaim()" id="claimSubmitBtn" class="w-full py-4 bg-amberBrand-500 hover:bg-amberBrand-600 text-white text-base font-black rounded-2xl transition shadow min-h-[48px]">
           Submit Balance Claim
         </button>
       </div>
@@ -469,9 +494,11 @@
     </div>
   </div>
 
-  <!-- 3. LIVE 2-WAY SUPPORT CHAT MODAL -->
-  <div id="liveChatModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl flex flex-col h-[82vh] overflow-hidden relative">
+  <!-- LIVE 2-WAY SUPPORT CHAT DRAWER -->
+  <div id="liveChatModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-3">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col h-[85dvh] overflow-hidden relative">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mt-2 sm:hidden"></div>
+
       <div class="bg-forest-900 text-white p-4 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <div class="w-3 h-3 rounded-full bg-green-400 animate-pulse"></div>
@@ -480,7 +507,7 @@
             <p class="text-xs text-stone-300 font-medium">Live operational assistance (IST)</p>
           </div>
         </div>
-        <button onclick="closeLiveChat()" class="text-stone-300 hover:text-white p-1">
+        <button onclick="closeLiveChat()" class="text-stone-300 hover:text-white p-1 min-h-[44px] min-w-[44px] flex items-center justify-center">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
       </div>
@@ -490,18 +517,20 @@
       </div>
 
       <div class="p-3.5 bg-white border-t border-stone-200 flex items-center gap-2">
-        <input type="text" id="chatMessageInput" onkeydown="if(event.key==='Enter') sendChatMessageCustomer()" placeholder="Type message to the kitchen..." class="flex-1 px-4 py-3 bg-stone-100 border border-stone-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-forest-800" />
-        <button onclick="sendChatMessageCustomer()" class="p-3 bg-forest-800 hover:bg-forest-900 text-white rounded-2xl transition">
+        <input type="text" id="chatMessageInput" onkeydown="if(event.key==='Enter') sendChatMessageCustomer()" placeholder="Type message to the kitchen..." class="flex-1 px-4 py-3 bg-stone-100 border border-stone-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-forest-800 min-h-[48px]" />
+        <button onclick="sendChatMessageCustomer()" class="p-3 bg-forest-800 hover:bg-forest-900 text-white rounded-2xl transition min-h-[48px] min-w-[48px] flex items-center justify-center">
           <i data-lucide="send" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 4. CUSTOMER ORDER HISTORY MODAL -->
-  <div id="ordersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xl rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-      <button onclick="closeOrdersModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700">
+  <!-- CUSTOMER ORDER HISTORY DRAWER -->
+  <div id="ordersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-xl rounded-t-3xl sm:rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
+      <button onclick="closeOrdersModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
@@ -514,10 +543,12 @@
     </div>
   </div>
 
-  <!-- 5. AUTHENTICATION & PASSWORD RECOVERY -->
-  <div id="authModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-      <button onclick="closeAuthModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700">
+  <!-- AUTHENTICATION & PASSWORD RECOVERY DRAWER -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 md:p-8 shadow-2xl relative max-h-sheet overflow-y-auto">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
 
@@ -529,42 +560,42 @@
         <p class="text-sm text-stone-500 mt-1 font-medium" id="authSubtitle">Please enter your credentials to proceed.</p>
         
         <div id="authTabSwitcher" class="mt-4 flex bg-stone-100 p-1.5 rounded-2xl">
-          <button type="button" onclick="setAuthTab('login')" id="tabBtnLogin" class="flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900">Sign In</button>
-          <button type="button" onclick="setAuthTab('register')" id="tabBtnRegister" class="flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600">Register</button>
+          <button type="button" onclick="setAuthTab('login')" id="tabBtnLogin" class="flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900 min-h-[44px]">Sign In</button>
+          <button type="button" onclick="setAuthTab('register')" id="tabBtnRegister" class="flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600 min-h-[44px]">Register</button>
         </div>
       </div>
 
       <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
         <div id="regNameField" class="hidden">
           <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">Full Name</label>
-          <input id="authName" type="text" placeholder="e.g. Anand Varma" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+          <input id="authName" type="text" placeholder="e.g. Anand Varma" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none min-h-[48px]" />
         </div>
 
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">Mobile Number (10-digits)</label>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-base font-extrabold text-stone-400">+91</span>
-            <input id="authPhone" type="tel" pattern="[6-9][0-9]{9}" required placeholder="9876543210" class="w-full pl-14 pr-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-black focus:ring-2 focus:ring-forest-800 outline-none" />
+            <input id="authPhone" type="tel" pattern="[6-9][0-9]{9}" required placeholder="9876543210" class="w-full pl-14 pr-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-black focus:ring-2 focus:ring-forest-800 outline-none min-h-[48px]" />
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">Password</label>
-          <input id="authPassword" type="password" required placeholder="Enter your password" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+          <input id="authPassword" type="password" required placeholder="Enter your password" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none min-h-[48px]" />
         </div>
 
         <div id="regEmailField" class="hidden">
           <label class="block text-xs font-black uppercase tracking-wider text-stone-700 mb-1">Email Address (Optional)</label>
-          <input id="authEmail" type="email" placeholder="anand@example.com" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none" />
+          <input id="authEmail" type="email" placeholder="anand@example.com" class="w-full px-4 py-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-base font-medium focus:ring-2 focus:ring-forest-800 outline-none min-h-[48px]" />
         </div>
 
-        <button type="submit" id="authSubmitBtn" class="w-full mt-2 py-4 bg-forest-800 text-white rounded-2xl font-black text-base hover:bg-forest-900 transition flex items-center justify-center gap-2 shadow">
+        <button type="submit" id="authSubmitBtn" class="w-full mt-2 py-4 bg-forest-800 text-white rounded-2xl font-black text-base hover:bg-forest-900 transition flex items-center justify-center gap-2 shadow min-h-[48px]">
           <span>Sign In</span>
           <i data-lucide="arrow-right" class="w-5 h-5"></i>
         </button>
 
         <div id="forgotPasswordLinkBox" class="text-center pt-2">
-          <button type="button" onclick="showForgotPasswordView()" class="text-sm font-bold text-amberBrand-600 hover:underline">
+          <button type="button" onclick="showForgotPasswordView()" class="text-sm font-bold text-amberBrand-600 hover:underline min-h-[44px]">
             Forgot Password?
           </button>
         </div>
@@ -574,23 +605,23 @@
         <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-3">
           <h4 class="font-black text-base text-forest-900">Password Recovery</h4>
           <p class="text-xs text-stone-500">Enter your registered Mobile Number and Email to receive a 6-character recovery code.</p>
-          <input type="tel" id="forgotPhoneInput" placeholder="Registered 10-digit Phone" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm font-bold outline-none" />
-          <input type="email" id="forgotEmailInput" placeholder="Registered Email" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm font-medium outline-none" />
-          <button onclick="requestPasswordResetCode()" id="btnRequestResetCode" class="w-full py-3 bg-amberBrand-500 text-white font-black text-sm rounded-xl transition">
+          <input type="tel" id="forgotPhoneInput" placeholder="Registered 10-digit Phone" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm font-bold outline-none min-h-[48px]" />
+          <input type="email" id="forgotEmailInput" placeholder="Registered Email" class="w-full px-4 py-3 bg-white border border-stone-200 rounded-xl text-sm font-medium outline-none min-h-[48px]" />
+          <button onclick="requestPasswordResetCode()" id="btnRequestResetCode" class="w-full py-3 bg-amberBrand-500 text-white font-black text-sm rounded-xl transition min-h-[48px]">
             Send Reset Code
           </button>
         </div>
 
         <div id="resetCodeSection" class="hidden p-4 bg-amber-50 rounded-2xl border border-amber-200 space-y-3">
           <p class="text-xs text-amber-900 font-bold">Check your email for the 6-character reset code:</p>
-          <input type="text" id="resetCodeInput" maxlength="6" placeholder="6-character Code" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-center text-lg font-mono font-black uppercase outline-none" />
-          <input type="password" id="resetNewPasswordInput" placeholder="Enter New Password" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-sm font-medium outline-none" />
-          <button onclick="submitNewPasswordReset()" id="btnSubmitResetPassword" class="w-full py-3 bg-forest-800 text-white font-black text-sm rounded-xl transition">
+          <input type="text" id="resetCodeInput" maxlength="6" placeholder="6-character Code" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-center text-lg font-mono font-black uppercase outline-none min-h-[48px]" />
+          <input type="password" id="resetNewPasswordInput" placeholder="Enter New Password" class="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-sm font-medium outline-none min-h-[48px]" />
+          <button onclick="submitNewPasswordReset()" id="btnSubmitResetPassword" class="w-full py-3 bg-forest-800 text-white font-black text-sm rounded-xl transition min-h-[48px]">
             Save New Password
           </button>
         </div>
 
-        <button type="button" onclick="hideForgotPasswordView()" class="w-full py-2 text-xs font-bold text-stone-500 hover:text-stone-800">
+        <button type="button" onclick="hideForgotPasswordView()" class="w-full py-2 text-xs font-bold text-stone-500 hover:text-stone-800 min-h-[44px]">
           ← Back to Login
         </button>
       </div>
@@ -603,48 +634,50 @@
           <p class="text-stone-500">Wallet Balance: <span id="profWallet" class="font-black text-amber-600"></span></p>
         </div>
 
-        <button onclick="closeAuthModal(); openOrdersModal();" class="w-full py-4 bg-forest-800 text-white font-black text-base rounded-2xl flex items-center justify-center gap-2 shadow transition hover:bg-forest-900">
+        <button onclick="closeAuthModal(); openOrdersModal();" class="w-full py-4 bg-forest-800 text-white font-black text-base rounded-2xl flex items-center justify-center gap-2 shadow transition hover:bg-forest-900 min-h-[48px]">
           <i data-lucide="receipt-text" class="w-5 h-5"></i>
           <span>View My Orders</span>
         </button>
 
         <div class="border border-stone-200 rounded-2xl p-4 space-y-3">
-          <button type="button" onclick="toggleChangePasswordView()" class="w-full flex justify-between items-center text-sm font-black text-forest-900">
+          <button type="button" onclick="toggleChangePasswordView()" class="w-full flex justify-between items-center text-sm font-black text-forest-900 min-h-[44px]">
             <span>Change Account Password</span>
             <i data-lucide="chevron-down" id="changePassChevron" class="w-4 h-4 transition-transform"></i>
           </button>
 
           <div id="changePasswordBox" class="hidden space-y-2.5 pt-2 border-t border-stone-100">
-            <input type="password" id="currPassInput" placeholder="Current Password" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none" />
-            <input type="password" id="newPassInput" placeholder="New Password (min 4 chars)" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none" />
-            <input type="password" id="confirmNewPassInput" placeholder="Confirm New Password" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none" />
-            <button onclick="submitChangePassword()" id="btnChangePassword" class="w-full py-3 bg-stone-800 text-white font-black text-xs rounded-xl transition">
+            <input type="password" id="currPassInput" placeholder="Current Password" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none min-h-[48px]" />
+            <input type="password" id="newPassInput" placeholder="New Password (min 4 chars)" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none min-h-[48px]" />
+            <input type="password" id="confirmNewPassInput" placeholder="Confirm New Password" class="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl text-sm outline-none min-h-[48px]" />
+            <button onclick="submitChangePassword()" id="btnChangePassword" class="w-full py-3 bg-stone-800 text-white font-black text-xs rounded-xl transition min-h-[48px]">
               Update Password
             </button>
           </div>
         </div>
 
-        <button onclick="handleLogout()" class="w-full py-3.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition">
+        <button onclick="handleLogout()" class="w-full py-3.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition min-h-[48px]">
           Sign Out of Account
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 6. MOBILE CART SUMMARY DRAWER -->
+  <!-- MOBILE CART SUMMARY DRAWER -->
   <div id="mobileCartModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex flex-col justify-end">
-    <div class="bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto flex flex-col">
+    <div class="bg-white rounded-t-3xl p-6 max-h-sheet overflow-y-auto flex flex-col">
+      <div class="w-12 h-1.5 bg-stone-300 rounded-full mx-auto mb-2 sm:hidden"></div>
+
       <div class="flex items-center justify-between border-b border-stone-100 pb-3.5">
         <h3 class="font-black text-forest-900 text-xl flex items-center gap-2">
           <i data-lucide="shopping-bag" class="w-5 h-5 text-amberBrand-500"></i> Cart Review
         </h3>
-        <button onclick="closeMobileCartDrawer()" class="p-2 text-stone-400 hover:text-stone-700">
+        <button onclick="closeMobileCartDrawer()" class="p-2 text-stone-400 hover:text-stone-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
       </div>
       <div id="mobileCartItems" class="divide-y divide-stone-100 py-3.5 text-base"></div>
       <div id="mobileCartBilling" class="border-t border-stone-100 pt-3.5 space-y-2 text-base text-stone-600"></div>
-      <button onclick="sanitizeAndProceedToCheckout()" class="w-full mt-5 py-4 bg-forest-800 text-white font-black rounded-2xl text-lg transition">
+      <button onclick="sanitizeAndProceedToCheckout()" class="w-full mt-5 py-4 bg-forest-800 text-white font-black rounded-2xl text-lg transition min-h-[48px]">
         Select Pickup Time & Pay
       </button>
     </div>
@@ -679,12 +712,56 @@
     let currentOrderUpiUri = "";
     let currentWalletUpiUri = "";
 
-    // Global poll intervals to avoid stacking memory leaks
+    // In-memory ledger to track state transitions for customer alerts
+    let knownOrderStatusMap = {};
+    let lastSeenWalletBalance = null;
+    let audioCtxCustomer = null;
+
     window.chatPollInterval = null;
     window.syncPollInterval = null;
     window.heartbeatInterval = null;
 
-    // Strict IST Helper Utilities
+    function initCustomerAudio() {
+      if (!audioCtxCustomer) {
+        audioCtxCustomer = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtxCustomer.state === 'suspended') {
+        audioCtxCustomer.resume();
+      }
+    }
+    window.addEventListener('click', initCustomerAudio, { once: true });
+    window.addEventListener('touchstart', initCustomerAudio, { once: true });
+
+    function playCustomerChime() {
+      try {
+        initCustomerAudio();
+        if (!audioCtxCustomer) return;
+        const now = audioCtxCustomer.currentTime;
+        const osc1 = audioCtxCustomer.createOscillator();
+        const osc2 = audioCtxCustomer.createOscillator();
+        const gain = audioCtxCustomer.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(1046.50, now);
+        osc2.frequency.setValueAtTime(1567.98, now + 0.12);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtxCustomer.destination);
+
+        osc1.start(now);
+        osc2.start(now + 0.12);
+        osc1.stop(now + 0.6);
+        osc2.stop(now + 0.6);
+
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      } catch (e) {}
+    }
+
     function getNowIst() {
       const now = new Date();
       return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
@@ -724,8 +801,11 @@
       if (window.syncPollInterval) clearInterval(window.syncPollInterval);
       window.syncPollInterval = setInterval(() => {
         fetchConfig();
-        if (currentUser) refreshProfileFromBackend();
-      }, 15000);
+        if (currentUser) {
+          refreshProfileFromBackend();
+          pollCustomerOrderProgress();
+        }
+      }, 10000);
     });
 
     function showToast(msg, type = "info") {
@@ -755,6 +835,42 @@
     }
 
     // -------------------------------------------------------------
+    // TWO-WAY LIVE ORDER PROGRESS DETECTION
+    // -------------------------------------------------------------
+    async function pollCustomerOrderProgress() {
+      if (!currentUser || !currentUser.phone) return;
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${currentUser.phone}`).then(r => r.json());
+        if (res.status === "SUCCESS" && res.orders) {
+          res.orders.forEach(order => {
+            const oId = String(order.orderId);
+            const token = oId.slice(-4);
+            const prevStatus = knownOrderStatusMap[oId];
+            const newStatus = order.orderStatus;
+
+            if (prevStatus && prevStatus !== newStatus) {
+              playCustomerChime();
+
+              if (newStatus === "Kitchen_Accepted") {
+                showToast(`✅ Payment Verified! Kitchen accepted Order #${token}.`, "success");
+              } else if (newStatus === "Preparing") {
+                showToast(`🍳 Order #${token} is now on the millet stove!`, "info");
+              } else if (newStatus === "Ready_For_Pickup") {
+                showToast(`🔥 Order #${token} is HOT & READY for counter pickup at Neknampur!`, "success");
+              }
+
+              const mBadge = document.getElementById("mobileOrderBadge");
+              const sBadge = document.getElementById("sidebarOrderBadge");
+              if (mBadge) mBadge.classList.remove("hidden");
+              if (sBadge) sBadge.classList.remove("hidden");
+            }
+            knownOrderStatusMap[oId] = newStatus;
+          });
+        }
+      } catch (e) {}
+    }
+
+    // -------------------------------------------------------------
     // ABOUT KITCHEN MODAL
     // -------------------------------------------------------------
     function openAboutModal() {
@@ -766,7 +882,7 @@
     }
 
     // -------------------------------------------------------------
-    // DYNAMIC PICKUP TIME SELECTOR & 30-MIN LEAD ENFORCEMENT
+    // DYNAMIC PICKUP TIME & 30-MIN LEAD ENFORCEMENT
     // -------------------------------------------------------------
     function initDefaultPickupDate() {
       const istToday = getIstTodayDateString();
@@ -874,8 +990,8 @@
       if (type === "recharge") {
         rSec.classList.remove("hidden");
         cSec.classList.add("hidden");
-        rBtn.className = "py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition";
-        cBtn.className = "py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition";
+        rBtn.className = "py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]";
+        cBtn.className = "py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]";
 
         requestAnimationFrame(() => {
           setTimeout(() => {
@@ -885,8 +1001,8 @@
       } else {
         rSec.classList.add("hidden");
         cSec.classList.remove("hidden");
-        cBtn.className = "py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition";
-        rBtn.className = "py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition";
+        cBtn.className = "py-3.5 px-4 rounded-2xl bg-forest-800 text-white font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]";
+        rBtn.className = "py-3.5 px-4 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-sm md:text-base flex items-center justify-center gap-2 transition min-h-[48px]";
       }
     }
 
@@ -897,9 +1013,9 @@
         const btn = document.getElementById(`packBtn${val}`);
         if (btn) {
           if (val === selectedRechargeAmount) {
-            btn.className = "recharge-pack-card border-2 border-forest-800 bg-forest-800/10 ring-2 ring-forest-800 rounded-2xl p-3 text-center transition";
+            btn.className = "recharge-pack-card border-2 border-forest-800 bg-forest-800/10 ring-2 ring-forest-800 rounded-2xl p-3 text-center transition min-h-[48px]";
           } else {
-            btn.className = "recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50";
+            btn.className = "recharge-pack-card border-2 border-stone-200 bg-white rounded-2xl p-3 text-center transition hover:border-forest-800/50 min-h-[48px]";
           }
         }
       });
@@ -1210,6 +1326,7 @@
           updateCartUi();
           closeCheckoutModal();
           showToast(`Order Token #${preAllocatedOrderId.slice(-4)} Placed for ${formatted12HrPickupTime} IST!`, "success");
+          knownOrderStatusMap[preAllocatedOrderId] = res.orderStatus;
           openOrdersModal();
           refreshProfileFromBackend();
         } else {
@@ -1234,6 +1351,11 @@
         return;
       }
       document.getElementById("liveChatModal").classList.remove("hidden");
+      const dot = document.getElementById("chatUnreadDot");
+      const mDot = document.getElementById("mobileChatBadge");
+      if (dot) dot.classList.add("hidden");
+      if (mDot) mDot.classList.add("hidden");
+
       pollChatMessages();
       if (window.chatPollInterval) clearInterval(window.chatPollInterval);
       window.chatPollInterval = setInterval(pollChatMessages, 6000);
@@ -1304,6 +1426,11 @@
         return;
       }
       document.getElementById("ordersModal").classList.remove("hidden");
+      const mBadge = document.getElementById("mobileOrderBadge");
+      const sBadge = document.getElementById("sidebarOrderBadge");
+      if (mBadge) mBadge.classList.add("hidden");
+      if (sBadge) sBadge.classList.add("hidden");
+
       fetchCustomerOrders();
     }
 
@@ -1321,7 +1448,6 @@
           container.innerHTML = res.orders.map(order => {
             const token = order.orderId ? String(order.orderId).slice(-4) : "0000";
             
-            // Clean date & time sanitation
             let cleanDate = "Today";
             if (order.pickupDate) {
               const rawDate = String(order.pickupDate).split("T")[0].trim();
@@ -1360,11 +1486,11 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  <a href="https://wa.me/919000001690?text=${waText}" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition">
+                  <a href="https://wa.me/919000001690?text=${waText}" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
                     <span>WhatsApp Kitchen</span>
                   </a>
-                  <button type="button" onclick="startOrderContextChat('${order.orderId}')" class="py-3 px-3.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition">
+                  <button type="button" onclick="startOrderContextChat('${order.orderId}')" class="py-3 px-3.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
                     <i data-lucide="message-square" class="w-4 h-4"></i>
                     <span>Chat with Kitchen Desk</span>
                   </button>
@@ -1392,7 +1518,7 @@
     }
 
     // -------------------------------------------------------------
-    // CATEGORY PILL SELECTION & CRISP CONTRAST
+    // CATEGORY PILL SELECTION & CONTRAST
     // -------------------------------------------------------------
     let currentCategory = "ALL";
     function filterCategory(cat) {
@@ -1400,9 +1526,9 @@
       const pills = document.querySelectorAll(".category-pill");
       pills.forEach(el => {
         if (el.innerText.trim().toLowerCase() === cat.toLowerCase() || (cat === 'ALL' && el.innerText.trim().toLowerCase() === 'all items')) {
-          el.className = "category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition";
+          el.className = "category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition min-h-[48px]";
         } else {
-          el.className = "category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition";
+          el.className = "category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]";
         }
       });
       renderMenu();
@@ -1455,13 +1581,13 @@
                 <span class="text-xs md:text-sm font-extrabold text-green-700 bg-green-50 px-3 py-1 rounded-xl">Millet Certified</span>
                 
                 ${isSoldOut ? `
-                  <button disabled class="px-5 py-2.5 bg-stone-200 text-stone-400 font-black text-sm rounded-2xl cursor-not-allowed">Unavailable</button>
+                  <button disabled class="px-5 py-2.5 bg-stone-200 text-stone-400 font-black text-sm rounded-2xl cursor-not-allowed min-h-[44px]">Unavailable</button>
                 ` : qty === 0 ? `
-                  <button onclick="addToCart('${item.id}')" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow">
+                  <button onclick="addToCart('${item.id}')" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow min-h-[48px]">
                     Add +
                   </button>
                 ` : `
-                  <div class="flex items-center gap-3 bg-stone-100 rounded-2xl px-3 py-2">
+                  <div class="flex items-center gap-3 bg-stone-100 rounded-2xl px-3 py-2 min-h-[48px]">
                     <button onclick="changeQty('${item.id}', -1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">-</button>
                     <span class="font-black text-base text-forest-900 px-1.5">${qty}</span>
                     <button onclick="changeQty('${item.id}', 1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">+</button>
@@ -1551,8 +1677,8 @@
             </div>
             <div class="flex items-center gap-2.5">
               <span class="font-black text-base text-forest-900 mr-2">₹${i.lineTotal}</span>
-              <button onclick="changeQty('${i.id}', -1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600">-</button>
-              <button onclick="changeQty('${i.id}', 1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600">+</button>
+              <button onclick="changeQty('${i.id}', -1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">-</button>
+              <button onclick="changeQty('${i.id}', 1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">+</button>
             </div>
           </div>
         `).join("");
@@ -1813,14 +1939,14 @@
       const submitBtnSpan = document.querySelector("#authSubmitBtn span");
 
       if (tab === "login") {
-        btnLogin.className = "flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900";
-        btnReg.className = "flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600";
+        btnLogin.className = "flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900 min-h-[44px]";
+        btnReg.className = "flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600 min-h-[44px]";
         nameField.classList.add("hidden");
         emailField.classList.add("hidden");
         submitBtnSpan.innerText = "Sign In";
       } else {
-        btnReg.className = "flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900";
-        btnLogin.className = "flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600";
+        btnReg.className = "flex-1 py-2.5 text-sm font-black rounded-xl bg-white shadow-sm text-forest-900 min-h-[44px]";
+        btnLogin.className = "flex-1 py-2.5 text-sm font-extrabold rounded-xl text-stone-600 min-h-[44px]";
         nameField.classList.remove("hidden");
         emailField.classList.remove("hidden");
         submitBtnSpan.innerText = "Complete Registration";
@@ -1874,7 +2000,15 @@
       if (!currentUser) return;
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getCustomerProfile&phone=${currentUser.phone}`).then(r => r.json());
-        if (res.status === "SUCCESS") saveUserSession(res.customer);
+        if (res.status === "SUCCESS") {
+          const newBal = Number(res.customer.walletBalance) || 0;
+          if (lastSeenWalletBalance !== null && lastSeenWalletBalance < newBal) {
+            playCustomerChime();
+            showToast(`💰 Wallet Top-Up credited! New Balance: ₹${newBal.toFixed(2)}`, "success");
+          }
+          lastSeenWalletBalance = newBal;
+          saveUserSession(res.customer);
+        }
       } catch (e) {}
     }
 
