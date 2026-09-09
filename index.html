@@ -114,48 +114,49 @@
     </div>
   </aside>
 
-  <!-- STICKY TOP BAR -->
+  <!-- STICKY TOP BAR (HELP BUTTON EXCLUDED AS INTENDED) -->
   <header class="sticky top-0 z-40 bg-linen/95 backdrop-blur-md border-b border-stone-200">
-    <div class="max-w-7xl mx-auto h-16 px-3.5 sm:px-4 flex items-center justify-between">
-      
-      <!-- Mobile Left Brand Identity Block -->
-      <div onclick="openAboutModal()" class="flex items-center gap-2.5 lg:hidden cursor-pointer hover:opacity-90 transition shrink-0">
-        <div class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-forest-800 text-amber-400 font-black text-xl flex items-center justify-center shrink-0 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div onclick="openAboutModal()" class="flex items-center gap-3 lg:hidden cursor-pointer hover:opacity-90 transition">
+        <div class="w-12 h-12 rounded-2xl bg-forest-800 flex items-center justify-center text-amber-400 font-black text-2xl shadow-sm">
           Y
         </div>
-        <div class="flex flex-col justify-center">
-          <h1 class="text-lg font-black text-forest-900 leading-none">Yaady's</h1>
-          <p class="text-[11px] font-bold text-stone-500 mt-0.5 tracking-tight truncate">Millet Meals • Pickup Only</p>
+        <div>
+          <h1 class="text-xl font-black text-forest-900 leading-tight">Yaady's</h1>
+          <p class="text-xs text-stone-500 font-bold flex items-center gap-1">
+            <span>Millet Meals</span>
+            <span class="text-green-700">• Pickup Only</span>
+          </p>
         </div>
       </div>
 
-      <!-- Desktop Left Brand Identity Block -->
       <div onclick="openAboutModal()" class="hidden lg:flex items-center gap-2 cursor-pointer hover:opacity-90 transition">
         <h2 class="text-2xl font-black text-forest-900">Traditional Millet Kitchen Counter</h2>
         <span class="text-xs font-bold text-forest-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">About Us</span>
       </div>
 
-      <!-- Right Controls Block -->
-      <div class="flex items-center gap-2 shrink-0">
-        <span id="kitchenOpenBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-green-100 text-green-800 border border-green-200 shrink-0">
-          <span class="w-2 h-2 rounded-full bg-green-600 animate-ping"></span>
-          <span>Open</span>
+      <div class="flex items-center gap-3">
+        <span id="kitchenOpenBadge" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-green-100 text-green-800 border border-green-200">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Open Now
         </span>
 
-        <button onclick="openWallet()" class="px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amberBrand-600 text-xs font-black flex items-center gap-1.5 shrink-0 shadow-xs hover:bg-amber-100 transition min-h-[38px]">
-          <i data-lucide="wallet" class="w-4 h-4"></i>
-          <span id="headerWalletBal">₹0.00</span>
+        <button onclick="openWallet()" class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amberBrand-600 hover:bg-amber-100 transition shadow-sm min-h-[48px]">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+          <span class="text-base font-black" id="headerWalletBal">₹0.00</span>
         </button>
       </div>
     </div>
 
-    <!-- ANNOUNCEMENT BANNER: BROADCAST TEXT ONLY -->
+    <!-- ANNOUNCEMENT BANNER WITH DIRECT GOOGLE MAPS LINK -->
     <div id="announcementBanner" class="bg-forest-900 text-amber-300 px-4 py-2 text-xs md:text-sm text-center font-black tracking-wide">
-      <span id="announcementBannerText">Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup!</span>
+      <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 hover:underline cursor-pointer">
+        <i data-lucide="map-pin" class="w-4 h-4 text-amber-400"></i>
+        <span id="announcementBannerText">Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup! (Tap for Directions)</span>
+      </a>
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT -->
+  <!-- MAIN VIEWPORT (ADAPTIVE SPLIT ON TABLET / FOLDABLES) -->
   <main class="max-w-7xl mx-auto px-4 py-5 md:py-7">
     <div id="discountBanner" class="mb-6 p-5 rounded-3xl bg-gradient-to-r from-forest-800 to-forest-900 text-white flex items-center justify-between shadow-md">
       <div class="flex items-center gap-3.5">
@@ -173,7 +174,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 xl:gap-8">
-      <!-- LEFT / MAIN COLUMN -->
+      <!-- LEFT / MAIN COLUMN: Menu & Items -->
       <section class="md:col-span-7 xl:col-span-8 space-y-6">
         <div class="flex flex-col sm:flex-row gap-3.5">
           <div class="relative flex-1">
@@ -181,6 +182,7 @@
             <input id="searchInput" oninput="renderMenu()" type="text" placeholder="Search Jowar Roti, Thali, Curries..." class="w-full pl-12 pr-4 py-3.5 text-base md:text-lg bg-white border border-stone-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-forest-800 shadow-sm font-medium min-h-[48px]" />
           </div>
 
+          <!-- FIXED CATEGORY PILLS FILTERING AND CONTRAST -->
           <div id="categoryPills" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
             <button onclick="filterCategory('ALL')" class="category-pill active px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-forest-800 text-white border border-transparent font-black shadow-sm transition min-h-[48px]">All Items</button>
             <button onclick="filterCategory('Millet Rotis')" class="category-pill px-4 py-3 text-sm md:text-base rounded-2xl whitespace-nowrap bg-white text-stone-700 border border-stone-200 font-extrabold hover:bg-stone-50 transition min-h-[48px]">Millet Rotis</button>
@@ -196,7 +198,7 @@
         </div>
       </section>
 
-      <!-- RIGHT COLUMN: Interactive Cart Sidebar -->
+      <!-- RIGHT COLUMN: Adaptive Interactive Cart Sidebar on Tablets & Desktops -->
       <section class="hidden md:block md:col-span-5 xl:col-span-4 space-y-4">
         <div class="bg-white rounded-3xl border border-stone-200 p-6 shadow-sm sticky top-24">
           <div class="flex items-center justify-between border-b border-stone-100 pb-3.5">
@@ -316,7 +318,7 @@
       </div>
 
       <div class="pt-2">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=17.387140,78.375860" target="_blank" rel="noopener noreferrer" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm md:text-base rounded-2xl flex items-center justify-center gap-2 shadow transition min-h-[48px]">
+        <a href="https://maps.app.goo.gl/3vTmmsbHN5kg98qF6" target="_blank" rel="noopener noreferrer" class="w-full py-4 bg-forest-800 hover:bg-forest-900 text-white font-black text-sm md:text-base rounded-2xl flex items-center justify-center gap-2 shadow transition min-h-[48px]">
           <i data-lucide="navigation" class="w-5 h-5"></i>
           <span>Get Directions to Counter on Google Maps</span>
         </a>
@@ -707,9 +709,7 @@
       WALLET_SLAB_3_MIN: 1999,
       WALLET_SLAB_3_DISC: 0.20,
       KITCHEN_OPEN: "TRUE",
-      ANNOUNCEMENT_BANNER: "Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup!",
-      KITCHEN_OPEN_HOUR_IST: "10:00",
-      KITCHEN_CLOSE_HOUR_IST: "22:00"
+      ANNOUNCEMENT_BANNER: "Fresh Harvest Specials: Hot Jowar & Ragi Rotis made live upon pickup!"
     };
 
     let currentUser = null;
@@ -847,10 +847,10 @@
     }
 
     // -------------------------------------------------------------
-    // DYNAMIC PREP TIME BUFFER CALCULATION
+    // DYNAMIC CART PREPARATION TIME CALCULATION
     // -------------------------------------------------------------
     function getCartRequiredPrepTime() {
-      let maxItemPrep = 15;
+      let maxItemPrep = 15; // Base minimum kitchen prep time
       for (const [id, qty] of Object.entries(cart)) {
         const item = menuItems.find(m => m.id === id);
         if (item && item.prepTimeMins) {
@@ -915,7 +915,7 @@
     }
 
     // -------------------------------------------------------------
-    // DYNAMIC PICKUP TIME & OPERATING HOURS (REVERTED CLEAN LOGIC)
+    // DYNAMIC PICKUP TIME & ITEM PREP BUFFER ENFORCEMENT
     // -------------------------------------------------------------
     function initDefaultPickupDate() {
       const istToday = getIstTodayDateString();
@@ -931,7 +931,6 @@
       const dateEl = document.getElementById("pickupDate");
       const timeEl = document.getElementById("pickupTime");
       const prepDisplay = document.getElementById("requiredPrepMinutesDisplay");
-      const placeBtn = document.getElementById("placeOrderBtn");
       if (!dateEl || !timeEl) return;
 
       const istToday = getIstTodayDateString();
@@ -941,37 +940,28 @@
         dateEl.value = istToday;
       }
 
-      if (placeBtn) placeBtn.disabled = false;
-
       const istNow = getNowIst();
       const requiredLeadMinutes = getCartRequiredPrepTime();
       if (prepDisplay) {
         prepDisplay.innerText = `${requiredLeadMinutes} mins`;
       }
 
-      const openHour = appConfig.KITCHEN_OPEN_HOUR_IST || "10:00";
-      const closeHour = appConfig.KITCHEN_CLOSE_HOUR_IST || "22:00";
-
       if (dateEl.value === istToday) {
         const leadTime = new Date(istNow.getTime() + requiredLeadMinutes * 60 * 1000);
         const minH = String(leadTime.getHours()).padStart(2, '0');
         const minM = String(leadTime.getMinutes()).padStart(2, '0');
-        let calculatedMinTime = `${minH}:${minM}`;
+        const minTimeStr = `${minH}:${minM}`;
 
-        if (calculatedMinTime < openHour) {
-          calculatedMinTime = openHour;
-        }
+        timeEl.min = minTimeStr;
+        timeEl.max = "22:00";
 
-        timeEl.min = calculatedMinTime;
-        timeEl.max = closeHour;
-
-        if (!timeEl.value || timeEl.value < calculatedMinTime) {
-          timeEl.value = calculatedMinTime;
+        if (!timeEl.value || timeEl.value < minTimeStr) {
+          timeEl.value = minTimeStr;
         }
       } else {
-        timeEl.min = openHour;
-        timeEl.max = closeHour;
-        if (!timeEl.value || timeEl.value < openHour) {
+        timeEl.min = "10:00";
+        timeEl.max = "22:00";
+        if (!timeEl.value) {
           timeEl.value = "12:30";
         }
       }
@@ -985,14 +975,6 @@
       const istToday = getIstTodayDateString();
       const istNow = getNowIst();
       const requiredLeadMinutes = getCartRequiredPrepTime();
-      const openHour = appConfig.KITCHEN_OPEN_HOUR_IST || "10:00";
-      const closeHour = appConfig.KITCHEN_CLOSE_HOUR_IST || "22:00";
-
-      if (timeEl.value < openHour || timeEl.value > closeHour) {
-        showToast(`Kitchen operates strictly between ${formatTime12Hour(openHour)} and ${formatTime12Hour(closeHour)} IST.`, "error");
-        timeEl.value = openHour;
-        return;
-      }
 
       if (dateEl.value === istToday) {
         const [selH, selM] = timeEl.value.split(":").map(Number);
@@ -1474,7 +1456,7 @@
     }
 
     // -------------------------------------------------------------
-    // SANITIZED ORDER HISTORY WITH COMPACT ACTIONS & DIRECTIONS BAR
+    // SANITIZED ORDER HISTORY WITH DIRECT VOICE CALLING
     // -------------------------------------------------------------
     function openOrdersModal() {
       if (!currentUser) {
@@ -1519,7 +1501,7 @@
               ? new Date(order.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true })
               : "N/A";
 
-            const waTextUrl = `https://wa.me/919000001690?text=${encodeURIComponent("Hello Yaady's Kitchen! Inquiring regarding Order Token #" + token + " (" + order.orderId + ") placed for " + cleanDate + " at " + cleanTime + " IST (Total: ₹" + order.finalPayable + "). Status: " + order.orderStatus + ". Please assist.")}`;
+            const waVoiceUrl = `https://wa.me/919000001690?text=${encodeURIComponent(`Hello Yaady's Kitchen! Inquiring regarding Order Token #${token} (${order.orderId}) placed for ${cleanDate} at ${cleanTime} IST (Amount: ₹${order.finalPayable}). Please connect.`)}`;
 
             return `
               <div class="bg-stone-50 border border-stone-200 rounded-3xl p-5 space-y-3.5">
@@ -1529,20 +1511,9 @@
                     <h4 class="font-black text-stone-900 text-lg">${cleanDate} • Pickup: ${cleanTime} (IST)</h4>
                     <p class="text-xs text-stone-400 font-semibold">Placed at ${istPlacedTime} IST</p>
                   </div>
-                  
-                  <div class="flex items-center gap-2">
-                    <span class="px-3.5 py-1.5 rounded-full text-xs font-black ${order.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Pending_Verification' ? 'bg-amber-100 text-amber-800' : 'bg-stone-200 text-stone-700'}">
-                      ${String(order.orderStatus).replace('_', ' ')}
-                    </span>
-
-                    <!-- COMPACT ICON-ONLY ACTIONS -->
-                    <a href="${waTextUrl}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 bg-green-600 hover:bg-green-700 text-white rounded-2xl flex items-center justify-center shadow-sm transition hover:scale-105 active:scale-95 shrink-0" title="WhatsApp Kitchen regarding this order">
-                      <i data-lucide="message-circle" class="w-5 h-5"></i>
-                    </a>
-                    <button type="button" onclick="startOrderContextChat('${order.orderId}')" class="w-11 h-11 bg-forest-800 hover:bg-forest-900 text-white rounded-2xl flex items-center justify-center shadow-sm transition hover:scale-105 active:scale-95 shrink-0" title="Chat with Kitchen Desk">
-                      <i data-lucide="message-square" class="w-5 h-5"></i>
-                    </button>
-                  </div>
+                  <span class="px-3.5 py-1.5 rounded-full text-xs font-black ${order.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Pending_Verification' ? 'bg-amber-100 text-amber-800' : 'bg-stone-200 text-stone-700'}">
+                    ${String(order.orderStatus).replace('_', ' ')}
+                  </span>
                 </div>
 
                 <div class="text-sm text-stone-600 border-t border-b border-stone-200/60 py-2.5 space-y-1">
@@ -1553,19 +1524,16 @@
                   </div>
                 </div>
 
-                <!-- TURN-BY-TURN PICKUP POINT DIRECTIONS BAR -->
-                <div class="p-3.5 bg-white border border-stone-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-xs">
-                  <div class="flex items-start gap-2">
-                    <i data-lucide="map-pin" class="w-4 h-4 text-forest-800 shrink-0 mt-0.5"></i>
-                    <div>
-                      <p class="text-xs font-black text-stone-900">Pickup Counter Location:</p>
-                      <p class="text-xs text-stone-600 font-medium">Yaady's Kitchen, Neknampur, Manikonda, Hyderabad</p>
-                    </div>
-                  </div>
-                  <a href="https://www.google.com/maps/dir/?api=1&destination=17.387140,78.375860" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-forest-800 hover:bg-forest-900 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-xs transition hover:scale-102 shrink-0 min-h-[38px]">
-                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
-                    <span>Get Directions</span>
+                <!-- DIRECT VOICE CALL & CHAT BUTTONS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <a href="${waVoiceUrl}" target="_blank" rel="noopener noreferrer" class="py-3 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
+                    <i data-lucide="phone-call" class="w-4 h-4"></i>
+                    <span>Voice Call Kitchen (+91 9000001690)</span>
                   </a>
+                  <button type="button" onclick="startOrderContextChat('${order.orderId}')" class="py-3 px-3.5 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs md:text-sm font-black flex items-center justify-center gap-1.5 transition min-h-[48px]">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span>Chat with Kitchen Desk</span>
+                  </button>
                 </div>
               </div>
             `;
@@ -2141,7 +2109,7 @@
 
       const bannerTextEl = document.getElementById("announcementBannerText");
       if (bannerTextEl && appConfig.ANNOUNCEMENT_BANNER) {
-        bannerTextEl.innerText = appConfig.ANNOUNCEMENT_BANNER;
+        bannerTextEl.innerText = `${appConfig.ANNOUNCEMENT_BANNER} (Tap for Directions)`;
       }
 
       const walletEnabled = String(appConfig.WALLET_SYSTEM_ENABLED).toUpperCase() === "TRUE";
@@ -2160,11 +2128,11 @@
       const isOpen = String(appConfig.KITCHEN_OPEN).toUpperCase() === "TRUE";
       const badge = document.getElementById("kitchenOpenBadge");
       if (isOpen) {
-        badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span><span>Open</span>`;
-        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-green-100 text-green-800 border border-green-200 shrink-0";
+        badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span> Open Now`;
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-green-100 text-green-800 border border-green-200";
       } else {
-        badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-600"></span><span>Closed</span>`;
-        badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-red-100 text-red-800 border border-red-200 shrink-0";
+        badge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Closed Now`;
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-extrabold bg-red-100 text-red-800 border border-red-200";
       }
     }
 
