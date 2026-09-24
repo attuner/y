@@ -156,7 +156,6 @@
     <div class="hidden lg:flex max-w-7xl mx-auto px-6 py-4 items-center justify-between">
       <div onclick="openAboutModal()" class="flex items-center gap-2 cursor-pointer hover:opacity-90 transition">
         <h2 class="text-2xl font-black text-forest-900">Traditional Millet Roti Meals</h2>
-        <!-- <span class="text-xs font-bold text-forest-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-200">About Us</span> -->
       </div>
 
       <div class="flex items-center gap-3">
@@ -742,17 +741,16 @@
 
   <!-- ==================== JAVASCRIPT CLIENT ENGINE ==================== -->
   <script>
-  
-  // Insert this helper at the beginning of the <script> block in index.html:
-function escapeHtml(text) {
-  if (!text) return "";
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+    function escapeHtml(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyqmLuxkaAGX8RL3wJb-f2WDSdvXkvLmnS4n24l5nTJaRzEVimKbzgvFxoGZ9jZwrscUw/exec";
 
     let appConfig = {
@@ -1553,25 +1551,25 @@ function escapeHtml(text) {
     }
 
     function renderChatMessages(messages) {
-  const container = document.getElementById("chatMessagesContainer");
-  if (messages.length === 0) {
-    container.innerHTML = `<div class="text-center text-stone-400 text-sm py-8">No messages yet. Send a message to the kitchen desk below.</div>`;
-    return;
-  }
-  
-  container.innerHTML = messages.map(m => {
-    const isMe = m.sender === "CUSTOMER";
-    const cleanTime = new Date(m.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true });
-    return `
-      <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-        <div class="max-w-[80%] rounded-2xl px-4 py-3 text-sm md:text-base ${isMe ? 'bg-forest-800 text-white rounded-br-xs' : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs shadow-xs'}">
-          <p>${escapeHtml(m.text)}</p>
-        </div>
-        <span class="text-[10px] text-stone-400 mt-1 px-1">${cleanTime}</span>
-      </div>
-    `;
-  }).join("");
- 
+      const container = document.getElementById("chatMessagesContainer");
+      if (messages.length === 0) {
+        container.innerHTML = `<div class="text-center text-stone-400 text-sm py-8">No messages yet. Send a message to the kitchen desk below.</div>`;
+        return;
+      }
+
+      container.innerHTML = messages.map(m => {
+        const isMe = m.sender === "CUSTOMER";
+        const cleanTime = new Date(m.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true });
+        return `
+          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <div class="max-w-[80%] rounded-2xl px-4 py-3 text-sm md:text-base ${isMe ? 'bg-forest-800 text-white rounded-br-xs' : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs shadow-xs'}">
+              <p>${escapeHtml(m.text)}</p>
+            </div>
+            <span class="text-[10px] text-stone-400 mt-1 px-1">${cleanTime}</span>
+          </div>
+        `;
+      }).join("");
+
       container.scrollTop = container.scrollHeight;
     }
 
@@ -1623,115 +1621,68 @@ function escapeHtml(text) {
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${currentUser.phone}`).then(r => r.json());
         if (res.status === "SUCCESS" && res.orders.length > 0) {
-          // In fetchCustomerOrders():
-// Replace raw item and status rendering with escapeHtml():
-container.innerHTML = res.orders.map(order => {
-const token = order.orderId ? String(order.orderId).slice(-4) : "0000";
-let cleanDate = "Today";
-if (order.pickupDate) {
-const rawDate = String(order.pickupDate).split("T")[0].trim();
-const dateObj = new Date(rawDate + "T00:00:00+05:30");
-cleanDate = !isNaN(dateObj.getTime())
-? dateObj.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric" })
-: rawDate;
-}
-const cleanTime = order.pickupTime ? String(order.pickupTime).trim() : "Flexible";
-const cleanPlacedTime = order.timestamp
-? new Date(order.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true })
-: "N/A";
+          container.innerHTML = res.orders.map(order => {
+            const token = order.orderId ? String(order.orderId).slice(-4) : "0000";
+            
+            let cleanDate = "Today";
+            if (order.pickupDate) {
+              const rawDate = String(order.pickupDate).split("T")[0].trim();
+              const dateObj = new Date(rawDate + "T00:00:00+05:30");
+              cleanDate = !isNaN(dateObj.getTime())
+                ? dateObj.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "short", year: "numeric" })
+                : rawDate;
+            }
+            const cleanTime = order.pickupTime ? String(order.pickupTime).trim() : "Flexible";
+            
+            const cleanPlacedTime = order.timestamp
+              ? new Date(order.timestamp).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: true })
+              : "N/A";
 
-const waTextUrl = `https://wa.me/919000001690?text=${encodeURIComponent("Hello Yaady's Kitchen! Inquiring regarding Order Token #" + token + " (" + order.orderId + ") placed for " + cleanDate + " at " + cleanTime + " (Total: ₹" + order.finalPayable + "). Status: " + order.orderStatus + ". Please assist.")}`;
+            const waTextUrl = `https://wa.me/919000001690?text=${encodeURIComponent("Hello Yaady's Kitchen! Inquiring regarding Order Token #" + token + " (" + order.orderId + ") placed for " + cleanDate + " at " + cleanTime + " (Total: ₹" + order.finalPayable + "). Status: " + order.orderStatus + ". Please assist.")}`;
 
-const statusBadgeBg = order.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Kitchen_Accepted' ? 'bg-blue-100 text-blue-800' : order.orderStatus === 'Preparing' ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-700';
+            const statusBadgeBg = order.orderStatus === 'Ready_For_Pickup' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Kitchen_Accepted' ? 'bg-blue-100 text-blue-800' : order.orderStatus === 'Preparing' ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-700';
 
-return `
-<div class="bg-white border border-stone-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3 shadow-xs hover:shadow-sm transition w-full block">
-  <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
-    <div class="flex items-center gap-2 min-w-0">
-      <span class="text-amberBrand-600 font-mono font-black text-lg">#${escapeHtml(token)}</span>
-      <span class="px-2.5 py-0.5 rounded-full text-xs font-black ${statusBadgeBg}">
-        ${escapeHtml(String(order.orderStatus).replace(/_/g, ' '))}
-      </span>
-    </div>
-    <div class="flex items-center gap-1.5 shrink-0">
-      <a href="${waTextUrl}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-green-600 hover:bg-green-700 text-white rounded-xl flex items-center justify-center shadow-xs transition hover:scale-105 active:scale-95 shrink-0" title="WhatsApp Kitchen regarding this order">
-        <i data-lucide="message-circle" class="w-4 h-4"></i>
-      </a>
-      <button type="button" onclick="startOrderContextChat('${escapeHtml(order.orderId)}', '${escapeHtml(token)}')" class="w-9 h-9 bg-forest-800 hover:bg-forest-900 text-white rounded-xl flex items-center justify-center shadow-xs transition hover:scale-105 active:scale-95 shrink-0" title="Chat with Kitchen Desk">
-        <i data-lucide="message-square" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </div>
-  
-  <div class="space-y-0.5">
-    <p class="text-forest-900 font-extrabold text-sm sm:text-base leading-snug">
-      Pickup: ${escapeHtml(cleanDate)} • ${escapeHtml(cleanTime)}
-    </p>
-    <p class="text-stone-400 text-xs font-medium">
-      Placed at ${escapeHtml(cleanPlacedTime)} • Paid via ${escapeHtml(order.paymentMode)} ${order.utrNumber && order.utrNumber !== 'WALLET_DEDUCT' ? `(Ref: ${escapeHtml(order.utrNumber)})` : ''}
-    </p>
-  </div>
-  
-  <div class="py-2.5 border-t border-b border-stone-100 space-y-1.5 text-xs sm:text-sm text-stone-700">
-    ${(order.items || []).map(i => `
-    <div class="flex justify-between items-center">
-      <span class="truncate pr-2"><strong class="font-bold text-stone-900">${i.quantity}×</strong>${escapeHtml(i.name)}</span>
-      <span class="font-semibold text-stone-800 shrink-0">₹${(Number(i.lineTotal) || (Number(i.price) * Number(i.quantity))).toFixed(2)}</span>
-    </div>
-    `).join("")}
-  </div>
-  
-  <div class="pt-0.5 space-y-1">
-    ${Number(order.discountApplied) > 0 ? `
-    <div class="flex justify-between text-xs text-green-700 font-bold">
-      <span>Wallet Perk Discount (${escapeHtml(order.discountSlab || 'Perk')}):</span>
-      <span>-₹${Number(order.discountApplied).toFixed(2)}</span>
-    </div>` : ''}
-    <div class="flex justify-between items-center text-sm sm:text-base font-black text-forest-900 pt-1">
-      <span>Total Paid:</span>
-      <span class="text-lg sm:text-xl font-black text-forest-800">₹${Number(order.finalPayable).toFixed(2)}</span>
-    </div>
-  </div>
-</div>
-`;
-}).join("");
+            return `
+              <div class="bg-white border border-stone-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3 shadow-xs hover:shadow-sm transition w-full block">
+                <div class="flex items-center justify-between gap-2 border-b border-stone-100 pb-2.5">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="text-amberBrand-600 font-mono font-black text-lg">#${escapeHtml(token)}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-black ${statusBadgeBg}">
+                      ${escapeHtml(String(order.orderStatus).replace(/_/g, ' '))}
                     </span>
                   </div>
                   <div class="flex items-center gap-1.5 shrink-0">
                     <a href="${waTextUrl}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 bg-green-600 hover:bg-green-700 text-white rounded-xl flex items-center justify-center shadow-xs transition hover:scale-105 active:scale-95 shrink-0" title="WhatsApp Kitchen regarding this order">
                       <i data-lucide="message-circle" class="w-4 h-4"></i>
                     </a>
-                    <button type="button" onclick="startOrderContextChat('${order.orderId}', '${token}')" class="w-9 h-9 bg-forest-800 hover:bg-forest-900 text-white rounded-xl flex items-center justify-center shadow-xs transition hover:scale-105 active:scale-95 shrink-0" title="Chat with Kitchen Desk">
+                    <button type="button" onclick="startOrderContextChat('${escapeHtml(order.orderId)}', '${escapeHtml(token)}')" class="w-9 h-9 bg-forest-800 hover:bg-forest-900 text-white rounded-xl flex items-center justify-center shadow-xs transition hover:scale-105 active:scale-95 shrink-0" title="Chat with Kitchen Desk">
                       <i data-lucide="message-square" class="w-4 h-4"></i>
                     </button>
                   </div>
                 </div>
 
-                <!-- Essential Schedule & Payment Metadata -->
                 <div class="space-y-0.5">
                   <p class="text-forest-900 font-extrabold text-sm sm:text-base leading-snug">
-                    Pickup: ${cleanDate} • ${cleanTime}
+                    Pickup: ${escapeHtml(cleanDate)} • ${escapeHtml(cleanTime)}
                   </p>
                   <p class="text-stone-400 text-xs font-medium">
-                    Placed at ${cleanPlacedTime} • Paid via ${order.paymentMode} ${order.utrNumber && order.utrNumber !== 'WALLET_DEDUCT' ? `(Ref: ${order.utrNumber})` : ''}
+                    Placed at ${escapeHtml(cleanPlacedTime)} • Paid via ${escapeHtml(order.paymentMode)} ${order.utrNumber && order.utrNumber !== 'WALLET_DEDUCT' ? `(Ref: ${escapeHtml(order.utrNumber)})` : ''}
                   </p>
                 </div>
 
-                <!-- Simplified Items List -->
                 <div class="py-2.5 border-t border-b border-stone-100 space-y-1.5 text-xs sm:text-sm text-stone-700">
                   ${(order.items || []).map(i => `
                     <div class="flex justify-between items-center">
-                      <span class="truncate pr-2"><strong class="font-bold text-stone-900">${i.quantity}×</strong> ${i.name}</span>
+                      <span class="truncate pr-2"><strong class="font-bold text-stone-900">${i.quantity}×</strong> ${escapeHtml(i.name)}</span>
                       <span class="font-semibold text-stone-800 shrink-0">₹${(Number(i.lineTotal) || (Number(i.price) * Number(i.quantity))).toFixed(2)}</span>
                     </div>
                   `).join("")}
                 </div>
 
-                <!-- Compact Bill & Total Bar -->
                 <div class="pt-0.5 space-y-1">
                   ${Number(order.discountApplied) > 0 ? `
                   <div class="flex justify-between text-xs text-green-700 font-bold">
-                    <span>Wallet Perk Discount (${order.discountSlab || 'Perk'}):</span>
+                    <span>Wallet Perk Discount (${escapeHtml(order.discountSlab || 'Perk')}):</span>
                     <span>-₹${Number(order.discountApplied).toFixed(2)}</span>
                   </div>` : ''}
                   <div class="flex justify-between items-center text-sm sm:text-base font-black text-forest-900 pt-1">
@@ -1739,7 +1690,6 @@ return `
                     <span class="text-lg sm:text-xl font-black text-forest-800">₹${Number(order.finalPayable).toFixed(2)}</span>
                   </div>
                 </div>
-
               </div>
             `;
           }).join("");
@@ -2381,4 +2331,3 @@ return `
   </script>
 </body>
 </html>
-
