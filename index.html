@@ -792,7 +792,14 @@
     window.syncPollInterval = null;
     window.heartbeatInterval = null;
 
-    // PWA Install Handlers
+    // Dedicated PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // PWA Install Prompt Handlers
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
@@ -826,20 +833,6 @@
           showToast("App is ready. If installed, launch it from your home screen or browser menu.", "info");
         }
       }
-    }
-
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE_NAME = 'yaadys-shell-v2';
-        self.addEventListener('install', (e) => { self.skipWaiting(); });
-        self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-        self.addEventListener('fetch', (e) => {
-          if (e.request.method !== 'GET') return;
-          e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-        });
-      `;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
     }
 
     function initCustomerAudio() {
@@ -934,7 +927,7 @@
       const toast = document.createElement("div");
       const bg = type === "error" ? "bg-red-800 text-white" : type === "success" ? "bg-forest-800 text-white" : "bg-stone-800 text-white";
       toast.className = `${bg} p-4 rounded-2xl text-sm md:text-base font-bold shadow-2xl pointer-events-auto flex items-center justify-between gap-3 border border-white/20`;
-      toast.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100 text-xl">&times;</button>`;
+      toast.innerHTML = `<span>${escapeHtml(msg)}</span><button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100 text-xl">&times;</button>`;
       c.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = "0";
@@ -976,7 +969,7 @@
     async function pollCustomerOrderProgress() {
       if (!currentUser || !currentUser.phone) return;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${currentUser.phone}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${encodeURIComponent(currentUser.phone)}`).then(r => r.json());
         if (res.status === "SUCCESS" && res.orders) {
           res.orders.forEach(order => {
             const oId = String(order.orderId);
@@ -988,11 +981,11 @@
               playCustomerChime();
 
               if (newStatus === "Kitchen_Accepted") {
-                showToast(`✅ Payment Verified! Kitchen accepted Order #${token}.`, "success");
+                showToast(`Payment Verified! Kitchen accepted Order #${token}.`, "success");
               } else if (newStatus === "Preparing") {
-                showToast(`🍳 Order #${token} is now on the millet stove!`, "info");
+                showToast(`Order #${token} is now on the millet stove!`, "info");
               } else if (newStatus === "Ready_For_Pickup") {
-                showToast(`🔥 Order #${token} is HOT & READY for counter pickup at Neknampur!`, "success");
+                showToast(`Order #${token} is HOT & READY for counter pickup at Neknampur!`, "success");
               }
 
               const mBadge = document.getElementById("mobileOrderBadge");
@@ -1018,9 +1011,6 @@
       document.getElementById("aboutModal").classList.add("hidden");
     }
 
-    // -------------------------------------------------------------
-    // INTEGRATED SCHEDULING (CART REVIEW & DESKTOP SIDEBAR)
-    // -------------------------------------------------------------
     function initDefaultPickupDate() {
       const istToday = getIstTodayDateString();
       chosenPickupDate = istToday;
@@ -1111,9 +1101,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // STRICT LIVE VALIDATION & PRE-ORDER INITIATION
-    // -------------------------------------------------------------
     async function initiatePreOrderCheckout() {
       if (!currentUser) {
         showToast("Please log in or register before scheduling pickup.", "info");
@@ -1197,9 +1184,7 @@
             pickupDate: chosenPickupDate,
             pickupTime: formattedPickupTime
           });
-        } catch (err) {
-          console.warn("Pre-order persistence deferred: ", err);
-        }
+        } catch (err) {}
 
         document.getElementById("checkoutModal").classList.remove("hidden");
         togglePaymentUi();
@@ -1230,9 +1215,9 @@
         qrContainer.innerHTML = "";
         new QRCode(qrContainer, { text: currentOrderUpiUri, width: 150, height: 150 });
 
-        document.getElementById("gpayBtn").href = `gpay://upi/pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
-        document.getElementById("phonepeBtn").href = `phonepe://pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
-        document.getElementById("paytmBtn").href = `paytmmp://pay?pa=${appConfig.KITCHEN_UPI_ID}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${txnNote}`;
+        document.getElementById("gpayBtn").href = `gpay://upi/pay?pa=${encodeURIComponent(appConfig.KITCHEN_UPI_ID)}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${encodeURIComponent(txnNote)}`;
+        document.getElementById("phonepeBtn").href = `phonepe://pay?pa=${encodeURIComponent(appConfig.KITCHEN_UPI_ID)}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${encodeURIComponent(txnNote)}`;
+        document.getElementById("paytmBtn").href = `paytmmp://pay?pa=${encodeURIComponent(appConfig.KITCHEN_UPI_ID)}&pn=${encodeURIComponent(appConfig.KITCHEN_NAME)}&am=${bill.finalPayable}&cu=INR&tn=${encodeURIComponent(txnNote)}`;
       } else {
         upiBox.classList.add("hidden");
       }
@@ -1242,9 +1227,6 @@
       if (currentOrderUpiUri) window.location.href = currentOrderUpiUri;
     }
 
-    // -------------------------------------------------------------
-    // SUBMIT FINAL PAYMENT CONFIRMATION
-    // -------------------------------------------------------------
     async function submitFinalPaymentConfirmation() {
       const bill = calculateBill();
       const mode = document.querySelector('input[name="paymentOption"]:checked').value;
@@ -1297,9 +1279,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // WALLET RECHARGE & CLAIMS
-    // -------------------------------------------------------------
     function openWallet() {
       if (!currentUser) {
         showToast("Please sign in to access your wallet.", "info");
@@ -1489,7 +1468,7 @@
     async function fetchWalletLedger() {
       if (!currentUser) return;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getWalletLedger&customerId=${currentUser.customerId}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=getWalletLedger&customerId=${encodeURIComponent(currentUser.customerId)}`).then(r => r.json());
         const list = document.getElementById("walletLedgerList");
         if (res.status === "SUCCESS" && res.transactions.length > 0) {
           list.innerHTML = res.transactions.map(t => {
@@ -1499,12 +1478,12 @@
               <div class="py-3 flex flex-col gap-1 w-full">
                 <div class="flex items-center justify-between w-full">
                   <div>
-                    <p class="font-black text-stone-800 text-sm md:text-base">${String(t.type).replace(/_/g, ' ')}</p>
-                    <p class="text-xs text-stone-400 font-mono">${cleanDate} • Ref: ${t.utrRef || 'N/A'}</p>
+                    <p class="font-black text-stone-800 text-sm md:text-base">${escapeHtml(String(t.type).replace(/_/g, ' '))}</p>
+                    <p class="text-xs text-stone-400 font-mono">${escapeHtml(cleanDate)} • Ref: ${escapeHtml(t.utrRef || 'N/A')}</p>
                   </div>
                   <div class="text-right">
                     <span class="font-black text-base ${String(t.type).includes('Credit') ? 'text-green-700' : 'text-stone-800'}">₹${Number(t.amount) || 0}</span>
-                    <p class="text-xs font-bold ${isApproved ? 'text-green-600' : 'text-amber-600'}">${t.status}</p>
+                    <p class="text-xs font-bold ${isApproved ? 'text-green-600' : 'text-amber-600'}">${escapeHtml(t.status)}</p>
                   </div>
                 </div>
               </div>
@@ -1517,9 +1496,6 @@
       } catch (e) {}
     }
 
-    // -------------------------------------------------------------
-    // CHAT & SUPPORT
-    // -------------------------------------------------------------
     function openLiveChat() {
       if (!currentUser) {
         showToast("Please log in to chat with the kitchen operator.", "info");
@@ -1545,7 +1521,7 @@
     async function pollChatMessages() {
       if (!currentUser) return;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=GET_CHAT_MESSAGES&customerId=${currentUser.customerId}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=GET_CHAT_MESSAGES&customerId=${encodeURIComponent(currentUser.customerId)}`).then(r => r.json());
         if (res.status === "SUCCESS") renderChatMessages(res.messages);
       } catch (e) {}
     }
@@ -1565,7 +1541,7 @@
             <div class="max-w-[80%] rounded-2xl px-4 py-3 text-sm md:text-base ${isMe ? 'bg-forest-800 text-white rounded-br-xs' : 'bg-white border border-stone-200 text-stone-800 rounded-bl-xs shadow-xs'}">
               <p>${escapeHtml(m.text)}</p>
             </div>
-            <span class="text-[10px] text-stone-400 mt-1 px-1">${cleanTime}</span>
+            <span class="text-[10px] text-stone-400 mt-1 px-1">${escapeHtml(cleanTime)}</span>
           </div>
         `;
       }).join("");
@@ -1592,9 +1568,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // SANITIZED ORDER HISTORY (SIMPLIFIED LIGHTWEIGHT RECEIPT CARDS)
-    // -------------------------------------------------------------
     function openOrdersModal() {
       if (!currentUser) {
         showToast("Please log in to review orders.", "info");
@@ -1619,7 +1592,7 @@
       container.innerHTML = `<p class="text-center text-stone-400 py-8 text-base">Loading orders...</p>`;
 
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${currentUser.phone}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerOrders&phone=${encodeURIComponent(currentUser.phone)}`).then(r => r.json());
         if (res.status === "SUCCESS" && res.orders.length > 0) {
           container.innerHTML = res.orders.map(order => {
             const token = order.orderId ? String(order.orderId).slice(-4) : "0000";
@@ -1673,7 +1646,7 @@
                 <div class="py-2.5 border-t border-b border-stone-100 space-y-1.5 text-xs sm:text-sm text-stone-700">
                   ${(order.items || []).map(i => `
                     <div class="flex justify-between items-center">
-                      <span class="truncate pr-2"><strong class="font-bold text-stone-900">${i.quantity}×</strong> ${escapeHtml(i.name)}</span>
+                      <span class="truncate pr-2"><strong class="font-bold text-stone-900">${Number(i.quantity)}×</strong> ${escapeHtml(i.name)}</span>
                       <span class="font-semibold text-stone-800 shrink-0">₹${(Number(i.lineTotal) || (Number(i.price) * Number(i.quantity))).toFixed(2)}</span>
                     </div>
                   `).join("")}
@@ -1713,9 +1686,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // MENU RENDERING & CART ENGINE
-    // -------------------------------------------------------------
     let currentCategory = "ALL";
     function filterCategory(cat) {
       currentCategory = cat;
@@ -1779,9 +1749,9 @@
         return `
           <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition w-full ${isSoldOut ? 'opacity-60' : ''}">
             <div class="relative h-48 w-full bg-stone-100 overflow-hidden">
-              <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600';" class="w-full h-full object-cover" />
+              <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600';" class="w-full h-full object-cover" />
               <span class="absolute top-3.5 left-3.5 px-3.5 py-1 bg-forest-900/85 backdrop-blur-md text-amber-300 font-black text-xs rounded-xl uppercase tracking-wider">
-                ${item.milletType}
+                ${escapeHtml(item.milletType)}
               </span>
               ${isSoldOut ? `
                 <div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-black text-base tracking-widest uppercase">
@@ -1793,20 +1763,20 @@
             <div class="p-5 flex-1 flex flex-col justify-between w-full">
               <div>
                 <div class="flex justify-between items-start gap-2">
-                  <h4 class="font-black text-forest-900 text-lg md:text-xl leading-snug">${item.name}</h4>
-                  <span class="font-black text-2xl text-stone-900">₹${item.price}</span>
+                  <h4 class="font-black text-forest-900 text-lg md:text-xl leading-snug">${escapeHtml(item.name)}</h4>
+                  <span class="font-black text-2xl text-stone-900">₹${Number(item.price)}</span>
                 </div>
                 <div class="text-sm text-stone-500 mt-2">
-                  <span id="desc-${item.id}">${displayDesc}</span>
+                  <span id="desc-${escapeHtml(item.id)}">${escapeHtml(displayDesc)}</span>
                   ${isLongDesc ? `
-                    <button type="button" id="desc-btn-${item.id}" onclick="toggleDescription('${item.id}')" class="text-amberBrand-600 font-extrabold text-xs ml-1 hover:underline focus:outline-none">
+                    <button type="button" id="desc-btn-${escapeHtml(item.id)}" onclick="toggleDescription('${escapeHtml(item.id)}')" class="text-amberBrand-600 font-extrabold text-xs ml-1 hover:underline focus:outline-none">
                       ${isExpanded ? 'Read less' : 'Read more'}
                     </button>
                   ` : ''}
                 </div>
                 <div class="mt-3 text-xs md:text-sm text-stone-400 font-extrabold flex items-center justify-between">
-                  <span>${item.nutrition}</span>
-                  <span class="text-forest-800 font-bold">⏱️ ${item.prepTimeMins || 15}m prep</span>
+                  <span>${escapeHtml(item.nutrition)}</span>
+                  <span class="text-forest-800 font-bold">⏱️ ${Number(item.prepTimeMins) || 15}m prep</span>
                 </div>
               </div>
 
@@ -1816,14 +1786,14 @@
                 ${isSoldOut ? `
                   <button disabled class="px-5 py-2.5 bg-stone-200 text-stone-400 font-black text-sm rounded-2xl cursor-not-allowed min-h-[44px]">Unavailable</button>
                 ` : qty === 0 ? `
-                  <button onclick="addToCart('${item.id}')" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow min-h-[48px]">
+                  <button onclick="addToCart('${escapeHtml(item.id)}')" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-forest-900 font-black text-base rounded-2xl transition shadow min-h-[48px]">
                     Add +
                   </button>
                 ` : `
                   <div class="flex items-center gap-3 bg-stone-100 rounded-2xl px-3 py-2 min-h-[48px]">
-                    <button onclick="changeQty('${item.id}', -1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">-</button>
+                    <button onclick="changeQty('${escapeHtml(item.id)}', -1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">-</button>
                     <span class="font-black text-base text-forest-900 px-1.5">${qty}</span>
-                    <button onclick="changeQty('${item.id}', 1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">+</button>
+                    <button onclick="changeQty('${escapeHtml(item.id)}', 1)" class="w-8 h-8 rounded-xl bg-white flex items-center justify-center font-black text-stone-700 shadow-xs">+</button>
                   </div>
                 `}
               </div>
@@ -1907,13 +1877,13 @@
         el.innerHTML = bill.itemsDetail.map(i => `
           <div class="py-3 flex items-center justify-between w-full">
             <div>
-              <p class="font-black text-stone-800 text-base">${i.name}</p>
+              <p class="font-black text-stone-800 text-base">${escapeHtml(i.name)}</p>
               <p class="text-xs text-stone-400">₹${i.price} × ${i.quantity}</p>
             </div>
             <div class="flex items-center gap-2.5">
               <span class="font-black text-base text-forest-900 mr-2">₹${i.lineTotal}</span>
-              <button onclick="changeQty('${i.id}', -1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">-</button>
-              <button onclick="changeQty('${i.id}', 1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">+</button>
+              <button onclick="changeQty('${escapeHtml(i.id)}', -1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">-</button>
+              <button onclick="changeQty('${escapeHtml(i.id)}', 1)" class="w-7 h-7 bg-stone-100 rounded-lg text-sm font-black text-stone-600 min-h-[36px] min-w-[36px] flex items-center justify-center">+</button>
             </div>
           </div>
         `).join("");
@@ -2110,7 +2080,7 @@
       const raw = localStorage.getItem("yaady_user_token");
       if (raw) {
         try {
-          currentUser = JSON.parse(atob(raw));
+          currentUser = JSON.parse(decodeURIComponent(escape(atob(raw))));
           updateUserUi();
           refreshProfileFromBackend();
         } catch (e) {
@@ -2121,7 +2091,7 @@
 
     function saveUserSession(user) {
       currentUser = user;
-      localStorage.setItem("yaady_user_token", btoa(JSON.stringify(user)));
+      localStorage.setItem("yaady_user_token", btoa(unescape(encodeURIComponent(JSON.stringify(user)))));
       updateUserUi();
     }
 
@@ -2236,12 +2206,12 @@
     async function refreshProfileFromBackend() {
       if (!currentUser) return;
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getCustomerProfile&phone=${currentUser.phone}`).then(r => r.json());
+        const res = await fetch(`${SCRIPT_URL}?action=getCustomerProfile&phone=${encodeURIComponent(currentUser.phone)}`).then(r => r.json());
         if (res.status === "SUCCESS") {
           const newBal = Number(res.customer.walletBalance) || 0;
           if (lastSeenWalletBalance !== null && lastSeenWalletBalance < newBal) {
             playCustomerChime();
-            showToast(`💰 Wallet Top-Up credited! New Balance: ₹${newBal.toFixed(2)}`, "success");
+            showToast(`Wallet Top-Up credited! New Balance: ₹${newBal.toFixed(2)}`, "success");
           }
           lastSeenWalletBalance = newBal;
           saveUserSession(res.customer);
